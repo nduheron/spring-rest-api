@@ -1,0 +1,16 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - IP=%X{client_ip};USER=%X{user} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- set to level TRACE if you want to log hibernate queries parameters -->
+    <logger name="fr.nduheron" level="INFO"/>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
