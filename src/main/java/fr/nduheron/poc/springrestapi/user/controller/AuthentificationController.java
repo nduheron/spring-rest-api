@@ -11,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,11 +21,12 @@ import fr.nduheron.poc.springrestapi.user.dto.LoginDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
+import io.swagger.annotations.Api;
 
-@Controller
 @RestController
-@RequestMapping(value = "${api.basePath}/auth")
+@RequestMapping(value = "${api.basePath}/v1/auth")
 @Transactional
+@Api(tags = "Authentification")
 public class AuthentificationController {
 
 	@Autowired

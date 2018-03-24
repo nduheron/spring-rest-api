@@ -15,6 +15,7 @@ public class Holder {
 
 	private HttpStatus statusCode;
 	private String body;
+	private int version;
 
 	public Holder() {
 		headers = new HttpHeaders();
@@ -39,6 +40,14 @@ public class Holder {
 
 	public void setBody(String body) {
 		this.body = body;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 }

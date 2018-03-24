@@ -45,7 +45,12 @@ public abstract class AbstractCucumberSteps {
 	protected ObjectMapper objectMapper;
 
 	protected <T> void callApi(String path, HttpMethod method, T body) {
-		ResponseEntity<?> response = restTemplate.exchange("http://localhost:" + port + basePath + path, method,
+		callApi(holder.getVersion(), path, method, body);
+	}
+
+	protected <T> void callApi(int version, String path, HttpMethod method, T body) {
+		ResponseEntity<?> response = restTemplate.exchange(
+				"http://localhost:" + port + basePath + "/v" + version + path, method,
 				new HttpEntity<>(body, holder.getHeaders()), String.class);
 		holder.setStatusCode(response.getStatusCode());
 		if (response.hasBody()) {

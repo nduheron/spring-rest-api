@@ -26,8 +26,8 @@ public class SwaggerAutoConfiguration {
 	public DocketFactory adminApi() {
 		DocketFactory factory = new DocketFactory();
 		factory.setTitle("Administration API");
-		factory.setGroupName("zz_Admin API");
-		factory.setDescription("Consulter/modifier les ressources systèmes.");
+		factory.setGroupName("zz-admin-api");
+		factory.setDescription("Consulter les ressources systèmes.");
 		factory.setSelector(PathSelectors.ant(actuatorBasePathPattern));
 		return factory;
 	}

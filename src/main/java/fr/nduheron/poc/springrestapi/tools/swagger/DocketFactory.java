@@ -1,9 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools.swagger;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
+import org.springframework.boot.info.BuildProperties;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
@@ -23,10 +22,13 @@ import springfox.documentation.spring.web.plugins.Docket;
  * Factory Spring permettant de configurer swagger
  *
  */
-public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
+public class DocketFactory implements FactoryBean<Docket> {
 
 	@Autowired
 	private TypeResolver typeResolver;
+
+	@Autowired
+	private BuildProperties buildProperties;
 
 	private String title;
 
@@ -47,7 +49,8 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
 	@Override
 	public Docket getObject() throws Exception {
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.groupName(Strings.isNullOrEmpty(groupName) ? title : groupName).useDefaultResponseMessages(false);
+				.groupName(Strings.isNullOrEmpty(groupName) ? buildProperties.getArtifact() : groupName)
+				.useDefaultResponseMessages(false);
 
 		docket.additionalModels(typeResolver.resolve(ErrorParameter.class),
 				typeResolver.resolve(FunctionalError.class));
@@ -78,13 +81,19 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
 
 	private ApiInfo apiInfo() {
 		ApiInfoBuilder apiInfoBuilder = new ApiInfoBuilder();
-		if (!Strings.isNullOrEmpty(title)) {
+		if (Strings.isNullOrEmpty(title)) {
+			apiInfoBuilder.title(buildProperties.getName());
+		} else {
 			apiInfoBuilder.title(title);
 		}
 		if (!Strings.isNullOrEmpty(description)) {
 			apiInfoBuilder.description(description);
 		}
-		apiInfoBuilder.version(version);
+		if (Strings.isNullOrEmpty(version)) {
+			apiInfoBuilder.version(buildProperties.getVersion());
+		} else {
+			apiInfoBuilder.version(version);
+		}
 		return apiInfoBuilder.build();
 	}
 
@@ -94,12 +103,6 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		Assert.notNull(title, "title must not be null");
-		Assert.notNull(selector, "selector must not be null");
 	}
 
 	public void setTitle(String title) {

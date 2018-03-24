@@ -2,6 +2,7 @@ package fr.nduheron.poc.springrestapi.steps;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.dbunit.IDatabaseTester;
@@ -31,12 +32,12 @@ public class CommonSteps extends AbstractCucumberSteps {
 	private IDatabaseTester dbTester;
 
 	@Then("^I get a (.+) response$")
-	public void I_get_a_response(final String statusCode) throws Throwable {
+	public void I_get_a_response(final String statusCode) {
 		assertEquals(HttpStatus.valueOf(statusCode), holder.getStatusCode());
 	}
 
 	@Then("^I get (\\d+) parameters in error$")
-	public void I_get_parameters_in_error(final int nbError) throws Throwable {
+	public void I_get_parameters_in_error(final int nbError) throws IOException {
 		List<ErrorParameter> errors = objectMapper.readValue(holder.getBody(),
 				new TypeReference<List<ErrorParameter>>() {
 				});
@@ -44,7 +45,7 @@ public class CommonSteps extends AbstractCucumberSteps {
 	}
 
 	@Then("^I get a (\\w+) error$")
-	public void I_get_a_error(final String errorCode) throws Throwable {
+	public void I_get_a_error(final String errorCode) throws IOException {
 		FunctionalError error = objectMapper.readValue(holder.getBody(), FunctionalError.class);
 		assertEquals(errorCode, error.getCode());
 	}
@@ -55,7 +56,7 @@ public class CommonSteps extends AbstractCucumberSteps {
 		login.setUsername(username);
 		login.setPassword("12345");
 
-		callApi("/auth", HttpMethod.POST, login);
+		callApi(1, "/auth", HttpMethod.POST, login);
 		if (holder.getStatusCode().is2xxSuccessful()) {
 			holder.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + holder.getBody());
 		}
@@ -72,6 +73,16 @@ public class CommonSteps extends AbstractCucumberSteps {
 
 		dbTester.setDataSet(new CompositeDataSet(idataSets));
 		dbTester.onSetup();
+	}
+
+	@Given("^version (\\d)")
+	public void version(Integer version) {
+		holder.setVersion(version);
+	}
+
+	@Before
+	public void version() {
+		holder.setVersion(1);
 	}
 
 	@After("@dbunit")

@@ -1,6 +1,5 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import javax.annotation.security.PermitAll;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -19,11 +18,13 @@ import fr.nduheron.poc.springrestapi.user.dto.ChangePasswordDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "${api.basePath}/account")
+@RequestMapping("${api.basePath}")
 @Transactional
+@Api(tags = "Profil utilisateur")
 public class AccountController {
 
 	@Autowired
@@ -32,11 +33,19 @@ public class AccountController {
 	@Autowired
 	private UserRepository repo;
 
-	@RequestMapping(value = "password", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v1/account/password", method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation(value = "Changer de mot de passe")
-	@PermitAll
+	@Deprecated
 	public void changePassword(Authentication authentication,
+			@RequestBody @Valid final ChangePasswordDto changePassword) {
+		changePasswordV2(authentication, changePassword);
+	}
+
+	@RequestMapping(value = "/v2/account/password", method = RequestMethod.PATCH)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation(value = "Changer de mot de passe")
+	public void changePasswordV2(Authentication authentication,
 			@RequestBody @Valid final ChangePasswordDto changePassword) {
 		UserDto userConnecte = (UserDto) authentication.getPrincipal();
 		User user = repo.getOne(userConnecte.getLogin());
@@ -48,9 +57,8 @@ public class AccountController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/v1/account", method = RequestMethod.GET)
 	@ApiOperation(value = "Récupérer le profil de l'utilisateur conneté")
-	@PermitAll
 	public UserDto find(Authentication authentication) {
 		UserDto user = (UserDto) authentication.getPrincipal();
 		return user;

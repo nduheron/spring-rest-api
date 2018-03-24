@@ -33,11 +33,13 @@ import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "${api.basePath}/users")
+@RequestMapping(value = "${api.basePath}/v1/users")
 @Transactional
+@Api(tags = "Utilisateurs")
 public class UserController {
 
 	@Autowired

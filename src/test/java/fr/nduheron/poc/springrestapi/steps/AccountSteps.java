@@ -38,7 +38,11 @@ public class AccountSteps extends AbstractCucumberSteps {
 		ChangePasswordDto changePassword = new ChangePasswordDto();
 		changePassword.setOldPassword(oldPassword);
 		changePassword.setNewPassword(newPassword);
-		callApi("/account/password", HttpMethod.PUT, changePassword);
+		if (2 == holder.getVersion()) {
+			callApi("/account/password", HttpMethod.PATCH, changePassword);
+		} else {
+			callApi("/account/password", HttpMethod.PUT, changePassword);
+		}
 	}
 
 }

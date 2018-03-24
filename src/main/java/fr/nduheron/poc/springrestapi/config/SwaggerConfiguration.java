@@ -32,9 +32,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import({ BeanValidatorPluginsConfiguration.class }) // plugin permettant d'ajouter javax.validation à la documentation
 public class SwaggerConfiguration {
 
-	@Value("${api.version}")
-	private String version;
-
 	@Value("${api.basePath}")
 	private String apiBasePath;
 
@@ -47,10 +44,7 @@ public class SwaggerConfiguration {
 	@Bean
 	public DocketFactory api() {
 		DocketFactory factory = new DocketFactory();
-		factory.setTitle("Spring Rest API");
-		factory.setGroupName("Spring Rest API");
 		factory.setSelector(PathSelectors.ant(apiBasePath + "/**"));
-		factory.setVersion(version);
 		factory.setSecurityContext(securityContext());
 		factory.setSecurityScheme(apiKey());
 		return factory;
