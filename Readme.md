@@ -2,6 +2,9 @@
 
 Cette whiteapp à pour but de montrer comment créer une API Rest avec springboot 2 en séparant au maximum le technique du fonctionnel.
 
+[![Build Status](https://travis-ci.org/nduheron/spring-rest-api.svg?branch=master)](https://travis-ci.org/nduheron/spring-rest-api) 
+[![codecov.io](https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/nduheron/spring-rest-api?branch=master)
+
 ## Fonctionnalités
 
 - Authentification [JWT](https://jwt.io/introduction/) avec [spring-security](https://docs.spring.io/spring-security/site/docs/5.0.0.RELEASE/reference/htmlsingle/)
