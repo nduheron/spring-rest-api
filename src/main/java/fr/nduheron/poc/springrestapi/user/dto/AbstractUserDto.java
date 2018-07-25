@@ -1,5 +1,7 @@
 package fr.nduheron.poc.springrestapi.user.dto;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -7,7 +9,9 @@ import javax.validation.constraints.Size;
 import fr.nduheron.poc.springrestapi.user.model.Role;
 import io.swagger.annotations.ApiModelProperty;
 
-public abstract class AbstractUserDto {
+public abstract class AbstractUserDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@NotNull
 	@Email
