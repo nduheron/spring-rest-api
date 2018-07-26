@@ -41,8 +41,11 @@ public class CacheResource {
 
 	@ApiOperation(value = "Flush l'ensemble des caches")
 	@RequestMapping(method = RequestMethod.DELETE)
-	@CacheEvict(allEntries=true)
-	public void flush() {
+	public void flush() throws NotFoundException {
+		CacheManager cacheManager = getCacheManager();
+		cacheManager.getCacheNames().forEach(id -> {
+			cacheManager.getCache(id).clear();;
+		});
 	}
 
 	@ApiOperation(value = "Récupérer tous les caches")
