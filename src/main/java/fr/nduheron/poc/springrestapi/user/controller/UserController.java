@@ -10,6 +10,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -69,6 +71,7 @@ public class UserController {
 	@RequestMapping(value = "{login}", method = RequestMethod.GET)
 	@ApiOperation(value = "Rechercher un utilisateur")
 	@RolesAllowed({ "ADMIN", "SYSTEM" })
+	@Cacheable("users")
 	public UserDto find(@PathVariable("login") final String login) {
 		User user = repo.getOne(login);
 		return mapper.toDto(user);
@@ -78,6 +81,7 @@ public class UserController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation(value = "Supprimer un utilisateur")
 	@RolesAllowed({ "ADMIN" })
+	@CacheEvict("users")
 	public void supprimer(@PathVariable("login") final String login) {
 		Optional<User> user = repo.findById(login);
 		if (user.isPresent()) {
