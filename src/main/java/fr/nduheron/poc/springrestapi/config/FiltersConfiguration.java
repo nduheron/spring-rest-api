@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import fr.nduheron.poc.springrestapi.tools.log.ApiLoggingFilter;
 
@@ -17,20 +18,21 @@ import fr.nduheron.poc.springrestapi.tools.log.ApiLoggingFilter;
  *
  */
 @Configuration
-@ConditionalOnProperty(name = "log.filter.path")
+@ConditionalOnProperty(name = "log.filter.enable", havingValue = "true")
 public class FiltersConfiguration {
 
-	@Value("${log.filter.path}")
-	private String logFilterPath;
-
+	@Value("${log.filter.excludePaths:}")
+	private String[] excludePaths ;
+	@Value("${log.filter.obfuscateParams:}")
+	private String[] obfuscateParams;
+	
 	@Autowired
 	private ObjectMapper mapper;
 
 	@Bean
 	FilterRegistrationBean<ApiLoggingFilter> loggingFilterRegistration() {
 		FilterRegistrationBean<ApiLoggingFilter> registration = new FilterRegistrationBean<>();
-		registration.setFilter(new ApiLoggingFilter(mapper));
-		registration.addUrlPatterns(logFilterPath);
+		registration.setFilter(new ApiLoggingFilter(mapper, Lists.newArrayList(excludePaths),  Lists.newArrayList(obfuscateParams)));
 		registration.setName(ApiLoggingFilter.class.getSimpleName());
 		// Le filtre doit se lancer avant celui de la sécurité pour pouvoir logguer le
 		// bon code retour HTTP

@@ -7,7 +7,7 @@
     </appender>
 
     <!-- set to level TRACE if you want to log hibernate queries parameters -->
-    <logger name="fr.nduheron" level="INFO"/>
+    <logger name="fr.nduheron" level="DEBUG"/>
 
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
