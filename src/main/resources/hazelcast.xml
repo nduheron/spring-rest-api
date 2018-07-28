@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hazelcast
-        xsi:schemaLocation="http://www.hazelcast.com/schema/config 
+	xsi:schemaLocation="http://www.hazelcast.com/schema/config 
         http://www.hazelcast.com/schema/config/hazelcast-config-3.9.xsd"
-        xmlns="http://www.hazelcast.com/schema/config"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://www.hazelcast.com/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <map name="users">
-        <max-size>500</max-size>
-        <eviction-policy>LFU</eviction-policy>
-        <time-to-live-seconds>10</time-to-live-seconds>
-    </map>
+	<map name="users">
+		<max-size>500</max-size>
+		<eviction-policy>LFU</eviction-policy>
+		<time-to-live-seconds>10</time-to-live-seconds>
+	</map>
+
+	<map name="test">
+		<max-size>500</max-size>
+		<eviction-policy>LFU</eviction-policy>
+		<time-to-live-seconds>10</time-to-live-seconds>
+	</map>
 
 </hazelcast>
