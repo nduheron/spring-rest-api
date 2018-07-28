@@ -2,11 +2,11 @@ package fr.nduheron.poc.springrestapi.tools.log;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,6 +23,10 @@ import org.springframework.web.util.WebUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
+import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
 
 /**
  * Filtre permettant de logger les requêtes et réponses de tous les appels REST.
@@ -33,16 +37,22 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 	private static final String UNKNOWN = "<unknown>";
 	private static final String PATTERN_REPLACER = "\"$1\":\"xxxxx\"";
 	private static final String CLIENT_IP = "client_ip";
-	private static final Pattern PATTERN_FILE = Pattern.compile("\\.\\w{2,4}$");
 
 	private ObjectMapper mapper;
-	private List<String> excludePaths;
 	private List<String> obfuscateParams;
+	private Predicate<String> noFilterPathMatcher;
 
-	public ApiLoggingFilter(ObjectMapper mapper, List<String> excludePaths, List<String> obfuscateParams) {
+	public ApiLoggingFilter(ObjectMapper mapper, String logFilterPath, List<String> logExcludePaths,
+			List<String> obfuscateParams) {
 		this.mapper = mapper;
-		this.excludePaths = excludePaths;
 		this.obfuscateParams = obfuscateParams;
+
+		Predicate<String> includePathMatcher = Predicates.not(new AntPathPredicate(logFilterPath));
+		List<Predicate<String>> excludesAntMatchers = new ArrayList<>();
+		for (String exclude : logExcludePaths) {
+			excludesAntMatchers.add(new AntPathPredicate(exclude));
+		}
+		noFilterPathMatcher = Predicates.and(includePathMatcher, Predicates.and(excludesAntMatchers));
 	}
 
 	@Override
@@ -165,8 +175,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 	}
 
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return request.getRequestURI().contains("swagger") || PATTERN_FILE.matcher(request.getRequestURI()).find()
-				|| excludePaths.contains(request.getRequestURI());
+		return noFilterPathMatcher.apply(request.getRequestURI());
 	}
 
 }

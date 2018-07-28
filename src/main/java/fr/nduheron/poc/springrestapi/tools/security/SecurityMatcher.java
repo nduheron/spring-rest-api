@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
 import fr.nduheron.poc.springrestapi.tools.security.SecurityConfigProperties.Matcher;
 
 /**
@@ -24,20 +24,6 @@ import fr.nduheron.poc.springrestapi.tools.security.SecurityConfigProperties.Mat
  */
 @Component
 public class SecurityMatcher implements RequestMatcher, Predicate<String> {
-
-	private final class AntPathPredicate implements Predicate<String> {
-		private final String antPattern;
-
-		private AntPathPredicate(String antPattern) {
-			this.antPattern = antPattern;
-		}
-
-		@Override
-		public boolean apply(String input) {
-			AntPathMatcher matcher = new AntPathMatcher();
-			return matcher.match(antPattern, input);
-		}
-	}
 
 	@Autowired
 	private SecurityConfigProperties securityProperties;
@@ -53,7 +39,7 @@ public class SecurityMatcher implements RequestMatcher, Predicate<String> {
 		} else {
 			List<Predicate<String>> includesMatcher = new ArrayList<>(securityProperties.getIncludes().size());
 			for (Matcher match : securityProperties.getIncludes()) {
-				includesMatcher.add(new AntPathPredicate(match.getAntPattern()));
+				includesMatcher.add(new AntPathPredicate( match.getAntPattern()));
 			}
 			includePathMatcher = Predicates.or(includesMatcher);
 		}

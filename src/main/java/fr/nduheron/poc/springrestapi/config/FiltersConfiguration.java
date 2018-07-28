@@ -18,11 +18,13 @@ import fr.nduheron.poc.springrestapi.tools.log.ApiLoggingFilter;
  *
  */
 @Configuration
-@ConditionalOnProperty(name = "log.filter.enable", havingValue = "true")
+@ConditionalOnProperty(name = "log.filter.path")
 public class FiltersConfiguration {
 
+	@Value("${log.filter.path}")
+	private String logFilterPath;
 	@Value("${log.filter.excludePaths:}")
-	private String[] excludePaths ;
+	private String[] logExcludePaths;
 	@Value("${log.filter.obfuscateParams:}")
 	private String[] obfuscateParams;
 	
@@ -32,7 +34,8 @@ public class FiltersConfiguration {
 	@Bean
 	FilterRegistrationBean<ApiLoggingFilter> loggingFilterRegistration() {
 		FilterRegistrationBean<ApiLoggingFilter> registration = new FilterRegistrationBean<>();
-		registration.setFilter(new ApiLoggingFilter(mapper, Lists.newArrayList(excludePaths),  Lists.newArrayList(obfuscateParams)));
+		registration.setFilter(new ApiLoggingFilter(mapper, logFilterPath, Lists.newArrayList(logExcludePaths),
+				Lists.newArrayList(obfuscateParams)));
 		registration.setName(ApiLoggingFilter.class.getSimpleName());
 		// Le filtre doit se lancer avant celui de la sécurité pour pouvoir logguer le
 		// bon code retour HTTP
