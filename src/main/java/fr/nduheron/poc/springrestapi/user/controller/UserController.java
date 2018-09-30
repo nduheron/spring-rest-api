@@ -15,10 +15,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,7 +61,7 @@ public class UserController {
 	@Autowired
 	private UserMapper mapper;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,  "text/csv;charset=UTF-8" })
 	@ApiOperation(value = "Rechercher tous les utilisateurs")
 	@RolesAllowed({ "ADMIN", "SYSTEM" })
 	public List<UserDto> findAll() {

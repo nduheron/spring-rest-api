@@ -6,6 +6,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
+
+import fr.nduheron.poc.springrestapi.tools.csv.RoleBeanField;
 import fr.nduheron.poc.springrestapi.user.model.Role;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,18 +20,22 @@ public abstract class AbstractUserDto implements Serializable {
 	@NotNull
 	@Email
 	@Size(max = 128)
+	@CsvBindByPosition(position = 3)
 	private String email;
 
 	@NotNull
 	@Size(min = 2, max = 50)
+	@CsvBindByPosition(position = 1)
 	private String nom;
 
 	@NotNull
 	@Size(min = 2, max = 50)
+	@CsvBindByPosition(position = 2)
 	private String prenom;
 
 	@NotNull
 	@ApiModelProperty(required = true)
+	@CsvCustomBindByPosition(position = 4, converter = RoleBeanField.class)
 	private Role role;
 
 	private boolean enabled;

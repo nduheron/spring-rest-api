@@ -7,16 +7,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Optional;
 
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -41,6 +49,12 @@ public class UserSteps extends AbstractCucumberSteps {
 		callApi("/users", HttpMethod.GET, null);
 	}
 
+	@When("^I get all users in csv$")
+	public void get_all_users_in_csv() {
+		holder.getHeaders().add(HttpHeaders.ACCEPT, "text/csv;charset=UTF-8");
+		callApi("/users", HttpMethod.GET, null);
+	}
+
 	@When("^I search user (\\w+)$")
 	public void i_search_user(String login) {
 		callApi("/users/" + login, HttpMethod.GET, null);
@@ -50,6 +64,21 @@ public class UserSteps extends AbstractCucumberSteps {
 	public void users_found(long nb) throws IOException {
 		UserDto[] users = objectMapper.readValue(holder.getBody(), UserDto[].class);
 		assertEquals(nb, users.length);
+	}
+
+	@Then("^(\\d+) users found in csv$")
+	public void users_found_in_csv(long nb) throws IOException {
+		try (InputStreamReader reader = new InputStreamReader(
+				new ByteArrayInputStream(holder.getBody().getBytes(StandardCharsets.UTF_8)))) {
+
+			ColumnPositionMappingStrategy<UserDto> strategy = new ColumnPositionMappingStrategy<>();
+			strategy.setType(UserDto.class);
+
+			CsvToBean<UserDto> csvToBean = new CsvToBeanBuilder<UserDto>(reader).withMappingStrategy(strategy)
+					.withSkipLines(1).withIgnoreLeadingWhiteSpace(true).build();
+
+			assertEquals(nb, csvToBean.parse().size());
+		}
 	}
 
 	@Then("^the user has name (.+) (.+)$")
