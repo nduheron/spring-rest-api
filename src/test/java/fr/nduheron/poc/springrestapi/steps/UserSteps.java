@@ -11,17 +11,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -62,8 +65,32 @@ public class UserSteps extends AbstractCucumberSteps {
 
 	@Then("^(\\d+) users found$")
 	public void users_found(long nb) throws IOException {
-		UserDto[] users = objectMapper.readValue(holder.getBody(), UserDto[].class);
-		assertEquals(nb, users.length);
+		List<Resource<UserDto>> users = objectMapper.readValue(holder.getBody(),
+				new TypeReference<List<Resource<UserDto>>>() {
+				});
+		assertEquals(nb, users.size());
+	}
+
+	@Then("^all users are updatable$")
+	public void all_users_are_updatable() throws IOException {
+		List<Resource<UserDto>> users = objectMapper.readValue(holder.getBody(),
+				new TypeReference<List<Resource<UserDto>>>() {
+				});
+		users.forEach(u -> assertNotNull(u.getLink("edit")));
+	}
+
+	@Then("^only user (\\w+) is updatable$")
+	public void all_users_are_updatable(String login) throws IOException {
+		List<Resource<UserDto>> users = objectMapper.readValue(holder.getBody(),
+				new TypeReference<List<Resource<UserDto>>>() {
+				});
+		users.forEach(u -> {
+			if (u.getContent().getLogin().equals(login)) {
+				assertNotNull(u.getLink("edit"));
+			} else {
+				assertTrue(u.getLinks().isEmpty());
+			}
+		});
 	}
 
 	@Then("^(\\d+) users found in csv$")
