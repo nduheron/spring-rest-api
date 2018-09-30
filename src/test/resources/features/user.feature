@@ -7,6 +7,7 @@ Feature: users operations
     When I get all users
     Then I get a OK response
     And 4 users found
+    And all users are updatable
 
   @dbunit
   Scenario: l'administrateur système peut rechercher des utilisateurs
@@ -15,6 +16,7 @@ Feature: users operations
     When I get all users
     Then I get a OK response
     And 4 users found
+    And only user batman is updatable
 
   @dbunit
   Scenario: l'administrateur système peut exporter des utilisateurs au format CSV
@@ -168,9 +170,7 @@ Feature: users operations
     And I get a NOT_FOUND response
 
   @dbunit
-  Scenario: 
-    l'administrateur système n'a pas le droit de réinitialiser le mot de passe d'un utilisateur
-
+  Scenario: l'administrateur système n'a pas le droit de réinitialiser le mot de passe d'un utilisateur
     Given users datasets
     And I login with batman
     When I reinit password to invisiblegirl

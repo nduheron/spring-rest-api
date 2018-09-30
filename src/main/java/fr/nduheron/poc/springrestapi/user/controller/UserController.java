@@ -1,8 +1,13 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
+import static org.springframework.hateoas.mvc.BasicLinkBuilder.linkToCurrentMapping;
+
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
@@ -10,10 +15,13 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.nduheron.poc.springrestapi.security.SecurityService;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import fr.nduheron.poc.springrestapi.tools.swagger.ApiConflictResponse;
 import fr.nduheron.poc.springrestapi.user.ExistException;
@@ -41,7 +50,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "${api.basePath}/v1/users")
+@RequestMapping(value = "${resource.user.uri}")
 @Transactional
 @Api(tags = "Utilisateurs")
 public class UserController {
@@ -59,15 +68,24 @@ public class UserController {
 	private MessageSource messageSource;
 
 	@Autowired
+	private SecurityService securityService;
+
+	@Autowired
 	private UserMapper mapper;
 
-	@GetMapping(produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,  "text/csv;charset=UTF-8" })
+	@Value("${resource.user.uri}")
+	private String resourceUri;
+
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_UTF8_VALUE, "text/csv;charset=UTF-8" })
 	@ApiOperation(value = "Rechercher tous les utilisateurs")
 	@RolesAllowed({ "ADMIN", "SYSTEM" })
-	public List<UserDto> findAll() {
-
+	public List<Resource<UserDto>> findAll() {
 		List<User> findAll = repo.findAll();
-		return mapper.toDto(findAll);
+		return mapper.toDto(findAll).stream().map(u -> {
+			Link editLink = linkToCurrentMapping().slash(resourceUri).slash(u.getLogin()).withRel("edit");
+			return new Resource<>(u,
+					securityService.isUserAuthorized(u.getLogin()) ? Arrays.asList(editLink) : new ArrayList<>());
+		}).collect(Collectors.toList());
 	}
 
 	@RequestMapping(value = "{login}", method = RequestMethod.GET)
