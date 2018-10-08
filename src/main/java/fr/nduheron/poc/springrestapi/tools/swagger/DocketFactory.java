@@ -65,7 +65,7 @@ public class DocketFactory implements FactoryBean<Docket> {
 		if (securityContext != null) {
 			docket.securityContexts(Lists.newArrayList(securityContext));
 		}
-
+		docket.forCodeGeneration(true);
 		return docket.select().paths(selector).build();
 	}
 
