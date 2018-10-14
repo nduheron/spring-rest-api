@@ -30,7 +30,8 @@ public class ExportMetricsController {
 		responseHeaders.add("Content-Type", "text/plain; charset=utf-8");
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(QUOTE).append("SERVICE").append(QUOTE).append(SEPARATOR).append(QUOTE).append("COUNT").append(QUOTE)
+		sb.append(QUOTE).append("SERVICE").append(QUOTE).append(SEPARATOR)
+				.append(QUOTE).append("UNIT").append(QUOTE).append(SEPARATOR).append(QUOTE).append("COUNT").append(QUOTE)
 				.append(SEPARATOR).append(QUOTE).append("TOTAL_TIME").append(QUOTE).append(SEPARATOR).append(QUOTE)
 				.append("MAX").append(QUOTE).append(NEW_LINE);
 
@@ -38,6 +39,7 @@ public class ExportMetricsController {
 			sb.append(QUOTE).append(meter.getId().getTag("method")).append(StringUtils.SPACE)
 					.append(meter.getId().getTag("uri")).append(StringUtils.SPACE)
 					.append(meter.getId().getTag("status")).append(QUOTE).append(SEPARATOR);
+			sb.append(QUOTE).append(meter.getId().getBaseUnit()).append(QUOTE).append(SEPARATOR);
 			Iterable<Measurement> measure = meter.measure();
 			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.COUNT)).append(QUOTE).append(SEPARATOR);
 			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.TOTAL_TIME)).append(QUOTE).append(SEPARATOR);
@@ -47,15 +49,7 @@ public class ExportMetricsController {
 		registry.getMeters().stream().filter(m -> m.getId().getName().equals("services")).forEach(meter -> {
 			sb.append(QUOTE).append(meter.getId().getTag("class")).append(".").append(meter.getId().getTag("method"))
 					.append(QUOTE).append(SEPARATOR);
-			Iterable<Measurement> measure = meter.measure();
-			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.COUNT)).append(QUOTE).append(SEPARATOR);
-			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.TOTAL_TIME)).append(QUOTE).append(SEPARATOR);
-			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.MAX)).append(QUOTE).append(NEW_LINE);
-		});
-
-		registry.getMeters().stream().filter(m -> m.getId().getName().equals("repositories")).forEach(meter -> {
-			sb.append(QUOTE).append(meter.getId().getTag("class")).append(".").append(meter.getId().getTag("method"))
-					.append(QUOTE).append(SEPARATOR);
+			sb.append(QUOTE).append(meter.getId().getBaseUnit()).append(QUOTE).append(SEPARATOR);
 			Iterable<Measurement> measure = meter.measure();
 			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.COUNT)).append(QUOTE).append(SEPARATOR);
 			sb.append(QUOTE).append(getStatisticValue(measure, Statistic.TOTAL_TIME)).append(QUOTE).append(SEPARATOR);

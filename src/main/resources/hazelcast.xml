@@ -8,13 +8,13 @@
 	<map name="users">
 		<max-size>500</max-size>
 		<eviction-policy>LFU</eviction-policy>
-		<time-to-live-seconds>10</time-to-live-seconds>
+		<time-to-live-seconds>600</time-to-live-seconds>
 	</map>
 
 	<map name="test">
 		<max-size>500</max-size>
 		<eviction-policy>LFU</eviction-policy>
-		<time-to-live-seconds>10</time-to-live-seconds>
+		<time-to-live-seconds>600</time-to-live-seconds>
 	</map>
 
 </hazelcast>

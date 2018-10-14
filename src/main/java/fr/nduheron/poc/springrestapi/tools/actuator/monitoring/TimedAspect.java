@@ -3,6 +3,7 @@ package fr.nduheron.poc.springrestapi.tools.actuator.monitoring;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -22,31 +23,28 @@ public class TimedAspect {
 		this.registry = registry;
 	}
 
-	/**
-	 * Monitoring des controllers
-	 */
-	@Around("execution(public * fr.nduheron..controller..*(..))")
-	public Object timedControllersMethod(ProceedingJoinPoint pjp) throws Throwable {
-		return timedMethod("services", "Monitoring des controllers", pjp);
+	@Pointcut("within(@org.springframework.stereotype.Repository *)")
+	public void repositoryClassMethods() {
 	}
 
-	/**
-	 * Monitoring des DAOs
-	 */
-	@Around("execution(public * fr.nduheron..repository..*(..))")
-	public Object timedRepositoriesMethod(ProceedingJoinPoint pjp) throws Throwable {
-		return timedMethod("repositories", "Monitoring des DAOs", pjp);
+	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
+	public void controllerClassMethods() {
 	}
 
-	private Object timedMethod(String tag, String description, ProceedingJoinPoint pjp) throws Throwable {
+	@Pointcut("within(@org.springframework.stereotype.Service *)")
+	public void serviceClassMethods() {
+	}
+
+	@Around("controllerClassMethods() || repositoryClassMethods() || serviceClassMethods()")
+	public Object timedSericesMethod(ProceedingJoinPoint pjp) throws Throwable {
 		Timer.Sample sample = Timer.start(registry);
 		try {
 			return pjp.proceed();
 		} finally {
-			sample.stop(Timer.builder(tag).description(description)
+			sample.stop(Timer.builder("services").description("Monitoring des controllers, services et repositories")
 					.tags(Tags.of("class", pjp.getStaticPart().getSignature().getDeclaringTypeName(), "method",
-							pjp.getStaticPart().getSignature().getName()))
-					.publishPercentileHistogram(true).publishPercentiles(0.9, 0.95, 0.99).register(registry));
+							pjp.getStaticPart().getSignature().getName())).register(registry));
 		}
 	}
+
 }

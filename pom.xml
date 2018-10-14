@@ -56,7 +56,11 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-jmx</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		
 		<!-- security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
