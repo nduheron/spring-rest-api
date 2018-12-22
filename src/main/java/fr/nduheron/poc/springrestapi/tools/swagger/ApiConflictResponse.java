@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Permet d'ajouter les erreurs fonctionnelles à la documentation swagger de
  * manière moins verbeuse que les annotation existantes.
- * 
+ *
  * <pre>
  * <code>
  * 		&#64;ApiResponses(value= { @ApiResponse(code=409, message="L'utilisateur existe déjà") })
@@ -23,10 +23,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiConflictResponse {
 
-	/**
-	 *
-	 * @return le message à afficher
-	 */
-	String message();
+    /**
+     * @return le message à afficher
+     */
+    String message();
 
 }

@@ -9,10 +9,10 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  */
 public class ActuatorCondition implements Condition {
 
-	@Override
-	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		String isActuatorEnable = context.getEnvironment().getProperty("management.endpoints.enabled-by-default");
-		return isActuatorEnable == null || "true".equals(isActuatorEnable);
-	}
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        String isActuatorEnable = context.getEnvironment().getProperty("management.endpoints.enabled-by-default");
+        return isActuatorEnable == null || "true".equals(isActuatorEnable);
+    }
 
 }

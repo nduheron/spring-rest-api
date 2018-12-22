@@ -5,16 +5,18 @@ import javax.validation.constraints.Size;
 
 public class CreateUserDto extends AbstractUserDto {
 
-	@NotNull
-	@Size(min = 2, max = 20)
-	private String login;
+    private static final long serialVersionUID = 1L;
 
-	public String getLogin() {
-		return login;
-	}
+    @NotNull
+    @Size(min = 2, max = 20)
+    private String login;
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
 }

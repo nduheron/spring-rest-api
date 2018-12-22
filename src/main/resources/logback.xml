@@ -2,12 +2,33 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - IP=%X{client_ip};USER=%X{user} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - [X-Correlation-ID]=%X{X-Correlation-ID} - %msg%n
+            </pattern>
         </encoder>
     </appender>
 
+    <appender name="MONITORING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/tmp/spring-rest-monitoring.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss} %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="MONITORING"/>
+    </appender>
+
+
     <!-- set to level TRACE if you want to log hibernate queries parameters -->
-    <logger name="fr.nduheron" level="INFO"/>
+    <logger name="fr.nduheron" level="DEBUG"/>
+
+    <logger name="io.micrometer.core.instrument.logging.LoggingMeterRegistry" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+    </logger>
 
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
