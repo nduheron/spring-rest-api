@@ -1,141 +1,130 @@
 package fr.nduheron.poc.springrestapi.user.model;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
 public class User {
 
-	@Id
-	@Column(unique = true, nullable = false)
-	private String login;
+    @Id
+    @Column(unique = true, nullable = false)
+    private String login;
 
-	@Column(nullable = false)
-	private String nom;
+    @Column(nullable = false)
+    private String nom;
 
-	@Column(nullable = false)
-	private String prenom;
+    @Column(nullable = false)
+    private String prenom;
 
-	@Column(nullable = false)
-	private String email;
+    @Column(nullable = false)
+    private String email;
 
-	@Column(nullable = false)
-	private String password;
+    @Column(nullable = false)
+    private String password;
 
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Role role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-	private boolean enabled;
+    private boolean enabled;
 
-	private LocalDateTime derniereConnexion;
+    private LocalDateTime derniereConnexion;
 
-	public LocalDateTime getDerniereConnexion() {
-		return derniereConnexion;
-	}
+    public LocalDateTime getDerniereConnexion() {
+        return derniereConnexion;
+    }
 
-	public void setDerniereConnexion(LocalDateTime derniereConnexion) {
-		this.derniereConnexion = derniereConnexion;
-	}
+    public void setDerniereConnexion(LocalDateTime derniereConnexion) {
+        this.derniereConnexion = derniereConnexion;
+    }
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public String getNom() {
-		return nom;
-	}
+    public String getNom() {
+        return nom;
+    }
 
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-	public String getPrenom() {
-		return prenom;
-	}
+    public String getPrenom() {
+        return prenom;
+    }
 
-	public void setPrenom(String prenom) {
-		this.prenom = prenom;
-	}
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public Role getRole() {
-		return role;
-	}
+    public Role getRole() {
+        return role;
+    }
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (login == null ? 0 : login.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (login == null ? 0 : login.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		User other = (User) obj;
-		if (login == null) {
-			if (other.login != null) {
-				return false;
-			}
-		} else if (!login.equals(other.login)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        User other = (User) obj;
+        if (login == null) {
+            return other.login == null;
+        } else return login.equals(other.login);
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
 }

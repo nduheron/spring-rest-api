@@ -1,136 +1,152 @@
 package fr.nduheron.poc.springrestapi.tools.swagger;
 
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.BuildProperties;
-
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
 import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
 import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.util.Assert;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.paths.RelativePathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import javax.servlet.ServletContext;
 
 /**
  * Factory Spring permettant de configurer swagger
- *
  */
-public class DocketFactory implements FactoryBean<Docket> {
+@ConditionalOnClass(Docket.class)
+public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
 
-	@Autowired
-	private TypeResolver typeResolver;
+    @Autowired
+    private TypeResolver typeResolver;
 
-	@Autowired
-	private BuildProperties buildProperties;
+    @Autowired(required = false)
+    private BuildProperties buildProperties;
 
-	private String title;
+    @Autowired
+    private ServletContext servletContext;
 
-	private String description;
+    private String title;
 
-	private String version;
+    private String description;
 
-	private String groupName;
+    private String version;
 
-	private Class<?>[] ignoredParameterTypes;
+    private Class<?>[] ignoredParameterTypes;
 
-	private Predicate<String> selector;
+    private Predicate<String> selector;
 
-	private SecurityContext securityContext;
+    private SecurityContext securityContext;
 
-	private SecurityScheme securityScheme;
+    private SecurityScheme securityScheme;
 
-	@Override
-	public Docket getObject() throws Exception {
-		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.groupName(Strings.isNullOrEmpty(groupName) ? buildProperties.getArtifact() : groupName)
-				.useDefaultResponseMessages(false);
+    @Autowired(required = false)
+    private AlternateTypeRule alternateTypeRule;
 
-		docket.additionalModels(typeResolver.resolve(ErrorParameter.class),
-				typeResolver.resolve(FunctionalError.class));
+    @Override
+    public Docket getObject() {
+        Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+                .groupName(title)
+                .useDefaultResponseMessages(false);
 
-		if (ignoredParameterTypes != null) {
-			docket.ignoredParameterTypes(ignoredParameterTypes);
-		}
+        docket.additionalModels(typeResolver.resolve(ErrorParameter.class),
+                typeResolver.resolve(FunctionalError.class));
 
-		if (securityScheme != null) {
-			docket.securitySchemes(Lists.newArrayList(securityScheme));
-		}
-		if (securityContext != null) {
-			docket.securityContexts(Lists.newArrayList(securityContext));
-		}
-		docket.forCodeGeneration(true);
-		return docket.select().paths(selector).build();
-	}
+        if (ignoredParameterTypes != null) {
+            docket.ignoredParameterTypes(ignoredParameterTypes);
+        }
 
-	@Override
-	public Class<?> getObjectType() {
-		return Docket.class;
-	}
+        if (securityScheme != null) {
+            docket.securitySchemes(Lists.newArrayList(securityScheme));
+        }
+        if (securityContext != null) {
+            docket.securityContexts(Lists.newArrayList(securityContext));
+        }
 
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
+        docket.pathProvider(new RelativePathProvider(servletContext) {
+            @Override
+            public String getApplicationBasePath() {
+                return servletContext.getContextPath();
+            }
+        });
+        docket.forCodeGeneration(true);
 
-	private ApiInfo apiInfo() {
-		ApiInfoBuilder apiInfoBuilder = new ApiInfoBuilder();
-		if (Strings.isNullOrEmpty(title)) {
-			apiInfoBuilder.title(buildProperties.getName());
-		} else {
-			apiInfoBuilder.title(title);
-		}
-		if (!Strings.isNullOrEmpty(description)) {
-			apiInfoBuilder.description(description);
-		}
-		if (Strings.isNullOrEmpty(version)) {
-			apiInfoBuilder.version(buildProperties.getVersion());
-		} else {
-			apiInfoBuilder.version(version);
-		}
-		return apiInfoBuilder.build();
-	}
+        if (alternateTypeRule != null) {
+            docket.alternateTypeRules(alternateTypeRule);
+        }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+        return docket.select().paths(selector).build();
+    }
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
+    @Override
+    public Class<?> getObjectType() {
+        return Docket.class;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
-	public void setSelector(Predicate<String> selector) {
-		this.selector = selector;
-	}
+    private ApiInfo apiInfo() {
+        ApiInfoBuilder apiInfoBuilder = new ApiInfoBuilder();
+        apiInfoBuilder.title(title);
+        apiInfoBuilder.description(description);
+        if (Strings.isNullOrEmpty(version) && buildProperties != null) {
+            apiInfoBuilder.version(buildProperties.getVersion());
+        } else {
+            apiInfoBuilder.version(version);
+        }
+        return apiInfoBuilder.build();
+    }
 
-	public void setIgnoredParameterTypes(Class<?>... ignoredParameterTypes) {
-		this.ignoredParameterTypes = ignoredParameterTypes;
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(title, "title must not be null");
+    }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setSecurityContext(SecurityContext securityContext) {
-		this.securityContext = securityContext;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public SecurityScheme getSecurityScheme() {
-		return securityScheme;
-	}
+    public void setSelector(Predicate<String> selector) {
+        this.selector = selector;
+    }
 
-	public void setSecurityScheme(SecurityScheme securityScheme) {
-		this.securityScheme = securityScheme;
-	}
+    public void setIgnoredParameterTypes(Class<?>... ignoredParameterTypes) {
+        this.ignoredParameterTypes = ignoredParameterTypes;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setSecurityContext(SecurityContext securityContext) {
+        this.securityContext = securityContext;
+    }
+
+    public SecurityScheme getSecurityScheme() {
+        return securityScheme;
+    }
+
+    public void setSecurityScheme(SecurityScheme securityScheme) {
+        this.securityScheme = securityScheme;
+    }
 
 }

@@ -4,46 +4,45 @@ import java.io.Serializable;
 
 /**
  * Représente un paramètre de requête en erreur
- *
  */
 public class ErrorParameter implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Le nom du parametre en erreur
-	 */
-	private String field;
+    /**
+     * Le nom du parametre en erreur
+     */
+    private String field;
 
-	/**
-	 * Le message d'erreur
-	 */
-	private String message;
+    /**
+     * Le message d'erreur
+     */
+    private String message;
 
-	public ErrorParameter() {
-		super();
-	}
+    public ErrorParameter() {
+        super();
+    }
 
-	public ErrorParameter(String field, String message) {
-		super();
-		this.field = field;
-		this.message = message;
-	}
+    public ErrorParameter(String field, String message) {
+        super();
+        this.field = field;
+        this.message = message;
+    }
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }

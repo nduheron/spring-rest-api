@@ -1,16 +1,17 @@
 package fr.nduheron.poc.springrestapi.config;
 
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 @Configuration
 public class JacksonConfig {
 
-	@Bean
-	AfterburnerModule afterburnerModule() {
-		return new AfterburnerModule();
-	}
-		
+    /**
+     * Ajoute AfterBurner à jackson pour améliorer les perfs de la sérialisation JSON
+     */
+    @Bean
+    AfterburnerModule afterburnerModule() {
+        return new AfterburnerModule();
+    }
 }

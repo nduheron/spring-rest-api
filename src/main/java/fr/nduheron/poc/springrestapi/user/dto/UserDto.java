@@ -1,37 +1,36 @@
 package fr.nduheron.poc.springrestapi.user.dto;
 
-import java.time.LocalDateTime;
+import com.opencsv.bean.CsvBindByPosition;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.opencsv.bean.CsvBindByPosition;
+import java.time.LocalDateTime;
 
 public class UserDto extends AbstractUserDto {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@NotNull
-	@Size(min = 2, max = 20)
-	@CsvBindByPosition(position = 0)
-	private String login;
+    @NotNull
+    @Size(min = 2, max = 20)
+    @CsvBindByPosition(position = 0)
+    private String login;
 
-	private LocalDateTime derniereConnexion;
-	
-	public LocalDateTime getDerniereConnexion() {
-		return derniereConnexion;
-	}
+    private LocalDateTime derniereConnexion;
 
-	public void setDerniereConnexion(LocalDateTime derniereConnexion) {
-		this.derniereConnexion = derniereConnexion;
-	}
+    public LocalDateTime getDerniereConnexion() {
+        return derniereConnexion;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public void setDerniereConnexion(LocalDateTime derniereConnexion) {
+        this.derniereConnexion = derniereConnexion;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
 }

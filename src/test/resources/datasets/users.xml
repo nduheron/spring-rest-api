@@ -1,7 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<user login="batman" email="batman@yopmail.fr" enabled="1" nom="Wayne" prenom="Bruce" password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="SYSTEM" />
-	<user login="spiderman" email="spiderman@yopmail.fr" enabled="1" nom="Parker" prenom="Peter" password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="ADMIN" />
-	<user login="invisiblegirl" email="invisiblegirl@yopmail.fr" enabled="1" nom="Storm" prenom="Jane" password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="USER" />
-	<user login="humantorch" email="humantorch@yopmail.fr" enabled="0" nom="Storm" prenom="Johnny" password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="USER" />
+    <user login="batman" email="batman@yopmail.fr" enabled="1" nom="Wayne" prenom="Bruce"
+          password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="SYSTEM"/>
+    <user login="spiderman" email="spiderman@yopmail.fr" enabled="1" nom="Parker" prenom="Peter"
+          password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="ADMIN"/>
+    <user login="invisiblegirl" email="invisiblegirl@yopmail.fr" enabled="1" nom="Storm" prenom="Jane"
+          password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="USER"/>
+    <user login="humantorch" email="humantorch@yopmail.fr" enabled="0" nom="Storm" prenom="Johnny"
+          password="$2a$10$tp3K84d73j.cyP4tF0TKV.f7piG8S21w8g4oAXLyVI897M88eXUYC" role="USER"/>
 </dataset>

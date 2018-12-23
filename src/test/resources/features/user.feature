@@ -7,7 +7,6 @@ Feature: users operations
     When I get all users
     Then I get a OK response
     And 4 users found
-    And all users are updatable
 
   @dbunit
   Scenario: l'administrateur système peut rechercher des utilisateurs
@@ -16,7 +15,6 @@ Feature: users operations
     When I get all users
     Then I get a OK response
     And 4 users found
-    And only user batman is updatable
 
   @dbunit
   Scenario: l'administrateur système peut exporter des utilisateurs au format CSV
