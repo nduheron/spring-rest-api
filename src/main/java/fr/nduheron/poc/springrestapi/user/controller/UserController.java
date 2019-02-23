@@ -64,7 +64,7 @@ public class UserController {
     @GetMapping("{login}")
     @ApiOperation("Rechercher un utilisateur")
     @RolesAllowed({"ADMIN", "SYSTEM"})
-    @Cacheable("users")
+    @Cacheable({"users", "toto"})
     public UserDto find(@PathVariable("login") final String login) {
         User user = repo.getOne(login);
         return mapper.toDto(user);

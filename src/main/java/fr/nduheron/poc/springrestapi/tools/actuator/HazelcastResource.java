@@ -32,7 +32,7 @@ public class HazelcastResource {
     @GetMapping("/{id}")
     public Object find(@PathVariable("id") final String id) throws NotFoundException {
         final Cache cache = getCacheManager().getCache(id);
-        String[] disableCache = env.getRequiredProperty("cache.http.disable", String[].class);
+        String[] disableCache = env.getProperty("cache.http.disable", String[].class);
         if (cache == null || ArrayUtils.contains(disableCache, id)) {
             throw new NotFoundException(String.format("Le cache %s n'existe pas.", id));
         }
