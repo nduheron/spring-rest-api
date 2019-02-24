@@ -1,7 +1,9 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.swagger.ApiConflictResponse;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import fr.nduheron.poc.springrestapi.tools.swagger.ApiBadRequestResponse;
+import fr.nduheron.poc.springrestapi.tools.swagger.ErrorDocumentation;
 import fr.nduheron.poc.springrestapi.user.ExistException;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
@@ -11,6 +13,7 @@ import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,6 +25,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -35,6 +39,7 @@ import java.util.Optional;
 @RequestMapping("/v1/users")
 @Transactional
 @Api(tags = "Utilisateurs")
+@Validated
 public class UserController {
 
     @Autowired
@@ -64,8 +69,8 @@ public class UserController {
     @GetMapping("{login}")
     @ApiOperation("Rechercher un utilisateur")
     @RolesAllowed({"ADMIN", "SYSTEM"})
-    @Cacheable({"users", "toto"})
-    public UserDto find(@PathVariable("login") final String login) {
+    @Cacheable("users")
+    public UserDto find(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);
         return mapper.toDto(user);
     }
@@ -75,7 +80,7 @@ public class UserController {
     @ApiOperation("Supprimer un utilisateur")
     @RolesAllowed({"ADMIN"})
     @CacheEvict("users")
-    public void supprimer(@PathVariable("login") final String login) {
+    public void supprimer(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
         Optional<User> user = repo.findById(login);
         if (user.isPresent()) {
             repo.delete(user.get());
@@ -86,11 +91,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Créer un utilisateur")
     @RolesAllowed({"ADMIN"})
-    @ApiConflictResponse(message = "L'utilisateur existe déjà")
+    @ApiBadRequestResponse({@ErrorDocumentation(code = Error.REQUIRED), @ErrorDocumentation(code = Error.INVALID_PARAMETER), @ErrorDocumentation(code = ExistException.ALREADY_EXIST, additionalsInformationsType = UserDto.class)})
     public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
-        if (repo.existsById(createUser.getLogin())) {
-            throw new ExistException("error.user.alreadyexist", createUser.getLogin());
+        Optional<User> optionalUser = repo.findById(createUser.getLogin());
+        if (optionalUser.isPresent()) {
+            ExistException existException = new ExistException("error.user.alreadyexist", createUser.getLogin());
+            existException.setAdditionalsInformations(mapper.toDto(optionalUser.get()));
+            throw existException;
         }
 
         User user = mapper.toEntity(createUser);
@@ -114,7 +122,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Modifier un utilisateur")
     @RolesAllowed({"ADMIN"})
-    public void modifier(@PathVariable("login") final String login, @RequestBody @Valid final UpdateUserDto updateUser)
+    @ApiBadRequestResponse
+    public void modifier(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
         if (!repo.existsById(login)) {
             throw new NotFoundException(String.format("L'utilisateur %s n'existe pas.", login));
@@ -129,7 +138,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Réinitialiser le mot de passe")
     @PreAuthorize("@securityService.isUserAuthorized(#login)")
-    public void reinitPassword(@PathVariable("login") final String login) throws NotFoundException {
+    public void reinitPassword(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) throws NotFoundException {
         User user = repo.getOne(login);
         String newPassword = randomPassword();
         user.setPassword(passwordEncoder.encode(newPassword));

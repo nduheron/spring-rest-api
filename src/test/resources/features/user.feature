@@ -119,8 +119,8 @@ Scenario: Créer un utilisateur déjà existant
 	Given users datasets
 	And I login with spiderman
 	When I create invisiblegirl user
-	Then I get a CONFLICT response
-	And I get a ExistException error
+	Then I get a BAD_REQUEST response
+	And I get a ALREADY_EXIST error
 
 @dbunit
 Scenario: l'administrateur système n'a pas le droit de modifier un utilisateur

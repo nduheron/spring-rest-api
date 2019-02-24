@@ -4,8 +4,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +60,7 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
                 .groupName(title)
                 .useDefaultResponseMessages(false);
 
-        docket.additionalModels(typeResolver.resolve(ErrorParameter.class),
-                typeResolver.resolve(FunctionalError.class));
+        docket.additionalModels(typeResolver.resolve(Error.class));
 
         if (ignoredParameterTypes != null) {
             docket.ignoredParameterTypes(ignoredParameterTypes);

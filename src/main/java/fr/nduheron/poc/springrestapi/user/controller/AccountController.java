@@ -1,5 +1,6 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
+import fr.nduheron.poc.springrestapi.tools.swagger.ApiBadRequestResponse;
 import fr.nduheron.poc.springrestapi.user.dto.ChangePasswordDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.model.User;
@@ -31,6 +32,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Changer de mot de passe")
     @Deprecated
+    @ApiBadRequestResponse
     public void changePassword(Authentication authentication,
                                @RequestBody @Valid final ChangePasswordDto changePassword) {
         changePasswordV2(authentication, changePassword);
@@ -39,6 +41,7 @@ public class AccountController {
     @PatchMapping("/v2/account/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Changer de mot de passe")
+    @ApiBadRequestResponse
     public void changePasswordV2(Authentication authentication,
                                  @RequestBody @Valid final ChangePasswordDto changePassword) {
         UserDto userConnecte = (UserDto) authentication.getPrincipal();

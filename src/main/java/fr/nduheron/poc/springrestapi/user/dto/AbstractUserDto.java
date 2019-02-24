@@ -15,14 +15,17 @@ public abstract class AbstractUserDto implements Serializable {
     @NotNull
     @Email
     @Size(max = 128)
+    @ApiModelProperty(example = "batman@yopmail.fr")
     private String email;
 
     @NotNull
     @Size(min = 2, max = 50)
+    @ApiModelProperty(example = "Wayne")
     private String nom;
 
     @NotNull
     @Size(min = 2, max = 50)
+    @ApiModelProperty(example = "Bruce")
     private String prenom;
 
     @NotNull

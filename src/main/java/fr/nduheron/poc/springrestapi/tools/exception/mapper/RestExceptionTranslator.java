@@ -2,8 +2,8 @@ package fr.nduheron.poc.springrestapi.tools.exception.mapper;
 
 import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,6 +40,7 @@ import java.util.List;
 public class RestExceptionTranslator {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestExceptionTranslator.class);
+    private static final List<String> REQUIRED_CODES = Arrays.asList("NotNull", "NotEmpty", "NotBlank");
 
     @Autowired
     private MessageSource messageSource;
@@ -71,10 +76,10 @@ public class RestExceptionTranslator {
      * Gestion des erreurs fonctionnelles {@link FunctionalException}
      */
     @ExceptionHandler({FunctionalException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public FunctionalError handleFunctionalException(final FunctionalException ex) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleFunctionalException(final FunctionalException ex) {
         String message = messageSource.getMessage(ex.getI18nKey(), ex.getArgs(), LocaleContextHolder.getLocale());
-        return new FunctionalError(message, ex.getCode());
+        return Arrays.asList(new Error(ex.getCode(), message, ex.getAdditionalsInformations()));
     }
 
     /**
@@ -82,13 +87,45 @@ public class RestExceptionTranslator {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<ErrorParameter> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
-        List<ErrorParameter> errors = new ArrayList<>(ex.getBindingResult().getAllErrors().size());
+    public List<Error> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+        List<Error> errors = new ArrayList<>(ex.getBindingResult().getAllErrors().size());
+
         for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
             FieldError fieldError = (FieldError) objectError;
-            errors.add(new ErrorParameter(fieldError.getField(), fieldError.getDefaultMessage()));
+            String[] path = StringUtils.splitPreserveAllTokens(fieldError.getField(), ".");
+            errors.add(new Error(getErrorCode(fieldError), fieldError.getDefaultMessage(), path[path.length - 1], "$." + fieldError.getField()));
         }
         return errors;
     }
 
+
+    /**
+     * Gestion de l'exception {@link ConstraintViolationException}
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleConstraintViolationException(final ConstraintViolationException ex) {
+        List<Error> errors = new ArrayList<>(ex.getConstraintViolations().size());
+
+        for (ConstraintViolation objectError : ex.getConstraintViolations()) {
+            String[] path = StringUtils.splitPreserveAllTokens(objectError.getPropertyPath().toString(), ".");
+            String name = path[path.length - 1];
+            errors.add(new Error(Error.INVALID_PARAMETER, objectError.getMessage(), name, "$." + name));
+        }
+        return errors;
+    }
+
+    /**
+     * Gestion de l'exception {@link MissingServletRequestParameterException}
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleMissingServletRequestParameterException(final MissingServletRequestParameterException ex) {
+        return Arrays.asList(new Error(Error.REQUIRED, ex.getMessage(), ex.getParameterName(), "$." + ex.getParameterName()));
+    }
+
+
+    private String getErrorCode(FieldError fieldError) {
+        return REQUIRED_CODES.contains(fieldError.getCode()) ? Error.REQUIRED : Error.INVALID_PARAMETER;
+    }
 }
