@@ -255,8 +255,6 @@
                     <swaggerInput>${project.build.directory}/swagger.json</swaggerInput>
                     <outputDir>${project.basedir}/docs/swagger/</outputDir>
                     <config>
-                        <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
-                        <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
                         <swagger2markup.generatedExamplesEnabled>true</swagger2markup.generatedExamplesEnabled>
                     </config>
                 </configuration>
@@ -264,7 +262,10 @@
                     <execution>
                         <configuration>
                             <swaggerInput>${project.build.directory}/swagger-user-api.json</swaggerInput>
-                            <outputDir>${project.basedir}/docs/user/</outputDir>
+                            <outputDir>${project.build.directory}/generated-docs/user/</outputDir>
+                            <config>
+                                <swagger2markup.anchorPrefix>user</swagger2markup.anchorPrefix>
+                            </config>
                         </configuration>
                         <id>user-api</id>
                         <phase>post-integration-test</phase>
@@ -275,7 +276,10 @@
                     <execution>
                         <configuration>
                             <swaggerInput>${project.build.directory}/swagger-authentification-api.json</swaggerInput>
-                            <outputDir>${project.basedir}/docs/authentification/</outputDir>
+                            <outputDir>${project.build.directory}/generated-docs/authentification/</outputDir>
+                            <config>
+                                <swagger2markup.anchorPrefix>auth</swagger2markup.anchorPrefix>
+                            </config>
                         </configuration>
                         <id>authentication-api</id>
                         <phase>prepare-package</phase>
@@ -291,20 +295,18 @@
                 <version>1.2.1</version>
                 <configuration>
                     <outputFileName>features</outputFileName>
-                    <outputDir>../docs</outputDir>
+                    <outputDir>generated-docs</outputDir>
                     <format>html</format>
                     <documentTitle>Limitations</documentTitle>
                     <hideSummarySection>true</hideSummarySection>
                     <hideTags>true</hideTags>
                     <numbered>false</numbered>
                     <hideStepTime>true</hideStepTime>
-                    <disableTheme>true</disableTheme>
                     <hideFeaturesSection>true</hideFeaturesSection>
                     <disableFooter>true</disableFooter>
                     <hideScenarioKeyword>true</hideScenarioKeyword>
                     <docVersion>${project.version}</docVersion>
                     <disableMinimizable>true</disableMinimizable>
-                    <disableFilter>true</disableFilter>
                 </configuration>
                 <executions>
                     <execution>
@@ -315,7 +317,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.7.1</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/asciidoc/</sourceDirectory>
+                    <sourceDocumentName>index.adoc</sourceDocumentName>
+                    <backend>html5</backend>
+                    <headerFooter>true</headerFooter>
+                    <outputDirectory>${project.basedir}/documentation</outputDirectory>
+                    <attributes>
+                        <toc>left</toc>
+                        <generated>${project.build.directory}/generated-docs</generated>
+                        <revnumber>${project.version}</revnumber>
+                        <revdate>${maven.build.timestamp}</revdate>
+                        <copycss>true</copycss>
+                    </attributes>
+                </configuration>
 
+                <executions>
+                    <execution>
+                        <id>output-html</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

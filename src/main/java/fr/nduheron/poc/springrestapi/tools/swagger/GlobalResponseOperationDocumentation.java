@@ -48,7 +48,7 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
             com.google.common.base.Optional<ApiBadRequestResponse> optionalBadRequest = context
                     .findAnnotation(ApiBadRequestResponse.class);
             if (optionalBadRequest.isPresent()) {
-                String description = "Il y a une(des) erreur(s) dans la requête. Erreurs possibles:\n" + Arrays.stream(optionalBadRequest.get().value()).map(error -> {
+                String description = "Il y a une(des) erreur(s) dans la requête. Erreurs possibles:\n\n" + Arrays.stream(optionalBadRequest.get().value()).map(error -> {
                     String str = error.code() + ":\t{ \"additionalsInformations\": ";
                     if (error.additionalsInformationsType() != Void.class) {
                         try {
@@ -61,7 +61,7 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
                     }
                     str += " }";
                     return str;
-                }).collect(Collectors.joining("\n- ", "- ", ""));
+                }).collect(Collectors.joining("\n\n * ", " * ", ""));
                 responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
                         .message(description)
                         .responseModel(new ModelRef("list", new ModelRef(Error.class.getSimpleName()))).build());

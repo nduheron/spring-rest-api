@@ -1,27 +1,27 @@
-:toc:
-
-# *Spring 5 REST API whiteapp*
+# Spring 5 REST API whiteapp
 
 Cette whiteapp à pour but de montrer comment créer une API Rest avec springboot 2 en séparant au maximum le technique du fonctionnel.
 
-image::https://travis-ci.org/nduheron/spring-rest-api.svg?branch=master[link=https://travis-ci.org/nduheron/spring-rest-api]
-image::https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge.svg?branch=master[link=https://codecov.io/github/nduheron/spring-rest-api?branch=master]
+[![Build Status](https://travis-ci.org/nduheron/spring-rest-api.svg?branch=master)](https://travis-ci.org/nduheron/spring-rest-api) 
+[![codecov.io](https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/nduheron/spring-rest-api?branch=master)
 
-## *Fonctionnalités*
+[Documentation](./documentation/index.html)
 
-- Authentification https://jwt.io/introduction/[JWT] avec https://docs.spring.io/spring-security/site/docs/5.0.0.RELEASE/reference/htmlsingle/[spring-security]
+## Fonctionnalités
+
+- Authentification [JWT](https://jwt.io/introduction/) avec [spring-security](https://docs.spring.io/spring-security/site/docs/5.0.0.RELEASE/reference/htmlsingle/)
 - Internationalisation
 - JSR-303 Bean Validation API
-- BDD avec https://cucumber.io/[Cucumber]
-- Tests unitaire avec http://site.mockito.org/[Mockito]
-- Documentation avec https://swagger.io/[Swagger]
+- BDD avec [Cucumber](https://cucumber.io/)
+- Tests unitaire avec [Mockito](http://site.mockito.org/)
+- Documentation avec [Swagger](https://swagger.io/)
 - Monitoring avec Actuator
 - La gestion des erreurs
-- Mapping entité->DTO avec http://mapstruct.org/[Mapstruct]
-- Versionning Base de données avec https://flywaydb.org/[Flyway]
+- Mapping entité->DTO avec [Mapstruct](http://mapstruct.org/)
+- Versionning Base de données avec [Flyway](https://flywaydb.org/)
 - Versionning des APIs
 
-## *Structure du projet*
+## Structure du projet
 
 * `fr.nduheron.poc.springrestapi.config` : Configuration de l'application
 * `fr.nduheron.poc.springrestapi.security` : Lien entre spring-security et le métier lié aux utilisateurs
@@ -32,7 +32,7 @@ image::https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge
 * `fr.nduheron.poc.springrestapi.tools.swagger` : Gestion automatique de la documentation swagger pour les erreurs
 * `fr.nduheron.poc.springrestapi.user` : Contient toutes les classes métiers (Controller, DAO, POJO métier...)
 
-## *Installation*
+## Installation
 
 #### Prérequis
 
@@ -48,14 +48,6 @@ mvn package
 java -jar spring-rest-api-0.0.1-SNAPSHOT.jar
 ```
 
-## *Api*
 
-include::docs/authentification/overview.adoc[leveloffset=+2]
-include::docs/authentification/paths.adoc[leveloffset=+2]
-include::docs/authentification/definitions.adoc[leveloffset=+2]
 
-include::docs/user/overview.adoc[leveloffset=+2]
-include::docs/user/paths.adoc[leveloffset=+2]
-include::docs/user/definitions.adoc[leveloffset=+2]
 
-include::docs/features.adoc[leveloffset=+1]
