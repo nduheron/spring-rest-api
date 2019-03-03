@@ -1,0 +1,23 @@
+= user-api
+
+
+[[_overview]]
+== Overview
+
+=== Version information
+[%hardbreaks]
+__Version__ : 0.0.1-SNAPSHOT
+
+
+=== URI scheme
+[%hardbreaks]
+__Host__ : localhost:35503
+__BasePath__ : /spring-rest
+
+
+=== Tags
+
+* Utilisateurs : User Controller
+
+
+

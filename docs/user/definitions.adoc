@@ -1,0 +1,101 @@
+
+[[_definitions]]
+== Definitions
+
+[[_createuser]]
+=== CreateUser
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**email** +
+__optional__|**Length** : `0 - 128` +
+**Example** : `"batman@yopmail.fr"`|string
+|**enabled** +
+__optional__|**Example** : `true`|boolean
+|**login** +
+__optional__|**Length** : `2 - 20` +
+**Example** : `"batman"`|string
+|**nom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Wayne"`|string
+|**prenom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Bruce"`|string
+|**role** +
+__required__|**Example** : `"string"`|enum (ADMIN, USER, SYSTEM)
+|===
+
+
+[[_error]]
+=== Error
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**additionalsInformations** +
+__optional__|Informations complémentaires à l'erreur +
+**Example** : `"object"`|object
+|**code** +
+__required__|**Example** : `"REQUIRED"`|string
+|**message** +
+__required__|**Example** : `"ne doit pas être nul"`|string
+|**name** +
+__optional__|le nom du champ en erreur +
+**Example** : `"login"`|string
+|**path** +
+__optional__|le chemin au format jsonpath +
+**Example** : `"$.user.login"`|string
+|===
+
+
+[[_updateuser]]
+=== UpdateUser
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**email** +
+__optional__|**Length** : `0 - 128` +
+**Example** : `"batman@yopmail.fr"`|string
+|**enabled** +
+__optional__|**Example** : `true`|boolean
+|**nom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Wayne"`|string
+|**prenom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Bruce"`|string
+|**role** +
+__required__|**Example** : `"string"`|enum (ADMIN, USER, SYSTEM)
+|===
+
+
+[[_user]]
+=== User
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**derniereConnexion** +
+__optional__|**Example** : `"string"`|string (date-time)
+|**email** +
+__optional__|**Length** : `0 - 128` +
+**Example** : `"batman@yopmail.fr"`|string
+|**enabled** +
+__optional__|**Example** : `true`|boolean
+|**login** +
+__optional__|**Length** : `2 - 20` +
+**Example** : `"batman"`|string
+|**nom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Wayne"`|string
+|**prenom** +
+__optional__|**Length** : `2 - 50` +
+**Example** : `"Bruce"`|string
+|**role** +
+__required__|**Example** : `"string"`|enum (ADMIN, USER, SYSTEM)
+|===
+
+
+
