@@ -440,10 +440,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
         <ul class="sectlevel0">
             <li><a href="#_spring_5_rest_api_whiteapp">Spring 5 REST API whiteapp</a>
                 <ul class="sectlevel1">
-                    <li><a href="#_authentification_api">authentification-api</a>
+                    <li><a href="#_authentification_api">authentification-api</a></li>
+                    <li><a href="#_authdefinitions">Definitions</a>
                         <ul class="sectlevel2">
-                            <li><a href="#_paths">Paths</a></li>
-                            <li><a href="#_authdefinitions">Definitions</a></li>
+                            <li><a href="#_authchangepassword">ChangePassword</a></li>
+                            <li><a href="#_autherror">Error</a></li>
+                            <li><a href="#_authlogin">Login</a></li>
+                            <li><a href="#_authuser">User</a></li>
                         </ul>
                     </li>
                     <li><a href="#_user_api">user-api</a>
@@ -479,1510 +482,492 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
         .sectlevel3 > li {
             font-weight: bold;
         }
-
     </style>
     <h1 class="sect0" id="_spring_5_rest_api_whiteapp">Spring 5 REST API whiteapp</h1>
     <div class="sect1">
         <h2 id="_authentification_api">authentification-api</h2>
         <div class="sectionbody">
+            <div class="paragraph">
+                <p>Unresolved directive in index.adoc -
+                    include::/home/jamp/git/spring-rest-api/target/generated-docs/authentification/authentificationPath.adoc[leveloffset=+1]
+                    :leveloffset: +1</p>
+            </div>
+        </div>
+    </div>
+    <div class="sect1">
+        <h2 id="_authdefinitions">Definitions</h2>
+        <div class="sectionbody">
             <div class="sect2">
-                <h3 id="_paths">Paths</h3>
-                <div class="sect3">
-                    <h4 id="_findusingget">Récupérer le profil de l&#8217;utilisateur connecté</h4>
-                    <div class="literalblock">
-                        <div class="content">
-                            <pre>GET /v1/account</pre>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_responses">Responses</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 70%;">
-                                <col style="width: 20%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">HTTP Code</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>200</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>OK</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><a href="#_user">User</a></p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>401</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Utilisateur non authentifié.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>500</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Une erreur inattendue s&#8217;est produite.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_produces">Produces</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>*/*</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_tags">Tags</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p>Profil utilisateur</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_security">Security</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 15%;">
-                                <col style="width: 20%;">
-                                <col style="width: 65%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Scopes</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>apiKey</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong><a href="#_apikey">apiKey</a></strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>global</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_request">Example HTTP request</h5>
-                        <div class="sect5">
-                            <h6 id="_request_path">Request path</h6>
-                            <div class="listingblock">
-                                <div class="content">
-                                    <pre>/v1/account</pre>
+                <h3 id="_authchangepassword">ChangePassword</h3>
+                <table class="tableblock frame-all grid-all stretch">
+                    <colgroup>
+                        <col style="width: 16.6666%;">
+                        <col style="width: 61.1111%;">
+                        <col style="width: 22.2223%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-middle">Name</th>
+                        <th class="tableblock halign-left valign-middle">Description</th>
+                        <th class="tableblock halign-left valign-middle">Schema</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>newPassword</strong><br>
+                                        <em>optional</em></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_response">Example HTTP response</h5>
-                        <div class="sect5">
-                            <h6 id="_response_200">Response 200</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  "derniereConnexion" : "string",
-  "email" : "batman@yopmail.fr",
-  "enabled" : true,
-  "login" : "batman",
-  "nom" : "Wayne",
-  "prenom" : "Bruce",
-  "role" : "string"
-}</code></pre>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 20</code><br>
+                                        <strong>Example</strong> : <code>"12345"</code></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="sect3">
-                    <h4 id="_changepasswordusingput">Changer de mot de passe</h4>
-                    <div class="literalblock">
-                        <div class="content">
-                            <pre>PUT /v1/account/password</pre>
-                        </div>
-                    </div>
-                    <div class="admonitionblock caution">
-                        <table>
-                            <tr>
-                                <td class="icon">
-                                    <div class="title">Caution</div>
-                                </td>
-                                <td class="content">
-                                    <div class="paragraph">
-                                        <p>operation.deprecated</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_parameters">Parameters</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 11.1111%;">
-                                <col style="width: 16.6666%;">
-                                <col style="width: 50%;">
-                                <col style="width: 22.2223%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>Body</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>changePassword</strong><br>
-                                                <em>required</em></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>changePassword</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><a href="#_changepassword">ChangePassword</a></p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_responses_2">Responses</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 70%;">
-                                <col style="width: 20%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">HTTP Code</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>204</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>400</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Il y a une(des) erreur(s) dans la requête. Erreurs possibles:</p>
-                                        </div>
-                                        <div class="ulist">
-                                            <ul>
-                                                <li>
-                                                    <p>REQUIRED: { "additionalsInformations": null }</p>
-                                                </li>
-                                                <li>
-                                                    <p>INVALID_PARAMETER: { "additionalsInformations": null }</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>&lt; <a href="#_error">Error</a> &gt; array</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>401</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Utilisateur non authentifié.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>500</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Une erreur inattendue s&#8217;est produite.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_consumes">Consumes</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>application/json</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_produces_2">Produces</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>*/*</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_tags_2">Tags</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p>Profil utilisateur</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_security_2">Security</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 15%;">
-                                <col style="width: 20%;">
-                                <col style="width: 65%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Scopes</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>apiKey</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong><a href="#_apikey">apiKey</a></strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>global</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_request_2">Example HTTP request</h5>
-                        <div class="sect5">
-                            <h6 id="_request_path_2">Request path</h6>
-                            <div class="listingblock">
-                                <div class="content">
-                                    <pre>/v1/account/password</pre>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="sect5">
-                            <h6 id="_request_body">Request body</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  "newPassword" : "12345",
-  "oldPassword" : "56789"
-}</code></pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>oldPassword</strong><br>
+                                        <em>optional</em></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_response_2">Example HTTP response</h5>
-                        <div class="sect5">
-                            <h6 id="_response_400">Response 400</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">[ {
-  "additionalsInformations" : "object",
-  "code" : "REQUIRED",
-  "message" : "ne doit pas être nul",
-  "name" : "login",
-  "path" : "$.user.login"
-} ]</code></pre>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 20</code><br>
+                                        <strong>Example</strong> : <code>"56789"</code></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="sect3">
-                    <h4 id="_loginusingpost">login</h4>
-                    <div class="literalblock">
-                        <div class="content">
-                            <pre>POST /v1/auth</pre>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_parameters_2">Parameters</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 11.1111%;">
-                                <col style="width: 16.6666%;">
-                                <col style="width: 50%;">
-                                <col style="width: 22.2223%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>Body</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>login</strong><br>
-                                                <em>required</em></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>login</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><a href="#_login">Login</a></p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_responses_3">Responses</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 70%;">
-                                <col style="width: 20%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">HTTP Code</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>200</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>OK</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>string</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>400</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Il y a une(des) erreur(s) dans la requête. Erreurs possibles:</p>
-                                        </div>
-                                        <div class="ulist">
-                                            <ul>
-                                                <li>
-                                                    <p>REQUIRED: { "additionalsInformations": null }</p>
-                                                </li>
-                                                <li>
-                                                    <p>INVALID_PARAMETER: { "additionalsInformations": null }</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>&lt; <a href="#_error">Error</a> &gt; array</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>500</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Une erreur inattendue s&#8217;est produite.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_consumes_2">Consumes</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>application/json</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_produces_3">Produces</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>*/*</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_tags_3">Tags</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p>Authentification</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_request_3">Example HTTP request</h5>
-                        <div class="sect5">
-                            <h6 id="_request_path_3">Request path</h6>
-                            <div class="listingblock">
-                                <div class="content">
-                                    <pre>/v1/auth</pre>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="sect5">
-                            <h6 id="_request_body_2">Request body</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  "password" : "12345",
-  "username" : "batman"
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_response_3">Example HTTP response</h5>
-                        <div class="sect5">
-                            <h6 id="_response_200_2">Response 200</h6>
-                            <div class="listingblock">
-                                <div class="content">
-                                    <pre class="highlight"><code class="language-json" data-lang="json">"string"</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sect5">
-                            <h6 id="_response_400_2">Response 400</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">[ {
-  "additionalsInformations" : "object",
-  "code" : "REQUIRED",
-  "message" : "ne doit pas être nul",
-  "name" : "login",
-  "path" : "$.user.login"
-} ]</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="sect3">
-                    <h4 id="_changepasswordv2usingpatch">Changer de mot de passe</h4>
-                    <div class="literalblock">
-                        <div class="content">
-                            <pre>PATCH /v2/account/password</pre>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_parameters_3">Parameters</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 11.1111%;">
-                                <col style="width: 16.6666%;">
-                                <col style="width: 50%;">
-                                <col style="width: 22.2223%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>Body</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>changePassword</strong><br>
-                                                <em>required</em></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>changePassword</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><a href="#_changepassword">ChangePassword</a></p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_responses_4">Responses</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 70%;">
-                                <col style="width: 20%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">HTTP Code</th>
-                                <th class="tableblock halign-left valign-middle">Description</th>
-                                <th class="tableblock halign-left valign-middle">Schema</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>204</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>400</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Il y a une(des) erreur(s) dans la requête. Erreurs possibles:</p>
-                                        </div>
-                                        <div class="ulist">
-                                            <ul>
-                                                <li>
-                                                    <p>REQUIRED: { "additionalsInformations": null }</p>
-                                                </li>
-                                                <li>
-                                                    <p>INVALID_PARAMETER: { "additionalsInformations": null }</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>&lt; <a href="#_error">Error</a> &gt; array</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>401</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Utilisateur non authentifié.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>500</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>Une erreur inattendue s&#8217;est produite.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>No Content</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_consumes_3">Consumes</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>application/json</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_produces_4">Produces</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p><code>*/*</code></p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_tags_4">Tags</h5>
-                        <div class="ulist">
-                            <ul>
-                                <li>
-                                    <p>Profil utilisateur</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_security_3">Security</h5>
-                        <table class="tableblock frame-all grid-all stretch">
-                            <colgroup>
-                                <col style="width: 15%;">
-                                <col style="width: 20%;">
-                                <col style="width: 65%;">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="tableblock halign-left valign-middle">Type</th>
-                                <th class="tableblock halign-left valign-middle">Name</th>
-                                <th class="tableblock halign-left valign-middle">Scopes</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong>apiKey</strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p><strong><a href="#_apikey">apiKey</a></strong></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="tableblock halign-left valign-middle">
-                                    <div class="content">
-                                        <div class="paragraph">
-                                            <p>global</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_request_4">Example HTTP request</h5>
-                        <div class="sect5">
-                            <h6 id="_request_path_4">Request path</h6>
-                            <div class="listingblock">
-                                <div class="content">
-                                    <pre>/v2/account/password</pre>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sect5">
-                            <h6 id="_request_body_3">Request body</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  "newPassword" : "12345",
-  "oldPassword" : "56789"
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sect4">
-                        <h5 id="_example_http_response_4">Example HTTP response</h5>
-                        <div class="sect5">
-                            <h6 id="_response_400_3">Response 400</h6>
-                            <div class="listingblock">
-                                <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">[ {
-  "additionalsInformations" : "object",
-  "code" : "REQUIRED",
-  "message" : "ne doit pas être nul",
-  "name" : "login",
-  "path" : "$.user.login"
-} ]</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="sect2">
-                <h3 id="_authdefinitions">Definitions</h3>
-                <div class="sect3">
-                    <h4 id="_authchangepassword">ChangePassword</h4>
-                    <table class="tableblock frame-all grid-all stretch">
-                        <colgroup>
-                            <col style="width: 16.6666%;">
-                            <col style="width: 61.1111%;">
-                            <col style="width: 22.2223%;">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th class="tableblock halign-left valign-middle">Name</th>
-                            <th class="tableblock halign-left valign-middle">Description</th>
-                            <th class="tableblock halign-left valign-middle">Schema</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>newPassword</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                <h3 id="_autherror">Error</h3>
+                <table class="tableblock frame-all grid-all stretch">
+                    <colgroup>
+                        <col style="width: 16.6666%;">
+                        <col style="width: 61.1111%;">
+                        <col style="width: 22.2223%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-middle">Name</th>
+                        <th class="tableblock halign-left valign-middle">Description</th>
+                        <th class="tableblock halign-left valign-middle">Schema</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>additionalsInformations</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 20</code><br>
-                                            <strong>Example</strong> : <code>"12345"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>Informations complémentaires à l&#8217;erreur<br>
+                                        <strong>Example</strong> : <code>"object"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>object</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>oldPassword</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>code</strong><br>
+                                        <em>required</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 20</code><br>
-                                            <strong>Example</strong> : <code>"56789"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Example</strong> : <code>"REQUIRED"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="sect3">
-                    <h4 id="_autherror">Error</h4>
-                    <table class="tableblock frame-all grid-all stretch">
-                        <colgroup>
-                            <col style="width: 16.6666%;">
-                            <col style="width: 61.1111%;">
-                            <col style="width: 22.2223%;">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th class="tableblock halign-left valign-middle">Name</th>
-                            <th class="tableblock halign-left valign-middle">Description</th>
-                            <th class="tableblock halign-left valign-middle">Schema</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>additionalsInformations</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>message</strong><br>
+                                        <em>required</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>Informations complémentaires à l&#8217;erreur<br>
-                                            <strong>Example</strong> : <code>"object"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Example</strong> : <code>"ne doit pas être nul"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>object</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>code</strong><br>
-                                            <em>required</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>name</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Example</strong> : <code>"REQUIRED"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>le nom du champ en erreur<br>
+                                        <strong>Example</strong> : <code>"login"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>message</strong><br>
-                                            <em>required</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>path</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Example</strong> : <code>"ne doit pas être nul"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>le chemin au format jsonpath<br>
+                                        <strong>Example</strong> : <code>"$.user.login"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>name</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sect2">
+                <h3 id="_authlogin">Login</h3>
+                <table class="tableblock frame-all grid-all stretch">
+                    <colgroup>
+                        <col style="width: 16.6666%;">
+                        <col style="width: 61.1111%;">
+                        <col style="width: 22.2223%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-middle">Name</th>
+                        <th class="tableblock halign-left valign-middle">Description</th>
+                        <th class="tableblock halign-left valign-middle">Schema</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>password</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>le nom du champ en erreur<br>
-                                            <strong>Example</strong> : <code>"login"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>5 - 20</code><br>
+                                        <strong>Example</strong> : <code>"12345"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>path</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>username</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>le chemin au format jsonpath<br>
-                                            <strong>Example</strong> : <code>"$.user.login"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 20</code><br>
+                                        <strong>Example</strong> : <code>"batman"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="sect3">
-                    <h4 id="_authlogin">Login</h4>
-                    <table class="tableblock frame-all grid-all stretch">
-                        <colgroup>
-                            <col style="width: 16.6666%;">
-                            <col style="width: 61.1111%;">
-                            <col style="width: 22.2223%;">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th class="tableblock halign-left valign-middle">Name</th>
-                            <th class="tableblock halign-left valign-middle">Description</th>
-                            <th class="tableblock halign-left valign-middle">Schema</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>password</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sect2">
+                <h3 id="_authuser">User</h3>
+                <table class="tableblock frame-all grid-all stretch">
+                    <colgroup>
+                        <col style="width: 16.6666%;">
+                        <col style="width: 61.1111%;">
+                        <col style="width: 22.2223%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-middle">Name</th>
+                        <th class="tableblock halign-left valign-middle">Description</th>
+                        <th class="tableblock halign-left valign-middle">Schema</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>derniereConnexion</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>5 - 20</code><br>
-                                            <strong>Example</strong> : <code>"12345"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Example</strong> : <code>"string"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string (date-time)</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>username</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>email</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 20</code><br>
-                                            <strong>Example</strong> : <code>"batman"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>0 - 128</code><br>
+                                        <strong>Example</strong> : <code>"<a href="mailto:batman@yopmail.fr">batman@yopmail.fr</a>"</code>
+                                    </p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="sect3">
-                    <h4 id="_authuser">User</h4>
-                    <table class="tableblock frame-all grid-all stretch">
-                        <colgroup>
-                            <col style="width: 16.6666%;">
-                            <col style="width: 61.1111%;">
-                            <col style="width: 22.2223%;">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th class="tableblock halign-left valign-middle">Name</th>
-                            <th class="tableblock halign-left valign-middle">Description</th>
-                            <th class="tableblock halign-left valign-middle">Schema</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>derniereConnexion</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>enabled</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Example</strong> : <code>"string"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Example</strong> : <code>true</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string (date-time)</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>boolean</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>email</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>login</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>0 - 128</code><br>
-                                            <strong>Example</strong> : <code>"<a href="mailto:batman@yopmail.fr">batman@yopmail.fr</a>"</code>
-                                        </p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 20</code><br>
+                                        <strong>Example</strong> : <code>"batman"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>enabled</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>nom</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Example</strong> : <code>true</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 50</code><br>
+                                        <strong>Example</strong> : <code>"Wayne"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>boolean</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>login</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>prenom</strong><br>
+                                        <em>optional</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 20</code><br>
-                                            <strong>Example</strong> : <code>"batman"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Length</strong> : <code>2 - 50</code><br>
+                                        <strong>Example</strong> : <code>"Bruce"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>string</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>nom</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>role</strong><br>
+                                        <em>required</em></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 50</code><br>
-                                            <strong>Example</strong> : <code>"Wayne"</code></p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p><strong>Example</strong> : <code>"string"</code></p>
                                 </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
+                            </div>
+                        </td>
+                        <td class="tableblock halign-left valign-middle">
+                            <div class="content">
+                                <div class="paragraph">
+                                    <p>enum (ADMIN, USER, SYSTEM)</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>prenom</strong><br>
-                                            <em>optional</em></p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Length</strong> : <code>2 - 50</code><br>
-                                            <strong>Example</strong> : <code>"Bruce"</code></p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>string</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>role</strong><br>
-                                            <em>required</em></p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p><strong>Example</strong> : <code>"string"</code></p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="tableblock halign-left valign-middle">
-                                <div class="content">
-                                    <div class="paragraph">
-                                        <p>enum (ADMIN, USER, SYSTEM)</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -1999,7 +984,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_parameters_4">Parameters</h5>
+                        <h5 id="_parameters">Parameters</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 11.1111%;">
@@ -2051,7 +1036,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_5">Responses</h5>
+                        <h5 id="_responses">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -2177,7 +1162,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_consumes_4">Consumes</h5>
+                        <h5 id="_consumes">Consumes</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2187,7 +1172,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_5">Produces</h5>
+                        <h5 id="_produces">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2197,7 +1182,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_5">Tags</h5>
+                        <h5 id="_tags">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2207,7 +1192,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_4">Security</h5>
+                        <h5 id="_security">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -2249,9 +1234,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_5">Example HTTP request</h5>
+                        <h5 id="_example_http_request">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_5">Request path</h6>
+                            <h6 id="_request_path">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users</pre>
@@ -2259,7 +1244,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                             </div>
                         </div>
                         <div class="sect5">
-                            <h6 id="_request_body_4">Request body</h6>
+                            <h6 id="_request_body">Request body</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
@@ -2275,7 +1260,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_response_5">Example HTTP response</h5>
+                        <h5 id="_example_http_response">Example HTTP response</h5>
                         <div class="sect5">
                             <h6 id="_response_201">Response 201</h6>
                             <div class="listingblock">
@@ -2293,7 +1278,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                             </div>
                         </div>
                         <div class="sect5">
-                            <h6 id="_response_400_4">Response 400</h6>
+                            <h6 id="_response_400">Response 400</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">[ {
@@ -2316,7 +1301,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_6">Responses</h5>
+                        <h5 id="_responses_2">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -2404,7 +1389,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_6">Produces</h5>
+                        <h5 id="_produces_2">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2414,7 +1399,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_6">Tags</h5>
+                        <h5 id="_tags_2">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2424,7 +1409,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_5">Security</h5>
+                        <h5 id="_security_2">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -2466,9 +1451,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_6">Example HTTP request</h5>
+                        <h5 id="_example_http_request_2">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_6">Request path</h6>
+                            <h6 id="_request_path_2">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users</pre>
@@ -2477,9 +1462,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_response_6">Example HTTP response</h5>
+                        <h5 id="_example_http_response_2">Example HTTP response</h5>
                         <div class="sect5">
-                            <h6 id="_response_200_3">Response 200</h6>
+                            <h6 id="_response_200">Response 200</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">[ {
@@ -2504,7 +1489,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_parameters_5">Parameters</h5>
+                        <h5 id="_parameters_2">Parameters</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 11.1111%;">
@@ -2556,7 +1541,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_7">Responses</h5>
+                        <h5 id="_responses_3">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -2667,7 +1652,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_7">Produces</h5>
+                        <h5 id="_produces_3">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2677,7 +1662,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_7">Tags</h5>
+                        <h5 id="_tags_3">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -2687,7 +1672,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_6">Security</h5>
+                        <h5 id="_security_3">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -2729,9 +1714,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_7">Example HTTP request</h5>
+                        <h5 id="_example_http_request_3">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_7">Request path</h6>
+                            <h6 id="_request_path_3">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users/batman</pre>
@@ -2740,9 +1725,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_response_7">Example HTTP response</h5>
+                        <h5 id="_example_http_response_3">Example HTTP response</h5>
                         <div class="sect5">
-                            <h6 id="_response_200_4">Response 200</h6>
+                            <h6 id="_response_200_2">Response 200</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
@@ -2767,7 +1752,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_parameters_6">Parameters</h5>
+                        <h5 id="_parameters_3">Parameters</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 11.1111%;">
@@ -2850,7 +1835,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_8">Responses</h5>
+                        <h5 id="_responses_4">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -2994,7 +1979,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_consumes_5">Consumes</h5>
+                        <h5 id="_consumes_2">Consumes</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3004,7 +1989,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_8">Produces</h5>
+                        <h5 id="_produces_4">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3014,7 +1999,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_8">Tags</h5>
+                        <h5 id="_tags_4">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3024,7 +2009,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_7">Security</h5>
+                        <h5 id="_security_4">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -3066,9 +2051,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_8">Example HTTP request</h5>
+                        <h5 id="_example_http_request_4">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_8">Request path</h6>
+                            <h6 id="_request_path_4">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users/batman</pre>
@@ -3076,7 +2061,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                             </div>
                         </div>
                         <div class="sect5">
-                            <h6 id="_request_body_5">Request body</h6>
+                            <h6 id="_request_body_2">Request body</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
@@ -3091,9 +2076,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_response_8">Example HTTP response</h5>
+                        <h5 id="_example_http_response_4">Example HTTP response</h5>
                         <div class="sect5">
-                            <h6 id="_response_400_5">Response 400</h6>
+                            <h6 id="_response_400_2">Response 400</h6>
                             <div class="listingblock">
                                 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">[ {
@@ -3116,7 +2101,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_parameters_7">Parameters</h5>
+                        <h5 id="_parameters_4">Parameters</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 11.1111%;">
@@ -3168,7 +2153,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_9">Responses</h5>
+                        <h5 id="_responses_5">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -3256,7 +2241,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_9">Produces</h5>
+                        <h5 id="_produces_5">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3266,7 +2251,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_9">Tags</h5>
+                        <h5 id="_tags_5">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3276,7 +2261,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_8">Security</h5>
+                        <h5 id="_security_5">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -3318,9 +2303,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_9">Example HTTP request</h5>
+                        <h5 id="_example_http_request_5">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_9">Request path</h6>
+                            <h6 id="_request_path_5">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users/batman</pre>
@@ -3337,7 +2322,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_parameters_8">Parameters</h5>
+                        <h5 id="_parameters_5">Parameters</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 11.1111%;">
@@ -3389,7 +2374,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_responses_10">Responses</h5>
+                        <h5 id="_responses_6">Responses</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 10%;">
@@ -3523,7 +2508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_consumes_6">Consumes</h5>
+                        <h5 id="_consumes_3">Consumes</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3533,7 +2518,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_produces_10">Produces</h5>
+                        <h5 id="_produces_6">Produces</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3543,7 +2528,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_tags_10">Tags</h5>
+                        <h5 id="_tags_6">Tags</h5>
                         <div class="ulist">
                             <ul>
                                 <li>
@@ -3553,7 +2538,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </div>
                     </div>
                     <div class="sect4">
-                        <h5 id="_security_9">Security</h5>
+                        <h5 id="_security_6">Security</h5>
                         <table class="tableblock frame-all grid-all stretch">
                             <colgroup>
                                 <col style="width: 15%;">
@@ -3595,9 +2580,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
                         </table>
                     </div>
                     <div class="sect4">
-                        <h5 id="_example_http_request_10">Example HTTP request</h5>
+                        <h5 id="_example_http_request_6">Example HTTP request</h5>
                         <div class="sect5">
-                            <h6 id="_request_path_10">Request path</h6>
+                            <h6 id="_request_path_6">Request path</h6>
                             <div class="listingblock">
                                 <div class="content">
                                     <pre>/v1/users/batman/password</pre>
