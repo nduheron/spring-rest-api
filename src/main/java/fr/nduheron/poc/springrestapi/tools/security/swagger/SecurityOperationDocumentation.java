@@ -19,6 +19,7 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Set;
 
 /**
@@ -62,7 +63,9 @@ public class SecurityOperationDocumentation implements OperationBuilderPlugin {
         return context.findControllerAnnotation(PreAuthorize.class).isPresent()
                 || context.findControllerAnnotation(PostAuthorize.class).isPresent()
                 || context.findAnnotation(PreAuthorize.class).isPresent()
-                || context.findAnnotation(PostAuthorize.class).isPresent();
+                || context.findAnnotation(PostAuthorize.class).isPresent()
+                || context.findAnnotation(RolesAllowed.class).isPresent()
+                || context.findAnnotation(RolesAllowed.class).isPresent();
     }
 
 

@@ -6,6 +6,7 @@ package fr.nduheron.poc.springrestapi.tools.security.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.nduheron.poc.springrestapi.tools.exception.TechnicalException;
+import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,7 @@ public class TokenService {
     /**
      * Création du jeton avec les données utilisateurs en paramètre
      */
-    public String createToken(final Object userInfos) {
+    public Token createToken(final Object userInfos) {
         try {
             // The JWT signature algorithm we will be using to sign the token
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -63,13 +64,11 @@ public class TokenService {
             }
             // if it has been specified, let's add the expiration
             Long ttl = Long.parseLong(tokenTTL);
-            if (ttl >= 0) {
-                long expMillis = nowMillis + ttl;
-                Date exp = new Date(expMillis);
-                builder.setExpiration(exp);
-            }
+            long expMillis = nowMillis + ttl;
+            Date exp = new Date(expMillis);
+            builder.setExpiration(exp);
 
-            return builder.compact();
+            return new Token(builder.compact(), ttl);
         } catch (JsonProcessingException e) {
             throw new TechnicalException("Erreur lors de la creation du token JWT", e);
         }

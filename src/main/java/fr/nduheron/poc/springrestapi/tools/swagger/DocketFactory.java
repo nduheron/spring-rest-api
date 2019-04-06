@@ -4,12 +4,14 @@ import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.schema.AlternateTypeRule;
@@ -72,6 +74,9 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
         if (securityContext != null) {
             docket.securityContexts(Lists.newArrayList(securityContext));
         }
+
+        docket.produces(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE));
+        docket.consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE));
 
         docket.pathProvider(new RelativePathProvider(servletContext) {
             @Override
@@ -146,5 +151,6 @@ public class DocketFactory implements FactoryBean<Docket>, InitializingBean {
     public void setSecurityScheme(SecurityScheme securityScheme) {
         this.securityScheme = securityScheme;
     }
+
 
 }

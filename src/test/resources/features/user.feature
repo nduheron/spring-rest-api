@@ -179,7 +179,7 @@ Scenario: l'administrateur système peut réinitialiser son mot de passe
 	Given users datasets
 	And I login with batman
 	When I reinit password to batman
-	Then I get a NO_CONTENT response
+	Then I get a CREATED response
 	And the password to batman has changed
 	And email reinit password is sent
 
@@ -188,7 +188,7 @@ Scenario: l'administrateur a le droit de réinitialiser le mot de passe de n'imp
 	Given users datasets
 	And I login with spiderman
 	When I reinit password to invisiblegirl
-	Then I get a NO_CONTENT response
+	Then I get a CREATED response
 	And the password to invisiblegirl has changed
 	And email reinit password is sent
 
@@ -204,7 +204,7 @@ Scenario: un utilisateur lambda peut réinitialiser son mot de passe
 	Given users datasets
 	And I login with invisiblegirl
 	When I reinit password to invisiblegirl
-	Then I get a NO_CONTENT response
+	Then I get a CREATED response
 	And the password to invisiblegirl has changed
 	And email reinit password is sent
 

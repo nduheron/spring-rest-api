@@ -19,6 +19,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
     public static final String CORRELATION_ID_HEADER_NAME = "X-Correlation-ID";
     private static final Pattern UUID_PATTERN = Pattern.compile("([a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{11})");
+    private static final String CLIENT_IP = "client_ip";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -28,7 +29,9 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         String requestCid = StringUtils.isBlank(header) || !UUID_PATTERN.matcher(header).matches() ? UUID.randomUUID().toString() : header;
         // on met l'id de corrélation dans le contexte slf4j
         MDC.put(CORRELATION_ID_HEADER_NAME, requestCid);
+        MDC.put(CLIENT_IP, request.getRemoteAddr());
         response.addHeader(CORRELATION_ID_HEADER_NAME, requestCid);
+
         try {
             filterChain.doFilter(request, response);
         } finally {

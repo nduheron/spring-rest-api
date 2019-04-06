@@ -157,7 +157,7 @@ public class UserSteps extends AbstractCucumberSteps {
 
     @When("^I reinit password to (\\w+)$")
     public void i_reinit_password_to(String login) {
-        callApi("/users/" + login + "/password", HttpMethod.PATCH, null);
+        callApi("/users/" + login + "/attributes/password", HttpMethod.POST, null);
     }
 
     @Then("^the password to (\\w+) has changed$")

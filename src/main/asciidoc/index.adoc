@@ -16,7 +16,7 @@
 # Spring 5 REST API whiteapp
 
 ## authentification-api
-include::{generated}/authentification/authentificationPath.adoc[leveloffset=+1]
+include::{generated}/authentification/paths.adoc[leveloffset=+1]
 include::{generated}/authentification/definitions.adoc[leveloffset=+1]
 
 ## user-api

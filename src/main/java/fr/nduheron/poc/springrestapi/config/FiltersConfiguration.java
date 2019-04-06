@@ -1,10 +1,8 @@
 package fr.nduheron.poc.springrestapi.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import fr.nduheron.poc.springrestapi.tools.log.ApiLoggingFilter;
 import fr.nduheron.poc.springrestapi.tools.log.CorrelationIdFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -19,11 +17,9 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "log.filter.path")
 public class FiltersConfiguration {
 
+
     private static final int LOG_ORDER = SecurityProperties.DEFAULT_FILTER_ORDER - 1;
     private static final int CORRELATION_ORDER = SecurityProperties.DEFAULT_FILTER_ORDER - 2;
-
-    @Autowired
-    private ObjectMapper mapper;
 
     @Value("${log.filter.path}")
     private String logFilterPath;
@@ -37,7 +33,7 @@ public class FiltersConfiguration {
     @Bean
     FilterRegistrationBean<ApiLoggingFilter> loggingFilterRegistration() {
         FilterRegistrationBean<ApiLoggingFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new ApiLoggingFilter(mapper, logFilterPath, Lists.newArrayList(logExcludePaths),
+        registration.setFilter(new ApiLoggingFilter(logFilterPath, Lists.newArrayList(logExcludePaths),
                 Lists.newArrayList(obfuscateParams), Lists.newArrayList(obfuscateHeader)));
         registration.setName(ApiLoggingFilter.class.getSimpleName());
         // Le filtre doit se lancer avant celui de la sécurité pour pouvoir logguer le
@@ -55,5 +51,4 @@ public class FiltersConfiguration {
         registration.setOrder(CORRELATION_ORDER);
         return registration;
     }
-
 }

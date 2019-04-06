@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import fr.nduheron.poc.springrestapi.user.model.Role;
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 
 public abstract class AbstractUserDto implements Serializable {
 
@@ -20,20 +18,20 @@ public abstract class AbstractUserDto implements Serializable {
     @NotNull
     @Email
     @Size(max = 128)
-    @ApiModelProperty(example = "batman@yopmail.fr")
+    @ApiModelProperty(example = "batman@yopmail.fr", required = true)
     @CsvBindByPosition(position = 3)
     private String email;
 
     @NotNull
     @Size(min = 2, max = 50)
-    @ApiModelProperty(example = "Wayne")
+    @ApiModelProperty(example = "Wayne", required = true)
     @CsvBindByPosition(position = 1)
     private String nom;
 
     @NotNull
     @Size(min = 2, max = 50)
-    @ApiModelProperty(example = "Bruce")
-    @CsvBindByPosition(position = 1)
+    @ApiModelProperty(example = "Bruce", required = true)
+    @CsvBindByPosition(position = 2)
     private String prenom;
 
     @NotNull

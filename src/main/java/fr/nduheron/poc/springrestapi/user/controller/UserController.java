@@ -2,8 +2,8 @@ package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import fr.nduheron.poc.springrestapi.tools.swagger.ApiBadRequestResponse;
-import fr.nduheron.poc.springrestapi.tools.swagger.ErrorDocumentation;
+import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
+import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ErrorExample;
 import fr.nduheron.poc.springrestapi.user.ExistException;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,72 +58,75 @@ public class UserController {
     @Autowired
     private UserMapper mapper;
 
-    @GetMapping
-	@ApiOperation(value = "Rechercher tous les utilisateurs")
-	@RolesAllowed({ "ADMIN", "SYSTEM" })
-	public List<UserDto> findAll() {
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "text/csv;charset=UTF-8"})
+    @ApiOperation(value = "Rechercher tous les utilisateurs")
+    @RolesAllowed({"ADMIN", "SYSTEM"})
+    public List<UserDto> findAll() {
 
-		List<User> findAll = repo.findAll();
-		return mapper.toDto(findAll);
-	}
+        List<User> findAll = repo.findAll();
+        return mapper.toDto(findAll);
+    }
 
     @GetMapping("{login}")
     @ApiOperation("Rechercher un utilisateur")
-	@RolesAllowed({ "ADMIN", "SYSTEM" })
-	@Cacheable("users")
-	public UserDto find(@PathVariable("login") final String login) {
-		User user = repo.getOne(login);
-		return mapper.toDto(user);
-	}
+    @RolesAllowed({"ADMIN", "SYSTEM"})
+    @Cacheable("users")
+    public UserDto find(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+        User user = repo.getOne(login);
+        return mapper.toDto(user);
+    }
 
     @DeleteMapping("{login}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Supprimer un utilisateur")
-	@RolesAllowed({ "ADMIN" })
-	@CacheEvict("users")
-    public void supprimer(@PathVariable("login") final String login) {
-        repo.findById(login).ifPresent(user1 -> repo.delete(user1));
-	}
+    @RolesAllowed({"ADMIN"})
+    @CacheEvict("users")
+    public void supprimer(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+        repo.findById(login).ifPresent(user -> repo.delete(user));
+    }
 
     @PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Créer un utilisateur")
-	@RolesAllowed({ "ADMIN" })
-    @ApiBadRequestResponse({@ErrorDocumentation(code = Error.REQUIRED), @ErrorDocumentation(code = Error.INVALID_PARAMETER), @ErrorDocumentation(code = ExistException.ALREADY_EXIST, additionalsInformationsType = UserDto.class)})
-	public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
+    @RolesAllowed({"ADMIN"})
+    @ApiBadRequestResponse({
+            @ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"),
+            @ErrorExample(code = ExistException.ALREADY_EXIST, message = "User batman already exist")
+    })
+    public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
         Optional<User> optionalUser = repo.findById(createUser.getLogin());
         if (optionalUser.isPresent()) {
             ExistException existException = new ExistException("error.user.alreadyexist", createUser.getLogin());
             existException.setAdditionalsInformations(mapper.toDto(optionalUser.get()));
             throw existException;
-		}
+        }
 
-		User user = mapper.toEntity(createUser);
-		String newPassword = randomPassword();
-		user.setPassword(passwordEncoder.encode(newPassword));
+        User user = mapper.toEntity(createUser);
+        String newPassword = randomPassword();
+        user.setPassword(passwordEncoder.encode(newPassword));
 
-		user = repo.save(user);
+        user = repo.save(user);
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(messageSource.getMessage("user.mdp.reinit.from", null, LocaleContextHolder.getLocale()));
-		message.setTo(user.getEmail());
-		message.setSubject(messageSource.getMessage("user.mdp.create.objet", null, LocaleContextHolder.getLocale()));
-		message.setText(messageSource.getMessage("user.mdp.create.message",
-				new Object[] { user.getPrenom(), user.getLogin(), newPassword }, LocaleContextHolder.getLocale()));
-		emailSender.send(message);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(messageSource.getMessage("user.mdp.reinit.from", null, LocaleContextHolder.getLocale()));
+        message.setTo(user.getEmail());
+        message.setSubject(messageSource.getMessage("user.mdp.create.objet", null, LocaleContextHolder.getLocale()));
+        message.setText(messageSource.getMessage("user.mdp.create.message",
+                new Object[]{user.getPrenom(), user.getLogin(), newPassword}, LocaleContextHolder.getLocale()));
+        emailSender.send(message);
 
-		return mapper.toDto(user);
-	}
+        return mapper.toDto(user);
+    }
 
     @PutMapping("{login}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Modifier un utilisateur")
-	@RolesAllowed({ "ADMIN" })
-    @ApiBadRequestResponse
+    @RolesAllowed({"ADMIN"})
+    @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"))
     @CacheEvict(value = "users", key = "#login")
     public void modifier(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
-			throws NotFoundException {
+            throws NotFoundException {
 
         User user = repo.findById(login).orElseThrow(() -> new NotFoundException(String.format("L'utilisateur %s n'existe pas.", login)));
 
@@ -135,28 +139,28 @@ public class UserController {
         repo.save(user);
     }
 
-    @PatchMapping("/{login}/password")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/{login}/attributes/password")
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Réinitialiser le mot de passe")
-	@PreAuthorize("@securityService.isUserAuthorized(#login)")
-	public void reinitPassword(@PathVariable("login") final String login) throws NotFoundException {
-		User user = repo.getOne(login);
-		String newPassword = randomPassword();
-		user.setPassword(passwordEncoder.encode(newPassword));
+    @PreAuthorize("@securityService.isUserAuthorized(#login)")
+    public void reinitPassword(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+        User user = repo.getOne(login);
+        String newPassword = randomPassword();
+        user.setPassword(passwordEncoder.encode(newPassword));
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(messageSource.getMessage("user.mdp.reinit.from", null, LocaleContextHolder.getLocale()));
-		message.setTo(user.getEmail());
-		message.setSubject(messageSource.getMessage("user.mdp.reinit.objet", null, LocaleContextHolder.getLocale()));
-		message.setText(messageSource.getMessage("user.mdp.reinit.message",
-				new Object[] { user.getPrenom(), newPassword }, LocaleContextHolder.getLocale()));
-		emailSender.send(message);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(messageSource.getMessage("user.mdp.reinit.from", null, LocaleContextHolder.getLocale()));
+        message.setTo(user.getEmail());
+        message.setSubject(messageSource.getMessage("user.mdp.reinit.objet", null, LocaleContextHolder.getLocale()));
+        message.setText(messageSource.getMessage("user.mdp.reinit.message",
+                new Object[]{user.getPrenom(), newPassword}, LocaleContextHolder.getLocale()));
+        emailSender.send(message);
 
-		repo.save(user);
-	}
+        repo.save(user);
+    }
 
-	private String randomPassword() {
-		return RandomStringUtils.random(6, 0, 0, true, true, null, new SecureRandom());
-	}
+    private String randomPassword() {
+        return RandomStringUtils.random(6, 0, 0, true, true, null, new SecureRandom());
+    }
 
 }

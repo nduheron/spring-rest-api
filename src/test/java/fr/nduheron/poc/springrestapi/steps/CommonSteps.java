@@ -7,7 +7,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import fr.nduheron.poc.springrestapi.user.dto.LoginDto;
+import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.dataset.CompositeDataSet;
 import org.dbunit.dataset.IDataSet;
@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,14 +53,17 @@ public class CommonSteps extends AbstractCucumberSteps {
     }
 
     @Given("^I login with (\\w+)$")
-    public void I_login_with(String username) {
-        LoginDto login = new LoginDto();
-        login.setUsername(username);
-        login.setPassword("12345");
+    public void I_login_with(String username) throws IOException {
+        holder.getHeaders().setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("username", username);
+        map.add("password", "12345");
+        callApi("/oauth/token", HttpMethod.POST, map);
 
-        callApi(1, "/auth", HttpMethod.POST, login);
         if (holder.getStatusCode().is2xxSuccessful()) {
-            holder.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + holder.getBody());
+            Token token = objectMapper.readValue(holder.getBody(), Token.class);
+            holder.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            holder.getHeaders().add(HttpHeaders.AUTHORIZATION, token.getType() + " " + token.getAccess());
         }
     }
 

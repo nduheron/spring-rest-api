@@ -1,10 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools.swagger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -21,9 +19,8 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Gestion automatique de la documentation swagger pour les erreurs.
@@ -32,7 +29,12 @@ import java.util.stream.Collectors;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 @ConditionalOnClass(Docket.class)
 public class GlobalResponseOperationDocumentation implements OperationBuilderPlugin {
-    private static final Logger LOG = LoggerFactory.getLogger(GlobalResponseOperationDocumentation.class);
+
+    private ErrorExampleHelper errorDocumentationHelper;
+
+    public GlobalResponseOperationDocumentation(ErrorExampleHelper errorDocumentationHelper) {
+        this.errorDocumentationHelper = errorDocumentationHelper;
+    }
 
     @Override
     public boolean supports(DocumentationType delimiter) {
@@ -48,23 +50,10 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
             com.google.common.base.Optional<ApiBadRequestResponse> optionalBadRequest = context
                     .findAnnotation(ApiBadRequestResponse.class);
             if (optionalBadRequest.isPresent()) {
-                String description = "Il y a une(des) erreur(s) dans la requête. Erreurs possibles:\n\n" + Arrays.stream(optionalBadRequest.get().value()).map(error -> {
-                    String str = error.code() + ":\t{ \"additionalsInformations\": ";
-                    if (error.additionalsInformationsType() != Void.class) {
-                        try {
-                            str += new ObjectMapper().writeValueAsString(error.additionalsInformationsType().newInstance());
-                        } catch (Exception e) {
-                            LOG.warn("Erreur lors de la génération de la documentation swagger", e);
-                        }
-                    } else {
-                        str += "null";
-                    }
-                    str += " }";
-                    return str;
-                }).collect(Collectors.joining("\n\n * ", " * ", ""));
                 responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
-                        .message(description)
-                        .responseModel(new ModelRef("list", new ModelRef(Error.class.getSimpleName()))).build());
+                        .message("Il y a une(des) erreur(s) dans la requête.")
+                        .vendorExtensions(Collections.singletonList(errorDocumentationHelper.buildExamples(optionalBadRequest.get().value())))
+                        .responseModel(new ModelRef(Error.class.getSimpleName())).build());
             }
 
             // NOT FOUND
@@ -82,5 +71,4 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
             context.operationBuilder().responseMessages(responsesMessage);
         }
     }
-
 }

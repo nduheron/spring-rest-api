@@ -183,6 +183,12 @@
 			<artifactId>httpclient</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -245,6 +251,7 @@
                     <outputDir>${project.basedir}/docs/swagger/</outputDir>
                     <config>
                         <swagger2markup.generatedExamplesEnabled>true</swagger2markup.generatedExamplesEnabled>
+						<swagger2markup.swaggerMarkupLanguage>MARKDOWN</swagger2markup.swaggerMarkupLanguage>
                     </config>
                 </configuration>
                 <executions>

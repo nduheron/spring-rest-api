@@ -47,7 +47,7 @@ public class SwaggerConfiguration {
     @Bean
     public DocketFactory authApi() {
         DocketFactory factory = new DocketFactory();
-        factory.setSelector(Predicates.or(PathSelectors.ant("/v1/auth/**"), PathSelectors.ant("/v1/account/**"), PathSelectors.ant("/v2/account/**")));
+        factory.setSelector(Predicates.or(PathSelectors.ant("/v1/oauth/**"), PathSelectors.ant("/v1/accounts/me/**")));
         factory.setTitle("authentification-api");
         factory.setSecurityContext(securityContext());
         factory.setSecurityScheme(apiKey());

@@ -95,4 +95,30 @@ public class HttpModel implements Serializable {
     public void setQueryString(String queryString) {
         this.queryString = queryString;
     }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("method='").append(method).append('\'');
+        sb.append(", path='").append(path).append('\'');
+        if (queryString != null) {
+            sb.append(", queryString='").append(queryString).append('\'');
+        }
+        sb.append(", statusCode=").append(statusCode);
+        sb.append(", durationInMs=").append(durationInMs);
+        if (requestHeaders != null) {
+            sb.append(", requestHeaders=").append(requestHeaders);
+        }
+        if (requestContent != null) {
+            sb.append(", requestContent='").append(requestContent).append('\'');
+        }
+        if (responseHeaders != null) {
+            sb.append(", responseHeaders=").append(responseHeaders);
+        }
+        if (responseContent != null) {
+            sb.append(", responseContent='").append(responseContent).append('\'');
+        }
+        return sb.toString();
+    }
 }

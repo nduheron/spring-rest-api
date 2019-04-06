@@ -13,7 +13,7 @@ public class CreateUserDto extends AbstractUserDto {
 
     @NotNull
     @Size(min = 2, max = 20)
-    @ApiModelProperty(example = "batman")
+    @ApiModelProperty(example = "batman", required = true)
     private String login;
 
     public String getLogin() {

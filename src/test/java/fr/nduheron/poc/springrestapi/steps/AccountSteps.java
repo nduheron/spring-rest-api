@@ -15,7 +15,7 @@ public class AccountSteps extends AbstractCucumberSteps {
 
     @When("^I get account$")
     public void i_get_account() {
-        callApi("/account", HttpMethod.GET, null);
+        callApi("/accounts/me", HttpMethod.GET, null);
     }
 
     @Then("^my name is (.+) (.+)$")
@@ -36,11 +36,7 @@ public class AccountSteps extends AbstractCucumberSteps {
         ChangePasswordDto changePassword = new ChangePasswordDto();
         changePassword.setOldPassword(oldPassword);
         changePassword.setNewPassword(newPassword);
-        if (2 == holder.getVersion()) {
-            callApi("/account/password", HttpMethod.PATCH, changePassword);
-        } else {
-            callApi("/account/password", HttpMethod.PUT, changePassword);
-        }
+        callApi("/accounts/me/attributes/password", HttpMethod.PUT, changePassword);
     }
 
 }

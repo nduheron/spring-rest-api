@@ -1,11 +1,7 @@
 package fr.nduheron.poc.springrestapi.tools.log;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,33 +17,34 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static com.google.common.base.Predicates.*;
+
 /**
  * Filtre permettant de logger les requêtes et réponses de tous les appels REST.
  */
 public class ApiLoggingFilter extends OncePerRequestFilter {
+
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiLoggingFilter.class);
     private static final String UNKNOWN = "<unknown>";
     private static final String PATTERN_REPLACER = "\"$1\":\"xxxxx\"";
     private static final String OBFUSCATE_VALUE = "xxxxx";
 
-    private ObjectMapper mapper;
     private List<String> obfuscateParams;
     private List<String> obfuscateHeader;
     private Predicate<String> noFilterPathMatcher;
 
-    public ApiLoggingFilter(ObjectMapper mapper, String logFilterPath, List<String> logExcludePaths,
+    public ApiLoggingFilter(String logFilterPath, List<String> logExcludePaths,
                             List<String> obfuscateParams, List<String> obfuscateHeader) {
-        this.mapper = mapper;
         this.obfuscateParams = obfuscateParams;
         this.obfuscateHeader = obfuscateHeader;
 
-        Predicate<String> includePathMatcher = StringUtils.isNotBlank(logFilterPath) ? Predicates.not(new AntPathPredicate(logFilterPath)) : Predicates.alwaysTrue();
+        Predicate<String> includePathMatcher = not(new AntPathPredicate(logFilterPath));
         List<Predicate<String>> excludesAntMatchers = new ArrayList<>();
         for (String exclude : logExcludePaths) {
             excludesAntMatchers.add(new AntPathPredicate(exclude));
         }
-        noFilterPathMatcher = excludesAntMatchers.isEmpty() ? includePathMatcher : Predicates.or(includePathMatcher, Predicates.and(excludesAntMatchers));
+        noFilterPathMatcher = or(includePathMatcher, and(excludesAntMatchers));
     }
 
     @Override
@@ -62,11 +59,11 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         } finally {
             long fin = System.currentTimeMillis();
             if (response.getStatus() >= 500) {
-                LOG.error(getMessage(requestToUse, responseToUse, fin - debut));
+                LOG.error(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
             } else if (response.getStatus() >= 400) {
-                LOG.warn(getMessage(requestToUse, responseToUse, fin - debut));
+                LOG.warn(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
             } else if (LOG.isInfoEnabled()) {
-                LOG.info(getMessage(requestToUse, responseToUse, fin - debut));
+                LOG.info(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
             }
             responseToUse.copyBodyToResponse();
         }
@@ -77,7 +74,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
      *
      * @return le message à logguer
      */
-    private String getMessage(final HttpServletRequest request, final HttpServletResponse response, long time) {
+    private HttpModel buildHttpModel(final HttpServletRequest request, final HttpServletResponse response, long time) {
         HttpModel httpModel = new HttpModel();
 
         httpModel.setMethod(request.getMethod());
@@ -86,12 +83,12 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         httpModel.setStatusCode(response.getStatus());
         httpModel.setDurationInMs(time);
 
-        if (LOG.isDebugEnabled()) {
+        if (LOG.isTraceEnabled()) {
             httpModel.setRequestHeaders(getRequestHeaders(request));
             httpModel.setResponseHeaders(getResponseHeaders(response));
         }
 
-        if (LOG.isInfoEnabled() || response.getStatus() >= 400) {
+        if (LOG.isDebugEnabled() || response.getStatus() >= 400) {
             httpModel.setRequestContent(getRequestContent(request));
         }
 
@@ -99,12 +96,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
             httpModel.setResponseContent(getResponseContent(response));
         }
 
-        try {
-            return mapper.writeValueAsString(httpModel);
-        } catch (JsonProcessingException e) {
-            LOG.error("Impossible de construire le message de log", e);
-        }
-        return null;
+        return httpModel;
     }
 
     private String getRequestContent(final HttpServletRequest request) {

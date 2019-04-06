@@ -1,10 +1,9 @@
 package fr.nduheron.poc.springrestapi.tools.exception.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityNotFoundException;
-
+import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
+import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +16,23 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
-import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Ce gestionnaire d'erreur permet de traiter les erreurs qui nécessitent un
  * traitement spécifique d'un point de vue REST. Par exemple, la gestion des
  * ressources non trouvées doivent remonter un status HTTP 404.
- *
  */
 @ControllerAdvice
 @ResponseBody
@@ -39,7 +40,6 @@ import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
 public class RestExceptionTranslator {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestExceptionTranslator.class);
-    private static final List<String> REQUIRED_CODES = Arrays.asList("NotNull", "NotEmpty", "NotBlank");
 
     @Autowired
     private MessageSource messageSource;
@@ -92,7 +92,7 @@ public class RestExceptionTranslator {
         for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
             FieldError fieldError = (FieldError) objectError;
             String[] path = StringUtils.splitPreserveAllTokens(fieldError.getField(), ".");
-            errors.add(new Error(getErrorCode(fieldError), fieldError.getDefaultMessage(), path[path.length - 1], "$." + fieldError.getField()));
+            errors.add(new Error(Error.INVALID_FORMAT, fieldError.getDefaultMessage(), path[path.length - 1]));
         }
         return errors;
     }
@@ -108,8 +108,8 @@ public class RestExceptionTranslator {
 
         for (ConstraintViolation objectError : ex.getConstraintViolations()) {
             String[] path = StringUtils.splitPreserveAllTokens(objectError.getPropertyPath().toString(), ".");
-            String name = path[path.length - 1];
-            errors.add(new Error(Error.INVALID_PARAMETER, objectError.getMessage(), name, "$." + name));
+            String attribute = path[path.length - 1];
+            errors.add(new Error(Error.INVALID_FORMAT, objectError.getMessage(), attribute));
         }
         return errors;
     }
@@ -120,11 +120,6 @@ public class RestExceptionTranslator {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<Error> handleMissingServletRequestParameterException(final MissingServletRequestParameterException ex) {
-        return Arrays.asList(new Error(Error.REQUIRED, ex.getMessage(), ex.getParameterName(), "$." + ex.getParameterName()));
-    }
-
-
-    private String getErrorCode(FieldError fieldError) {
-        return REQUIRED_CODES.contains(fieldError.getCode()) ? Error.REQUIRED : Error.INVALID_PARAMETER;
+        return Arrays.asList(new Error(Error.INVALID_FORMAT, ex.getMessage(), ex.getParameterName()));
     }
 }

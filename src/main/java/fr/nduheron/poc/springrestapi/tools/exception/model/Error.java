@@ -2,29 +2,23 @@ package fr.nduheron.poc.springrestapi.tools.exception.model;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class Error {
-    public static final String REQUIRED = "REQUIRED";
-    public static final String INVALID_PARAMETER = "INVALID_PARAMETER";
+import javax.validation.constraints.NotBlank;
 
-    /**
-     * Le nom du parametre en erreur
-     */
-    @ApiModelProperty(required = true, example = "REQUIRED")
+public class Error {
+    public static final String INVALID_FORMAT = "INVALID_FORMAT";
+
+    @NotBlank
+    @ApiModelProperty(value = "le code de l'erreur", required = true)
     private String code;
 
-    /**
-     * Le message d'erreur
-     */
-    @ApiModelProperty(required = true, example = "ne doit pas être nul")
+    @NotBlank
+    @ApiModelProperty(value = "description de l'erreur", required = true)
     private String message;
 
-    @ApiModelProperty(notes = "le nom du champ en erreur", example = "login")
-    private String name;
+    @ApiModelProperty(value = "nom de l'attribut source de l'erreur")
+    private String attribute;
 
-    @ApiModelProperty(notes = "le chemin au format jsonpath", example = "$.user.login")
-    private String path;
-
-    @ApiModelProperty(notes = "Informations complémentaires à l'erreur")
+    @ApiModelProperty(value = "propriétés additionnelles spécifiques")
     private Object additionalsInformations;
 
     public Error() {
@@ -37,11 +31,10 @@ public class Error {
         this.additionalsInformations = additionalsInformations;
     }
 
-    public Error(String code, String message, String name, String path) {
+    public Error(String code, String message, String attribute) {
         this.code = code;
         this.message = message;
-        this.name = name;
-        this.path = path;
+        this.attribute = attribute;
     }
 
     public String getCode() {
@@ -52,20 +45,12 @@ public class Error {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getAttribute() {
+        return attribute;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
     }
 
     public String getMessage() {

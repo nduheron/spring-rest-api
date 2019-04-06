@@ -1,6 +1,4 @@
-package fr.nduheron.poc.springrestapi.tools.swagger;
-
-import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+package fr.nduheron.poc.springrestapi.tools.swagger.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,8 +14,8 @@ public @interface ApiBadRequestResponse {
 
 
     /**
-     * @return la liste des codes d'erreurs possibles
+     * @return la liste des exemples de réponses possibles
      */
-    ErrorDocumentation[] value() default {@ErrorDocumentation(code = Error.REQUIRED), @ErrorDocumentation(code = Error.INVALID_PARAMETER)};
+    ErrorExample[] value();
 
 }

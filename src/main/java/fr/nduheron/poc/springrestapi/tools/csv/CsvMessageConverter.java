@@ -54,7 +54,7 @@ public class CsvMessageConverter<T> extends AbstractHttpMessageConverter<List<T>
 
     @Override
     protected List<T> readInternal(Class<? extends List<T>> clazz, HttpInputMessage inputMessage)
-            throws IOException, HttpMessageNotReadableException {
+            throws HttpMessageNotReadableException {
         throw new UnsupportedOperationException("CSV reader not yet implemented!!!");
     }
 
