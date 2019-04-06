@@ -18,10 +18,13 @@ public abstract class FunctionalException extends Exception {
      */
     private String[] args;
 
+    private Object additionalsInformations;
+
     public FunctionalException(String i18nKey, String... args) {
         this.i18nKey = i18nKey;
         this.args = args;
     }
+
 
     public String getI18nKey() {
         return i18nKey;
@@ -36,4 +39,11 @@ public abstract class FunctionalException extends Exception {
      */
     public abstract String getCode();
 
+    public Object getAdditionalsInformations() {
+        return additionalsInformations;
+    }
+
+    public void setAdditionalsInformations(Object additionalsInformations) {
+        this.additionalsInformations = additionalsInformations;
+    }
 }

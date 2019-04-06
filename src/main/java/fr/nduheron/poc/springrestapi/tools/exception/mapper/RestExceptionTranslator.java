@@ -1,9 +1,10 @@
 package fr.nduheron.poc.springrestapi.tools.exception.mapper;
 
-import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
-import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
+import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
+import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
+import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
 
 /**
  * Ce gestionnaire d'erreur permet de traiter les erreurs qui nécessitent un
  * traitement spécifique d'un point de vue REST. Par exemple, la gestion des
  * ressources non trouvées doivent remonter un status HTTP 404.
+ *
  */
 @ControllerAdvice
 @ResponseBody
@@ -36,6 +39,7 @@ import java.util.List;
 public class RestExceptionTranslator {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestExceptionTranslator.class);
+    private static final List<String> REQUIRED_CODES = Arrays.asList("NotNull", "NotEmpty", "NotBlank");
 
     @Autowired
     private MessageSource messageSource;
@@ -71,10 +75,10 @@ public class RestExceptionTranslator {
      * Gestion des erreurs fonctionnelles {@link FunctionalException}
      */
     @ExceptionHandler({FunctionalException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public FunctionalError handleFunctionalException(final FunctionalException ex) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleFunctionalException(final FunctionalException ex) {
         String message = messageSource.getMessage(ex.getI18nKey(), ex.getArgs(), LocaleContextHolder.getLocale());
-        return new FunctionalError(message, ex.getCode());
+        return Arrays.asList(new Error(ex.getCode(), message, ex.getAdditionalsInformations()));
     }
 
     /**
@@ -82,13 +86,45 @@ public class RestExceptionTranslator {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<ErrorParameter> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
-        List<ErrorParameter> errors = new ArrayList<>(ex.getBindingResult().getAllErrors().size());
+    public List<Error> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+        List<Error> errors = new ArrayList<>(ex.getBindingResult().getAllErrors().size());
+
         for (ObjectError objectError : ex.getBindingResult().getAllErrors()) {
             FieldError fieldError = (FieldError) objectError;
-            errors.add(new ErrorParameter(fieldError.getField(), fieldError.getDefaultMessage()));
+            String[] path = StringUtils.splitPreserveAllTokens(fieldError.getField(), ".");
+            errors.add(new Error(getErrorCode(fieldError), fieldError.getDefaultMessage(), path[path.length - 1], "$." + fieldError.getField()));
         }
         return errors;
     }
 
+
+    /**
+     * Gestion de l'exception {@link ConstraintViolationException}
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleConstraintViolationException(final ConstraintViolationException ex) {
+        List<Error> errors = new ArrayList<>(ex.getConstraintViolations().size());
+
+        for (ConstraintViolation objectError : ex.getConstraintViolations()) {
+            String[] path = StringUtils.splitPreserveAllTokens(objectError.getPropertyPath().toString(), ".");
+            String name = path[path.length - 1];
+            errors.add(new Error(Error.INVALID_PARAMETER, objectError.getMessage(), name, "$." + name));
+        }
+        return errors;
+    }
+
+    /**
+     * Gestion de l'exception {@link MissingServletRequestParameterException}
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleMissingServletRequestParameterException(final MissingServletRequestParameterException ex) {
+        return Arrays.asList(new Error(Error.REQUIRED, ex.getMessage(), ex.getParameterName(), "$." + ex.getParameterName()));
+    }
+
+
+    private String getErrorCode(FieldError fieldError) {
+        return REQUIRED_CODES.contains(fieldError.getCode()) ? Error.REQUIRED : Error.INVALID_PARAMETER;
+    }
 }

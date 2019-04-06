@@ -6,14 +6,12 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.user.dto.LoginDto;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.dataset.CompositeDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.junit.Assert;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class CommonSteps extends AbstractCucumberSteps {
 
     @Autowired
@@ -30,21 +30,23 @@ public class CommonSteps extends AbstractCucumberSteps {
 
     @Then("^I get a (.+) response$")
     public void I_get_a_response(final String statusCode) {
-        Assert.assertEquals(HttpStatus.valueOf(statusCode), holder.getStatusCode());
+        assertEquals(HttpStatus.valueOf(statusCode), holder.getStatusCode());
     }
 
     @Then("^I get (\\d+) parameters in error$")
     public void I_get_parameters_in_error(final int nbError) throws IOException {
-        List<ErrorParameter> errors = objectMapper.readValue(holder.getBody(),
-                new TypeReference<List<ErrorParameter>>() {
+        List<Error> errors = objectMapper.readValue(holder.getBody(),
+                new TypeReference<List<Error>>() {
                 });
-        Assert.assertEquals(nbError, errors.size());
+        assertEquals(nbError, errors.size());
     }
 
     @Then("^I get a (\\w+) error$")
     public void I_get_a_error(final String errorCode) throws IOException {
-        FunctionalError error = objectMapper.readValue(holder.getBody(), FunctionalError.class);
-        Assert.assertEquals(errorCode, error.getCode());
+        List<Error> errors = objectMapper.readValue(holder.getBody(),
+                new TypeReference<List<Error>>() {
+                });
+        assertEquals(errorCode, errors.get(0).getCode());
     }
 
     @Given("^I login with (\\w+)$")

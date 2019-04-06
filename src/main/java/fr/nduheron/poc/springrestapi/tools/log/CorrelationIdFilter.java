@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Filtre HTTP permettant d'ajouter le correlation ID du header dans le contexte slf4j
@@ -17,12 +18,14 @@ import java.util.UUID;
 public class CorrelationIdFilter extends OncePerRequestFilter {
 
     public static final String CORRELATION_ID_HEADER_NAME = "X-Correlation-ID";
+    private static final Pattern UUID_PATTERN = Pattern.compile("([a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{11})");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String requestCid = StringUtils.isBlank(request.getHeader(CORRELATION_ID_HEADER_NAME)) ? UUID.randomUUID().toString() : request.getHeader(CORRELATION_ID_HEADER_NAME);
+        String header = request.getHeader(CORRELATION_ID_HEADER_NAME);
+        String requestCid = StringUtils.isBlank(header) || !UUID_PATTERN.matcher(header).matches() ? UUID.randomUUID().toString() : header;
         // on met l'id de corrélation dans le contexte slf4j
         MDC.put(CORRELATION_ID_HEADER_NAME, requestCid);
         response.addHeader(CORRELATION_ID_HEADER_NAME, requestCid);
@@ -30,7 +33,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             // on nettoie le contexte slf4j à la fin de la request
-            MDC.remove(CORRELATION_ID_HEADER_NAME);
+            MDC.clear();
         }
     }
 }

@@ -2,10 +2,16 @@
            xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.11.xsd"
            xmlns="http://www.hazelcast.com/schema/config">
 
-    <map name="users">
-        <max-size>500</max-size>
+    <map name="*">
+        <max-size>100</max-size>
         <eviction-policy>LFU</eviction-policy>
-        <time-to-live-seconds>600</time-to-live-seconds>
+        <time-to-live-seconds>60</time-to-live-seconds>
     </map>
+
+    <map name="toto">
+		<max-size>500</max-size>
+		<eviction-policy>LFU</eviction-policy>
+        <time-to-live-seconds>120</time-to-live-seconds>
+	</map>
 
 </hazelcast>

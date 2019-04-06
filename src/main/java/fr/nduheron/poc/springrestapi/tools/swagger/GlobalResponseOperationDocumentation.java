@@ -1,8 +1,10 @@
 package fr.nduheron.poc.springrestapi.tools.swagger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
-import fr.nduheron.poc.springrestapi.tools.exception.model.ErrorParameter;
-import fr.nduheron.poc.springrestapi.tools.exception.model.FunctionalError;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -19,7 +21,9 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Gestion automatique de la documentation swagger pour les erreurs.
@@ -28,6 +32,7 @@ import java.util.Set;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 @ConditionalOnClass(Docket.class)
 public class GlobalResponseOperationDocumentation implements OperationBuilderPlugin {
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalResponseOperationDocumentation.class);
 
     @Override
     public boolean supports(DocumentationType delimiter) {
@@ -40,9 +45,27 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
             Set<ResponseMessage> responsesMessage = Sets.newHashSet();
 
             // BAD REQUEST
-            responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
-                    .responseModel(new ModelRef("list", new ModelRef(ErrorParameter.class.getSimpleName())))
-                    .message("Les paramètres de la requête sont invalides.").build());
+            com.google.common.base.Optional<ApiBadRequestResponse> optionalBadRequest = context
+                    .findAnnotation(ApiBadRequestResponse.class);
+            if (optionalBadRequest.isPresent()) {
+                String description = "Il y a une(des) erreur(s) dans la requête. Erreurs possibles:\n\n" + Arrays.stream(optionalBadRequest.get().value()).map(error -> {
+                    String str = error.code() + ":\t{ \"additionalsInformations\": ";
+                    if (error.additionalsInformationsType() != Void.class) {
+                        try {
+                            str += new ObjectMapper().writeValueAsString(error.additionalsInformationsType().newInstance());
+                        } catch (Exception e) {
+                            LOG.warn("Erreur lors de la génération de la documentation swagger", e);
+                        }
+                    } else {
+                        str += "null";
+                    }
+                    str += " }";
+                    return str;
+                }).collect(Collectors.joining("\n\n * ", " * ", ""));
+                responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.BAD_REQUEST.value())
+                        .message(description)
+                        .responseModel(new ModelRef("list", new ModelRef(Error.class.getSimpleName()))).build());
+            }
 
             // NOT FOUND
             long cptNotFound = context.getParameters().stream()
@@ -50,16 +73,6 @@ public class GlobalResponseOperationDocumentation implements OperationBuilderPlu
             if (cptNotFound > 0 && (context.httpMethod() != HttpMethod.DELETE || cptNotFound > 1)) {
                 responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.NOT_FOUND.value())
                         .message("La ressource n'existe pas.").build());
-            }
-
-            // Erreur fonctionnelle
-            com.google.common.base.Optional<ApiConflictResponse> optionalConflict = context
-                    .findAnnotation(ApiConflictResponse.class);
-            if (optionalConflict.isPresent()) {
-                responsesMessage.add(new ResponseMessageBuilder().code(HttpStatus.CONFLICT.value())
-                        .message(optionalConflict.get().message())
-                        .responseModel(new ModelRef(FunctionalError.class.getSimpleName())).build());
-
             }
 
             // Erreur technique

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package fr.nduheron.poc.springrestapi.tools;
 
 import com.google.common.base.Predicate;

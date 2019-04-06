@@ -1,6 +1,7 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
+import fr.nduheron.poc.springrestapi.tools.swagger.ApiBadRequestResponse;
 import fr.nduheron.poc.springrestapi.user.dto.LoginDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
@@ -40,6 +41,7 @@ public class AuthentificationController {
     private UserMapper userMapper;
 
     @PostMapping
+    @ApiBadRequestResponse
     public String login(@RequestBody @Valid final LoginDto login) {
         Optional<User> user = repo.findById(login.getUsername());
         if (!user.isPresent()) {
