@@ -43,7 +43,7 @@ public class EtagInterceptor extends HandlerInterceptorAdapter {
             Etag filter = handlerMethod.getMethod().getAnnotation(Etag.class);
             if (filter != null && StringUtils.isNotEmpty(filter.cache())) {
                 Optional<String> requestEtag = Optional.ofNullable(request.getHeader(HttpHeaders.IF_NONE_MATCH));
-                Optional<String> responseEtag = Optional.ofNullable(cacheManager.getCache(filter.cache()).get(request.getRequestURI().replaceAll("/$", StringUtils.EMPTY), String.class));
+                Optional<String> responseEtag = Optional.ofNullable(cacheManager.getCache(filter.cache()).get(getUrl(request), String.class));
                 if (requestEtag.isPresent() && responseEtag.isPresent() && requestEtag.equals(responseEtag)) {
                     response.setStatus(HttpStatus.NOT_MODIFIED.value());
                     return false;
@@ -63,7 +63,7 @@ public class EtagInterceptor extends HandlerInterceptorAdapter {
             if (filter != null && HttpStatus.OK.value() == response.getStatus()) {
                 ContentCachingResponseWrapper responseWrapper = WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
                 String responseEtag = generateETagHeaderValue(responseWrapper.getContentInputStream());
-                cacheManager.getCache(filter.cache()).put(request.getRequestURI().replaceAll("/$", StringUtils.EMPTY), responseEtag);
+                cacheManager.getCache(filter.cache()).put(getUrl(request), responseEtag);
                 Optional<String> requestEtag = Optional.ofNullable(request.getHeader(HttpHeaders.IF_NONE_MATCH));
                 if (requestEtag.isPresent() && requestEtag.get().equals(responseEtag)) {
                     response.setStatus(HttpStatus.NOT_MODIFIED.value());
@@ -79,8 +79,17 @@ public class EtagInterceptor extends HandlerInterceptorAdapter {
 
     }
 
+    private String getUrl(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getRequestURI().replaceAll("/$", StringUtils.EMPTY));
+        if (StringUtils.isNotBlank(request.getQueryString())) {
+            sb.append("?").append(request.getQueryString());
 
-    protected String generateETagHeaderValue(InputStream inputStream) throws IOException {
+        }
+        return sb.toString();
+    }
+
+    private String generateETagHeaderValue(InputStream inputStream) throws IOException {
         StringBuilder builder = new StringBuilder(37);
         builder.append("\"0");
         DigestUtils.appendMd5DigestAsHex(inputStream, builder);

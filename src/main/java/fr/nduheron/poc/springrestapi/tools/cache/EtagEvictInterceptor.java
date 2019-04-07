@@ -1,6 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools.cache;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Generates an {@code ETag} value based on the
@@ -21,6 +25,7 @@ import java.util.Map;
  * not sent, but rather a {@code 304 "Not Modified"} status instead.
  */
 public class EtagEvictInterceptor extends HandlerInterceptorAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(EtagEvictInterceptor.class);
 
     private CacheManager cacheManager;
 
@@ -37,19 +42,40 @@ public class EtagEvictInterceptor extends HandlerInterceptorAdapter {
             EtagEvict filter = handlerMethod.getMethod().getAnnotation(EtagEvict.class);
             if (filter != null && HttpStatus.valueOf(response.getStatus()).is2xxSuccessful()) {
                 Cache cache = cacheManager.getCache(filter.cache());
-                URI uri = new URI(request.getRequestURI());
-                cache.evict(uri.toString().replaceAll("/$", StringUtils.EMPTY));
-                if (filter.evictParentResource()) {
-                    uri = uri.getPath().endsWith("/") ? uri.resolve("..") : uri.resolve(".");
-                    cache.evict(uri.toString().replaceAll("/$", StringUtils.EMPTY));
-                }
-                if (filter.evictChildResources()) {
-                    ((Map<String, Object>) cache.getNativeCache()).entrySet().removeIf(e -> e.getKey().startsWith(request.getRequestURI()));
-                }
+                if (cache != null) {
+                    String currentUri = request.getRequestURI().replaceAll("/$", StringUtils.EMPTY);
 
+                    // supprime la route courante du cache
+                    ((Map<String, Object>) cache.getNativeCache()).keySet().stream()
+                            .filter(key -> Objects.equals(getPath(key), currentUri))
+                            .forEach(cache::evict);
+
+                    if (filter.evictParentResource()) {
+                        String parentUri = new URI(currentUri).resolve(".").getPath().replaceAll("/$", StringUtils.EMPTY);
+                        ((Map<String, Object>) cache.getNativeCache()).keySet().stream()
+                                .filter(key -> Objects.equals(getPath(key), parentUri))
+                                .forEach(cache::evict);
+                    }
+
+                    if (filter.evictChildResources()) {
+                        ((Map<String, Object>) cache.getNativeCache()).keySet().stream()
+                                .filter(key -> getPath(key).startsWith(currentUri))
+                                .forEach(cache::evict);
+                    }
+                }
             }
         }
     }
 
+
+    private String getPath(String url) {
+        try {
+            String path = new URI(url).getPath();
+            return path;
+        } catch (URISyntaxException e) {
+            logger.warn("Erreur lors de la récupération du path", e);
+            return null;
+        }
+    }
 
 }
