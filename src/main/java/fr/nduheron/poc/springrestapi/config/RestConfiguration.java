@@ -1,9 +1,16 @@
 package fr.nduheron.poc.springrestapi.config;
 
+import fr.nduheron.poc.springrestapi.tools.cache.EtagEvictInterceptor;
+import fr.nduheron.poc.springrestapi.tools.cache.EtagInterceptor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.format.Formatter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -15,7 +22,21 @@ import java.util.Locale;
  * Configuration de l'API Rest
  */
 @Configuration
-public class RestConfiguration {
+public class RestConfiguration implements WebMvcConfigurer {
+
+    @Autowired(required = false)
+    private CacheManager cacheManager;
+
+    @Autowired
+    private Environment env;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        if (env.containsProperty("spring.hazelcast.config")) {
+            registry.addInterceptor(new EtagInterceptor(cacheManager));
+            registry.addInterceptor(new EtagEvictInterceptor(cacheManager));
+        }
+    }
 
     /**
      * Permet d'avoir un objet {@link LocalDate} en paramètre d'une API Rest

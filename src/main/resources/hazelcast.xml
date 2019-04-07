@@ -8,10 +8,10 @@
         <time-to-live-seconds>60</time-to-live-seconds>
     </map>
 
-    <map name="toto">
-		<max-size>500</max-size>
-		<eviction-policy>LFU</eviction-policy>
+    <map name="etag-users">
+        <max-size>500</max-size>
+        <eviction-policy>LFU</eviction-policy>
         <time-to-live-seconds>120</time-to-live-seconds>
-	</map>
+    </map>
 
 </hazelcast>

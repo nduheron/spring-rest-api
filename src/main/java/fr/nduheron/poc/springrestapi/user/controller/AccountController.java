@@ -1,5 +1,6 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
+import fr.nduheron.poc.springrestapi.tools.cache.Etag;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
 import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ErrorExample;
@@ -36,7 +37,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Changer de mot de passe")
     @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "newPassword"))
-    public void changePasswordV2(@RequestBody @Valid final ChangePasswordDto changePassword) {
+    public void changePassword(@RequestBody @Valid final ChangePasswordDto changePassword) {
         UserDto userConnecte = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = repo.getOne(userConnecte.getLogin());
         if (passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
@@ -49,6 +50,7 @@ public class AccountController {
 
     @GetMapping
     @ApiOperation(value = "Récupérer le profil de l'utilisateur connecté")
+    @Etag(maxAge = 60)
     public UserDto find() {
         return (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

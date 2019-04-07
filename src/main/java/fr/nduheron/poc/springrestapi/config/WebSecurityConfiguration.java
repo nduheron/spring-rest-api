@@ -53,6 +53,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         HttpSecurity security = http.csrf().disable().cors().disable().exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
         security.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), FilterSecurityInterceptor.class);
-        security.headers().frameOptions().disable();
+        security.headers().cacheControl().disable().frameOptions().disable();
     }
 }

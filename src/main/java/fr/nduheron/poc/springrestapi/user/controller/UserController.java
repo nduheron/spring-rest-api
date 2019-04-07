@@ -1,5 +1,7 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
+import fr.nduheron.poc.springrestapi.tools.cache.Etag;
+import fr.nduheron.poc.springrestapi.tools.cache.EtagEvict;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
@@ -16,8 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -61,6 +61,7 @@ public class UserController {
     @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "text/csv;charset=UTF-8"})
     @ApiOperation(value = "Rechercher tous les utilisateurs")
     @RolesAllowed({"ADMIN", "SYSTEM"})
+    @Etag(cache = "etag-users")
     public List<UserDto> findAll() {
 
         List<User> findAll = repo.findAll();
@@ -70,7 +71,7 @@ public class UserController {
     @GetMapping("{login}")
     @ApiOperation("Rechercher un utilisateur")
     @RolesAllowed({"ADMIN", "SYSTEM"})
-    @Cacheable("users")
+    @Etag(cache = "etag-users")
     public UserDto find(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);
         return mapper.toDto(user);
@@ -80,7 +81,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Supprimer un utilisateur")
     @RolesAllowed({"ADMIN"})
-    @CacheEvict("users")
+    @EtagEvict(cache = "etag-users", evictParentResource = true)
     public void supprimer(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
         repo.findById(login).ifPresent(user -> repo.delete(user));
     }
@@ -93,6 +94,7 @@ public class UserController {
             @ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"),
             @ErrorExample(code = ExistException.ALREADY_EXIST, message = "User batman already exist")
     })
+    @EtagEvict(cache = "etag-users")
     public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
         Optional<User> optionalUser = repo.findById(createUser.getLogin());
@@ -124,7 +126,7 @@ public class UserController {
     @ApiOperation("Modifier un utilisateur")
     @RolesAllowed({"ADMIN"})
     @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"))
-    @CacheEvict(value = "users", key = "#login")
+    @EtagEvict(cache = "etag-users", evictParentResource = true)
     public void modifier(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
 
