@@ -7,28 +7,22 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
 
 /**
  * Intercepteur permettant de monitorer les métodes
  */
 @Aspect
-@Component
 public class TimedAspect {
-    private final MeterRegistry registry;
+    private MeterRegistry registry;
 
-    public TimedAspect(MeterRegistry registry) {
-        this.registry = registry;
+
+    @Pointcut("execution(public * *(..))")
+    public void publicMethod() {
     }
 
     @Pointcut("within(@io.micrometer.core.annotation.Timed *)")
     public void timeClassMethods() {
         // pointcut s'applicant à tous les bean avec l'annotation @Timed
-    }
-
-    @Pointcut("within(@org.springframework.stereotype.Repository *)")
-    public void repositoryClassMethods() {
-        // pointcut s'applicant à tous les DAOs
     }
 
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
@@ -41,37 +35,17 @@ public class TimedAspect {
         // pointcut s'applicant à tous les services métier
     }
 
-    @Pointcut("within(@org.mapstruct.Mapper *)")
-    public void mapperClassMethods() {
-        // pointcut s'applicant à tous les mapper mapstruct
-    }
-
-    @Around("controllerClassMethods()")
+    @Around("publicMethod() && controllerClassMethods()")
     public Object timedControllersMethod(ProceedingJoinPoint pjp) throws Throwable {
         return timedMethod(pjp, "controllers");
     }
 
-    @Around("execution(public * javax.persistence.EntityManager.*(..))")
-    public Object timedEntityManagerMethod(ProceedingJoinPoint pjp) throws Throwable {
-        return timedMethod(pjp, "EntityManager");
-    }
-
-    @Around("mapperClassMethods()")
-    public Object timedMappersMethod(ProceedingJoinPoint pjp) throws Throwable {
-        return timedMethod(pjp, "mappers");
-    }
-
-    @Around("serviceClassMethods()")
+    @Around("publicMethod() && serviceClassMethods()")
     public Object timedServicesMethod(ProceedingJoinPoint pjp) throws Throwable {
         return timedMethod(pjp, "services");
     }
 
-    @Around("repositoryClassMethods()")
-    public Object timedRepositoriesMethod(ProceedingJoinPoint pjp) throws Throwable {
-        return timedMethod(pjp, "repositories");
-    }
-
-    @Around("timeClassMethods()")
+    @Around("publicMethod() && timeClassMethods()")
     public Object timedCustomMethod(ProceedingJoinPoint pjp) throws Throwable {
         return timedMethod(pjp, "custom");
     }
@@ -86,4 +60,7 @@ public class TimedAspect {
         }
     }
 
+    public void setRegistry(MeterRegistry registry) {
+        this.registry = registry;
+    }
 }

@@ -1,0 +1,12 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+    <weaver>
+        <include within="fr.nduheron.*"/>
+    </weaver>
+
+    <aspects>
+        <aspect name="fr.nduheron.poc.springrestapi.tools.actuator.monitoring.TimedAspect"/>
+    </aspects>
+
+</aspectj>

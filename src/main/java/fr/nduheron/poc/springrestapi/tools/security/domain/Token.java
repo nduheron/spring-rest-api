@@ -19,6 +19,8 @@ public class Token implements Serializable {
     @ApiModelProperty(example = "3600", required = true)
     private long expiresIn;
 
+    public Token() {
+    }
 
     public Token(String access, long expiresIn) {
         this.access = access;
