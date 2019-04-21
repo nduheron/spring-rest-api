@@ -7,7 +7,10 @@ Cette whiteapp à pour but de montrer comment créer une API Rest avec springboo
 
 ## Documentation
 
-- [Api](./documentation/api.adoc)
+- [Authentification paths](./documentation/authentification/paths.adoc)
+- [Authentification definitions](./documentation/authentification/definitions.adoc)
+- [Users paths](./documentation/user/paths.adoc)
+- [Users definitions](./documentation/user/definitions.adoc)
 - [Features](./documentation/features.adoc)
 
 ## Fonctionnalités
