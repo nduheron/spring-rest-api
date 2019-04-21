@@ -5,7 +5,11 @@ Cette whiteapp à pour but de montrer comment créer une API Rest avec springboo
 [![Build Status](https://travis-ci.org/nduheron/spring-rest-api.svg?branch=master)](https://travis-ci.org/nduheron/spring-rest-api) 
 [![codecov.io](https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/nduheron/spring-rest-api?branch=master)
 
-[Documentation](./documentation/index.html)
+
+## Documentation
+
+- [Api](./documentation/api.adoc)
+- [Features](./documentation/features.adoc)
 
 ## Fonctionnalités
 

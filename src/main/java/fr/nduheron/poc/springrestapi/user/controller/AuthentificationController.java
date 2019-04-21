@@ -3,13 +3,10 @@ package fr.nduheron.poc.springrestapi.user.controller;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
 import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ErrorExample;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,7 +44,11 @@ public class AuthentificationController {
     private UserMapper userMapper;
 
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "username"))
+    @ApiResponses(
+            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example({
+                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\", \"message\": \"may not be null\", \"attribute\": \"username\"},{\"code\": \"INVALID_FORMAT\", \"message\": \"must be greater than or equal to 2\", \"attribute\": \"password\"}]"),
+            }))
+    )
     public Token login(
             @RequestParam("username") @Size(min = 2, max = 20) @ApiParam(example = "batman", required = true) String username,
             @RequestParam("password") @Size(min = 5, max = 20) @ApiParam(example = "12345", required = true) String password) {

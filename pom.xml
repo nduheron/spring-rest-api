@@ -1,98 +1,98 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.nduheron.poc</groupId>
-	<artifactId>spring-rest-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.nduheron.poc</groupId>
+    <artifactId>spring-rest-api</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.3.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
 
-		<swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.9.2</swagger.version>
         <mapstruct.version>1.3.0.Final</mapstruct.version>
         <dbunit.version>2.6.0</dbunit.version>
-		<dbunit-spring.version>1.3.0</dbunit-spring.version>
-		<cucumber.version>1.2.5</cucumber.version>
+        <dbunit-spring.version>1.3.0</dbunit-spring.version>
+        <cucumber.version>1.2.5</cucumber.version>
         <jwt.version>0.9.1</jwt.version>
-	</properties>
+    </properties>
 
 
-	<dependencies>
+    <dependencies>
 
-		<!-- BDD -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-		</dependency>
+        <!-- BDD -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 
-		<!-- WEB -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+        <!-- WEB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
-		<!-- security -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>${jwt.version}</version>
-		</dependency>
+        <!-- security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
 
-		<!-- MAIL -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
+        <!-- MAIL -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 
-		<!-- JSON -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-afterburner</artifactId>
-		</dependency>
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-afterburner</artifactId>
+        </dependency>
 
-		<!-- CACHE -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast-spring</artifactId>
-		</dependency>
+        <!-- CACHE -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-spring</artifactId>
+        </dependency>
 
         <!-- CSV -->
         <dependency>
@@ -101,35 +101,35 @@
             <version>4.2</version>
         </dependency>
 
-		<!-- Mapper Entite -> DTO -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
+        <!-- Mapper Entite -> DTO -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
 
-		<!-- Swagger -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-bean-validators</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-bean-validators</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
 
-		<!-- Tools -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
+        <!-- Tools -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -137,128 +137,126 @@
             <version>27.1-jre</version>
         </dependency>
 
-		<!-- TEST -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.springtestdbunit</groupId>
-			<artifactId>spring-test-dbunit</artifactId>
-			<version>${dbunit-spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-			<version>${dbunit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>${cucumber.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-junit</artifactId>
-			<version>${cucumber.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>info.cukes</groupId>
-			<artifactId>cucumber-spring</artifactId>
-			<version>${cucumber.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- TEST -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>${dbunit-spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>${dbunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.bsc.maven</groupId>
-				<artifactId>maven-processor-plugin</artifactId>
-				<version>2.2.4</version>
-				<configuration>
-					<defaultOutputDirectory>
-						${project.build.directory}/generated-sources
-					</defaultOutputDirectory>
-					<processors>
-						<processor>org.mapstruct.ap.MappingProcessor</processor>
-					</processors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>process</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>process</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.mapstruct</groupId>
-						<artifactId>mapstruct-processor</artifactId>
-						<version>${mapstruct.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.2.4</version>
+                <configuration>
+                    <defaultOutputDirectory>
+                        ${project.build.directory}/generated-sources
+                    </defaultOutputDirectory>
+                    <processors>
+                        <processor>org.mapstruct.ap.MappingProcessor</processor>
+                    </processors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>process</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mapstruct</groupId>
+                        <artifactId>mapstruct-processor</artifactId>
+                        <version>${mapstruct.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>build-info</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>io.github.swagger2markup</groupId>
                 <artifactId>swagger2markup-maven-plugin</artifactId>
                 <version>1.3.7</version>
                 <configuration>
-                    <swaggerInput>${project.build.directory}/swagger.json</swaggerInput>
-                    <outputDir>${project.basedir}/docs/swagger/</outputDir>
                     <config>
                         <swagger2markup.generatedExamplesEnabled>true</swagger2markup.generatedExamplesEnabled>
-						<swagger2markup.swaggerMarkupLanguage>MARKDOWN</swagger2markup.swaggerMarkupLanguage>
+                        <swagger2markup.swaggerMarkupLanguage>MARKDOWN</swagger2markup.swaggerMarkupLanguage>
                     </config>
                 </configuration>
                 <executions>
                     <execution>
                         <configuration>
                             <swaggerInput>${project.build.directory}/swagger-user-api.json</swaggerInput>
-                            <outputDir>${project.build.directory}/generated-docs/user/</outputDir>
+                            <outputDir>${project.basedir}/documentation/user/</outputDir>
                             <config>
                                 <swagger2markup.anchorPrefix>user</swagger2markup.anchorPrefix>
                             </config>
@@ -272,7 +270,7 @@
                     <execution>
                         <configuration>
                             <swaggerInput>${project.build.directory}/swagger-authentification-api.json</swaggerInput>
-                            <outputDir>${project.build.directory}/generated-docs/authentification/</outputDir>
+                            <outputDir>${project.basedir}/documentation/authentification/</outputDir>
                             <config>
                                 <swagger2markup.anchorPrefix>auth</swagger2markup.anchorPrefix>
                             </config>
@@ -291,9 +289,7 @@
                 <version>1.2.1</version>
                 <configuration>
                     <outputFileName>features</outputFileName>
-                    <outputDir>generated-docs</outputDir>
-                    <format>html</format>
-                    <documentTitle>Limitations</documentTitle>
+                    <outputDir>../documentation/</outputDir>
                     <hideSummarySection>true</hideSummarySection>
                     <hideTags>true</hideTags>
                     <numbered>false</numbered>
@@ -313,39 +309,16 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.7.1</version>
-                <configuration>
-                    <sourceDirectory>${project.basedir}/src/main/asciidoc/</sourceDirectory>
-                    <sourceDocumentName>index.adoc</sourceDocumentName>
-                    <backend>html5</backend>
-                    <headerFooter>true</headerFooter>
-                    <outputDirectory>${project.basedir}/documentation</outputDirectory>
-                    <attributes>
-                        <toc>left</toc>
-                        <generated>${project.build.directory}/generated-docs</generated>
-                        <revnumber>${project.version}</revnumber>
-                        <revdate>${maven.build.timestamp}</revdate>
-                        <copycss>true</copycss>
-                    </attributes>
-                </configuration>
 
-                <executions>
-                    <execution>
-                        <id>output-html</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>4.0.2</version>
+                <configuration>
+                    <suppressionFiles>
+                        <suppressionFile>owasp-ignore.xml</suppressionFile>
+                    </suppressionFiles>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -354,106 +327,107 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.5.201505241946</version>
-				<configuration>
-					<outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<id>pre-unit-test</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>pre-integration-test</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>post-all-test</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-							<goal>report-integration</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/*IT.java</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>none</exclude>
-							</excludes>
-							<includes>
-								<include>**/*IT.java</include>
-							</includes>
-							<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.20.1</version>
-				<configuration>
-					<useColor>true</useColor>
-					<verbose>true</verbose>
-					<images>
-						<image>
-							<name>mysql:5.7.9</name>
-							<alias>spring.rest.db</alias>
-							<run>
-								<env>
-									<MYSQL_ROOT_PASSWORD>admin</MYSQL_ROOT_PASSWORD>
-									<MYSQL_DATABASE>spring-rest-db</MYSQL_DATABASE>
-									<MYSQL_USER>spring-rest-db</MYSQL_USER>
-									<MYSQL_PASSWORD>spring-rest-db</MYSQL_PASSWORD>
-								</env>
-								<ports>
-									<port>3306:3306</port>
-								</ports>
-								<wait>
-									<log>(.+)mysqld: ready for connections.</log>
-									<time>20000</time>
-								</wait>
-							</run>
-						</image>
-						<image>
-							<name>amontaigu/fakesmtp:2.0</name>
-							<alias>fake-smtp</alias>
-							<run>
-								<ports>
-									<port>26:25</port>
-								</ports>
-							</run>
-						</image>
-					</images>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.5.201505241946</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-all-test</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.20.1</version>
+                <configuration>
+                    <useColor>true</useColor>
+                    <verbose>true</verbose>
+                    <images>
+                        <image>
+                            <name>mysql:5.7.9</name>
+                            <alias>spring.rest.db</alias>
+                            <run>
+                                <env>
+                                    <MYSQL_ROOT_PASSWORD>admin</MYSQL_ROOT_PASSWORD>
+                                    <MYSQL_DATABASE>spring-rest-db</MYSQL_DATABASE>
+                                    <MYSQL_USER>spring-rest-db</MYSQL_USER>
+                                    <MYSQL_PASSWORD>spring-rest-db</MYSQL_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>3306:3306</port>
+                                </ports>
+                                <wait>
+                                    <log>(.+)mysqld: ready for connections.</log>
+                                    <time>20000</time>
+                                </wait>
+                            </run>
+                        </image>
+                        <image>
+                            <name>amontaigu/fakesmtp:2.0</name>
+                            <alias>fake-smtp</alias>
+                            <run>
+                                <ports>
+                                    <port>26:25</port>
+                                </ports>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <pluginRepositories>
         <pluginRepository>

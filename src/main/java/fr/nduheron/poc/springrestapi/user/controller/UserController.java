@@ -4,8 +4,6 @@ import fr.nduheron.poc.springrestapi.tools.cache.Etag;
 import fr.nduheron.poc.springrestapi.tools.cache.EtagEvict;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ErrorExample;
 import fr.nduheron.poc.springrestapi.user.ExistException;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
@@ -13,9 +11,7 @@ import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -90,10 +86,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Créer un utilisateur")
     @RolesAllowed({"ADMIN"})
-    @ApiBadRequestResponse({
-            @ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"),
-            @ErrorExample(code = ExistException.ALREADY_EXIST, message = "User batman already exist")
-    })
+    @ApiResponses(
+            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example({
+                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\", \"message\": \"may not be null\", \"attribute\": \"nom\"},{\"code\": \"INVALID_FORMAT\", \"message\": \"not a well-formed email address\", \"attribute\": \"email\"}]"),
+                    @ExampleProperty(mediaType = "AlreadyExist", value = "[{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}]"),
+            }))
+    )
     @EtagEvict(cache = "etag-users")
     public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
@@ -125,8 +123,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Modifier un utilisateur")
     @RolesAllowed({"ADMIN"})
-    @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "role"))
     @EtagEvict(cache = "etag-users", evictParentResource = true)
+    @ApiResponses(
+            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example({
+                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\", \"message\": \"may not be null\", \"attribute\": \"nom\" }, {\"code\": \"INVALID_FORMAT\", \"message\": \"not a well-formed email address\", \"attribute\": \"email\"}]"),
+            }))
+    )
     public void modifier(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
 

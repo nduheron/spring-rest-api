@@ -1,0 +1,227 @@
+
+[[_authpaths]]
+== Paths
+
+[[_authfindusingget_1]]
+=== Récupérer le profil de l'utilisateur connecté
+....
+GET /v1/accounts/me
+....
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|<<_authuser,User>>
+|**401**|Utilisateur non authentifié.|No Content
+|**500**|Une erreur inattendue s'est produite.|No Content
+|===
+
+
+==== Tags
+
+* Profil utilisateur
+
+
+==== Security
+
+[options="header", cols=".^3a,.^4a,.^13a"]
+|===
+|Type|Name|Scopes
+|**apiKey**|**<<_authapikey,apiKey>>**|global
+|===
+
+
+==== Example HTTP request
+
+===== Request path
+----
+/v1/accounts/me
+----
+
+
+==== Example HTTP response
+
+===== Response 200
+[source,json]
+----
+{
+  "derniereConnexion" : "string",
+  "email" : "batman@yopmail.fr",
+  "enabled" : true,
+  "login" : "batman",
+  "nom" : "Wayne",
+  "prenom" : "Bruce",
+  "role" : "string"
+}
+----
+
+
+[[_authchangepasswordusingput_1]]
+=== Changer de mot de passe
+....
+PUT /v1/accounts/me/attributes/password
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Body**|**changePassword** +
+__required__|changePassword|<<_authchangepassword,ChangePassword>>
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**204**|No Content|No Content
+|**400**|Il y a une(des) erreur(s) dans la requête.|< <<_autherror,Error>> > array
+|**401**|Utilisateur non authentifié.|No Content
+|**500**|Une erreur inattendue s'est produite.|No Content
+|===
+
+
+==== Tags
+
+* Profil utilisateur
+
+
+==== Security
+
+[options="header", cols=".^3a,.^4a,.^13a"]
+|===
+|Type|Name|Scopes
+|**apiKey**|**<<_authapikey,apiKey>>**|global
+|===
+
+
+==== Example HTTP request
+
+===== Request path
+----
+/v1/accounts/me/attributes/password
+----
+
+
+===== Request body
+[source,json]
+----
+{
+  "newPassword" : "12345",
+  "oldPassword" : "56789"
+}
+----
+
+
+==== Example HTTP response
+
+===== Response 400
+[source,json]
+----
+{
+  "InvalidFormat" : [ {
+    "code" : "INVALID_FORMAT",
+    "message" : "may not be null",
+    "attribute" : "newPassword"
+  }, {
+    "code" : "INVALID_FORMAT",
+    "message" : "must be greater than or equal to 2",
+    "attribute" : "oldPassword"
+  } ]
+}
+----
+
+
+[[_authloginusingpost_1]]
+=== login
+....
+POST /v1/oauth/token
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**FormData**|**password** +
+__required__|password|string
+|**FormData**|**username** +
+__required__|username|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|<<_authtoken,Token>>
+|**400**|Il y a une(des) erreur(s) dans la requête.|< <<_autherror,Error>> > array
+|**500**|Une erreur inattendue s'est produite.|No Content
+|===
+
+
+==== Consumes
+
+* `application/x-www-form-urlencoded`
+
+
+==== Tags
+
+* Authentification
+
+
+==== Example HTTP request
+
+===== Request path
+----
+/v1/oauth/token
+----
+
+
+===== Request formData
+[source,json]
+----
+"batman"
+----
+
+
+==== Example HTTP response
+
+===== Response 200
+[source,json]
+----
+{
+  "access_token" : "RsT5OjbzRn430zqMLgV3Ia",
+  "expires_in" : 3600,
+  "token_type" : "bearer"
+}
+----
+
+
+===== Response 400
+[source,json]
+----
+{
+  "InvalidFormat" : [ {
+    "code" : "INVALID_FORMAT",
+    "message" : "may not be null",
+    "attribute" : "username"
+  }, {
+    "code" : "INVALID_FORMAT",
+    "message" : "must be greater than or equal to 2",
+    "attribute" : "password"
+  } ]
+}
+----
+
+
+

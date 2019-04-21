@@ -1,7 +1,7 @@
 package fr.nduheron.poc.springrestapi.tools.security.swagger;
 
-import com.google.common.collect.Sets;
 import fr.nduheron.poc.springrestapi.tools.security.SecurityMatcher;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,14 +20,18 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+
+import static java.util.Arrays.stream;
 
 /**
  * Gestion automatique de la documentation swagger pour les erreurs liées à la
  * sécurité.
  */
 @Component
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 1000)
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 10)
 @ConditionalOnClass({Docket.class, WebSecurityConfigurerAdapter.class})
 @ConditionalOnProperty(value = "security.config.enable", havingValue = "true")
 public class SecurityOperationDocumentation implements OperationBuilderPlugin {
@@ -42,14 +46,16 @@ public class SecurityOperationDocumentation implements OperationBuilderPlugin {
 
     @Override
     public void apply(OperationContext context) {
-
+        Set<ResponseMessage> responsesMessage = new HashSet<>();
         if (matcher.apply(context.requestMappingPattern())) {
             // UNAUTHORIZED
-            ResponseMessage unauthorized = new ResponseMessageBuilder().code(HttpStatus.UNAUTHORIZED.value())
-                    .message("Utilisateur non authentifié.").build();
-            Set<ResponseMessage> responsesMessage = Sets.newHashSet(unauthorized);
+            if (customDocumentationIsAbsent(context, HttpStatus.UNAUTHORIZED)) {
+                ResponseMessage unauthorized = new ResponseMessageBuilder().code(HttpStatus.UNAUTHORIZED.value())
+                        .message("Utilisateur non authentifié.").build();
+                responsesMessage.add(unauthorized);
+            }
             // FORBIDDEN
-            if (hasAuthorize(context)) {
+            if (hasAuthorize(context) && customDocumentationIsAbsent(context, HttpStatus.FORBIDDEN)) {
                 ResponseMessageBuilder message = new ResponseMessageBuilder().code(HttpStatus.FORBIDDEN.value())
                         .message("Utilisateur authentifié mais droits insuffisants.");
                 ResponseMessage forbidden = message.build();
@@ -68,5 +74,8 @@ public class SecurityOperationDocumentation implements OperationBuilderPlugin {
                 || context.findAnnotation(RolesAllowed.class).isPresent();
     }
 
-
+    private boolean customDocumentationIsAbsent(OperationContext context, HttpStatus httpStatus) {
+        Optional<ApiResponses> annotation = context.findAnnotation(ApiResponses.class).transform(Optional::of).or(Optional.empty());
+        return annotation.map(apiResponses -> stream(apiResponses.value()).noneMatch(apiResponse -> apiResponse.code() == httpStatus.value())).orElse(true);
+    }
 }

@@ -1,0 +1,83 @@
+
+[[_authdefinitions]]
+== Definitions
+
+[[_authchangepassword]]
+=== ChangePassword
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**newPassword** +
+__optional__|**Length** : `2 - 20` +
+**Example** : `"12345"`|string
+|**oldPassword** +
+__optional__|**Length** : `2 - 20` +
+**Example** : `"56789"`|string
+|===
+
+
+[[_autherror]]
+=== Error
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**additionalsInformations** +
+__optional__|propriétés additionnelles spécifiques +
+**Example** : `"object"`|object
+|**attribute** +
+__optional__|nom de l'attribut source de l'erreur +
+**Example** : `"string"`|string
+|**code** +
+__required__|le code de l'erreur +
+**Example** : `"string"`|string
+|**message** +
+__required__|description de l'erreur +
+**Example** : `"string"`|string
+|===
+
+
+[[_authtoken]]
+=== Token
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**access_token** +
+__required__|**Example** : `"RsT5OjbzRn430zqMLgV3Ia"`|string
+|**expires_in** +
+__required__|**Example** : `3600`|integer (int64)
+|**token_type** +
+__required__|**Example** : `"bearer"`|string
+|===
+
+
+[[_authuser]]
+=== User
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**derniereConnexion** +
+__optional__|**Example** : `"string"`|string (date-time)
+|**email** +
+__required__|**Length** : `0 - 128` +
+**Example** : `"batman@yopmail.fr"`|string
+|**enabled** +
+__optional__|**Example** : `true`|boolean
+|**login** +
+__optional__|**Length** : `2 - 20` +
+**Example** : `"batman"`|string
+|**nom** +
+__required__|**Length** : `2 - 50` +
+**Example** : `"Wayne"`|string
+|**prenom** +
+__required__|**Length** : `2 - 50` +
+**Example** : `"Bruce"`|string
+|**role** +
+__required__|**Example** : `"string"`|enum (ADMIN, USER, SYSTEM)
+|===
+
+
+

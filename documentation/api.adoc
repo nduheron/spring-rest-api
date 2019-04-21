@@ -1,0 +1,10 @@
+:toc: right
+
+
+## authentification-api
+include::authentification/paths.adoc[leveloffset=+1]
+include::authentification/definitions.adoc[leveloffset=+1]
+
+## user-api
+include::user/paths.adoc[leveloffset=+1]
+include::user/definitions.adoc[leveloffset=+1]

@@ -2,14 +2,11 @@ package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.cache.Etag;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ApiBadRequestResponse;
-import fr.nduheron.poc.springrestapi.tools.swagger.annotations.ErrorExample;
 import fr.nduheron.poc.springrestapi.user.dto.ChangePasswordDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,7 +33,11 @@ public class AccountController {
     @PutMapping("/attributes/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Changer de mot de passe")
-    @ApiBadRequestResponse(@ErrorExample(code = Error.INVALID_FORMAT, message = "may not be null", attribute = "newPassword"))
+    @ApiResponses(
+            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example(
+                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\",\"message\": \"may not be null\",\"attribute\": \"newPassword\"},{\"code\": \"INVALID_FORMAT\",\"message\": \"must be greater than or equal to 2\",\"attribute\": \"oldPassword\"}]")
+            ))
+    )
     public void changePassword(@RequestBody @Valid final ChangePasswordDto changePassword) {
         UserDto userConnecte = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = repo.getOne(userConnecte.getLogin());

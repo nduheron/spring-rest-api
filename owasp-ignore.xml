@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
+    <suppress>
+        <notes><![CDATA[
+            https://github.com/jeremylong/DependencyCheck/issues/1827
+        ]]></notes>
+        <filePath regex="true">.*spring-security-.+-5.1.5.RELEASE.jar</filePath>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+            https://github.com/jeremylong/DependencyCheck/issues/1827
+        ]]></notes>
+        <filePath regex="true">.*spring-boot-starter-security-2.1.4.RELEASE.jar</filePath>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+</suppressions>
