@@ -1,22 +1,23 @@
 package fr.nduheron.poc.springrestapi.tools.security.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
+
 
 public class Token implements Serializable {
 
     @JsonProperty("access_token")
-    @ApiModelProperty(example = "RsT5OjbzRn430zqMLgV3Ia", required = true)
+    @Schema(example = "RsT5OjbzRn430zqMLgV3Ia", required = true)
     private String access;
 
     @JsonProperty("token_type")
-    @ApiModelProperty(example = "bearer", required = true)
+    @Schema(example = "bearer", required = true)
     private String type;
 
     @JsonProperty("expires_in")
-    @ApiModelProperty(example = "3600", required = true)
+    @Schema(example = "3600", required = true)
     private long expiresIn;
 
 

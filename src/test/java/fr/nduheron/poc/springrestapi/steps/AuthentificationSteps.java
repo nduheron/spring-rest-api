@@ -1,7 +1,7 @@
 package fr.nduheron.poc.springrestapi.steps;
 
-import cucumber.api.java.en.When;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
+import io.cucumber.java.en.When;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;

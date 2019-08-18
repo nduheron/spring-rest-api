@@ -3,7 +3,8 @@ package fr.nduheron.poc.springrestapi.user.controller;
 import fr.nduheron.poc.springrestapi.tools.cache.Etag;
 import fr.nduheron.poc.springrestapi.tools.cache.EtagEvict;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import fr.nduheron.poc.springrestapi.tools.openapi.annotations.ApiDefaultResponse400;
+import fr.nduheron.poc.springrestapi.tools.openapi.annotations.AuthPasswordOperation;
 import fr.nduheron.poc.springrestapi.user.ExistException;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
@@ -11,7 +12,13 @@ import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -35,7 +42,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/users")
 @Transactional
-@Api(tags = "Utilisateurs")
+@Tag(name = "Utilisateurs")
 @Validated
 public class UserController {
 
@@ -55,45 +62,47 @@ public class UserController {
     private UserMapper mapper;
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "text/csv;charset=UTF-8"})
-    @ApiOperation(value = "Rechercher tous les utilisateurs")
+    @AuthPasswordOperation(summary = "Rechercher tous les utilisateurs")
+    @ApiResponse(responseCode = "200", content = {
+            @Content(mediaType = MediaType.APPLICATION_JSON_UTF8_VALUE, array = @ArraySchema(schema = @Schema(implementation = UserDto.class))),
+            @Content(mediaType = "text/csv;charset=UTF-8", array = @ArraySchema(schema = @Schema(implementation = UserDto.class)), examples = @ExampleObject(value = "LOGIN,NOM,PRENOM,EMAIL,ROLE\nbatman,Wayne,Bruce,batman@yopmail.fr,SYSTEM")),
+    })
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag(cache = "etag-users")
-    public List<UserDto> findAll() {
+    public List<UserDto> findUsers() {
 
         List<User> findAll = repo.findAll();
         return mapper.toDto(findAll);
     }
 
     @GetMapping("{login}")
-    @ApiOperation("Rechercher un utilisateur")
+    @AuthPasswordOperation(summary = "Rechercher un utilisateur")
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag(cache = "etag-users")
-    public UserDto find(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+    public UserDto findUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);
         return mapper.toDto(user);
     }
 
     @DeleteMapping("{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation("Supprimer un utilisateur")
+    @AuthPasswordOperation(summary = "Supprimer un utilisateur")
     @RolesAllowed({"ADMIN"})
     @EtagEvict(cache = "etag-users", evictParentResource = true)
-    public void supprimer(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+    public void deleteUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         repo.findById(login).ifPresent(user -> repo.delete(user));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Créer un utilisateur")
+    @AuthPasswordOperation(summary = "Créer un utilisateur")
     @RolesAllowed({"ADMIN"})
-    @ApiResponses(
-            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example({
-                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\", \"message\": \"may not be null\", \"attribute\": \"nom\"},{\"code\": \"INVALID_FORMAT\", \"message\": \"not a well-formed email address\", \"attribute\": \"email\"}]"),
-                    @ExampleProperty(mediaType = "AlreadyExist", value = "[{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}]"),
-            }))
-    )
+    @ApiResponse(responseCode = "400", content = @Content(array = @ArraySchema(schema = @Schema(ref = "Error")), examples = {
+            @ExampleObject(ref = "InvalidFormat"),
+            @ExampleObject(name = "AlreadyExist", value = "[{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}]")
+    }))
     @EtagEvict(cache = "etag-users")
-    public UserDto save(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
+    public UserDto saveUser(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
         Optional<User> optionalUser = repo.findById(createUser.getLogin());
         if (optionalUser.isPresent()) {
@@ -121,15 +130,11 @@ public class UserController {
 
     @PutMapping("{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation("Modifier un utilisateur")
+    @AuthPasswordOperation(summary = "Modifier un utilisateur")
     @RolesAllowed({"ADMIN"})
     @EtagEvict(cache = "etag-users", evictParentResource = true)
-    @ApiResponses(
-            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example({
-                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\", \"message\": \"may not be null\", \"attribute\": \"nom\" }, {\"code\": \"INVALID_FORMAT\", \"message\": \"not a well-formed email address\", \"attribute\": \"email\"}]"),
-            }))
-    )
-    public void modifier(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
+    @ApiDefaultResponse400
+    public void updateUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
 
         User user = repo.findById(login).orElseThrow(() -> new NotFoundException(String.format("L'utilisateur %s n'existe pas.", login)));
@@ -145,9 +150,9 @@ public class UserController {
 
     @PostMapping("/{login}/attributes/password")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Réinitialiser le mot de passe")
+    @AuthPasswordOperation(summary = "Réinitialiser le mot de passe")
     @PreAuthorize("@securityService.isUserAuthorized(#login)")
-    public void reinitPassword(@PathVariable("login") @ApiParam(example = "batman", required = true) final String login) {
+    public void resetPassword(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);
         String newPassword = randomPassword();
         user.setPassword(passwordEncoder.encode(newPassword));

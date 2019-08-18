@@ -5,6 +5,7 @@ import fr.nduheron.poc.springrestapi.config.MockConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springdoc.core.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -35,21 +36,9 @@ public class SwaggerAPIIntegrationTest {
 
     @Test
     public void swaggerUserApi() throws Exception {
-        generateSwagger("user-api");
-    }
-
-
-    @Test
-    public void swaggerAutenticationApi() throws Exception {
-        generateSwagger("authentification-api");
-
-    }
-
-    private void generateSwagger(String apiName) throws Exception {
-
-        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + contextPath + "/v2/api-docs?group=" + apiName, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + contextPath + Constants.DEFAULT_API_DOCS_URL, String.class);
         String contentAsString = response.getBody();
-        try (Writer writer = new FileWriter(new File("target/swagger-" + apiName + ".json"))) {
+        try (Writer writer = new FileWriter(new File("target/swagger.json"))) {
             IOUtils.write(contentAsString, writer);
         }
     }

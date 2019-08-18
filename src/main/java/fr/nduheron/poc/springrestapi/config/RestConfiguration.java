@@ -12,7 +12,6 @@ import org.springframework.format.Formatter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +44,7 @@ public class RestConfiguration implements WebMvcConfigurer {
     Formatter<LocalDate> localDateFormatter() {
         return new Formatter<LocalDate>() {
             @Override
-            public LocalDate parse(String text, Locale locale) throws ParseException {
+            public LocalDate parse(String text, Locale locale) {
                 return StringUtils.isBlank(text) ? null : LocalDate.parse(text, DateTimeFormatter.ISO_DATE);
             }
 
@@ -63,14 +62,15 @@ public class RestConfiguration implements WebMvcConfigurer {
     Formatter<LocalDateTime> localDateTimeFormatter() {
         return new Formatter<LocalDateTime>() {
             @Override
-            public LocalDateTime parse(String text, Locale locale) throws ParseException {
+            public LocalDateTime parse(String text, Locale locale) {
                 return StringUtils.isBlank(text) ? null : LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
 
             @Override
             public String print(LocalDateTime object, Locale locale) {
-                return (object == null) ? null : DateTimeFormatter.ISO_DATE.format(object);
+                return DateTimeFormatter.ISO_DATE.format(object);
             }
         };
     }
+
 }
