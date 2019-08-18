@@ -1,14 +1,13 @@
 package fr.nduheron.poc.springrestapi.user.dto;
 
 import com.opencsv.bean.CsvBindByPosition;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@ApiModel("User")
+@Schema(name = "User")
 public class UserDto extends AbstractUserDto {
 
     private static final long serialVersionUID = 1L;
@@ -16,7 +15,7 @@ public class UserDto extends AbstractUserDto {
     @NotNull
     @Size(min = 2, max = 20)
     @CsvBindByPosition(position = 0)
-    @ApiModelProperty(example = "batman")
+    @Schema(example = "batman")
     private String login;
 
     private LocalDateTime derniereConnexion;

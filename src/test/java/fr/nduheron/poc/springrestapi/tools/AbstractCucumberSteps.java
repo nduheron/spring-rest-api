@@ -1,27 +1,18 @@
 package fr.nduheron.poc.springrestapi.tools;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.nduheron.poc.springrestapi.config.DBUnitConfiguration;
-import fr.nduheron.poc.springrestapi.config.MockConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import javax.transaction.Transactional;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration
-@ActiveProfiles("test")
-@Import({DBUnitConfiguration.class, MockConfiguration.class})
+
 @Transactional
 public abstract class AbstractCucumberSteps {
 

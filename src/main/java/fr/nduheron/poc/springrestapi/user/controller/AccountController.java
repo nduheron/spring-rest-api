@@ -1,12 +1,13 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.cache.Etag;
-import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import fr.nduheron.poc.springrestapi.tools.openapi.annotations.ApiDefaultResponse400;
+import fr.nduheron.poc.springrestapi.tools.openapi.annotations.AuthPasswordOperation;
 import fr.nduheron.poc.springrestapi.user.dto.ChangePasswordDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/v1/accounts/me")
 @Transactional
-@Api(tags = "Profil utilisateur")
+@Tag(name = "Profil utilisateur")
 public class AccountController {
 
     @Autowired
@@ -32,12 +33,8 @@ public class AccountController {
 
     @PutMapping("/attributes/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Changer de mot de passe")
-    @ApiResponses(
-            @ApiResponse(code = 400, message = "Il y a une(des) erreur(s) dans la requête.", response = Error.class, responseContainer = "list", examples = @Example(
-                    @ExampleProperty(mediaType = "InvalidFormat", value = "[{\"code\": \"INVALID_FORMAT\",\"message\": \"may not be null\",\"attribute\": \"newPassword\"},{\"code\": \"INVALID_FORMAT\",\"message\": \"must be greater than or equal to 2\",\"attribute\": \"oldPassword\"}]")
-            ))
-    )
+    @AuthPasswordOperation(summary = "Changer de mot de passe")
+    @ApiDefaultResponse400
     public void changePassword(@RequestBody @Valid final ChangePasswordDto changePassword) {
         UserDto userConnecte = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = repo.getOne(userConnecte.getLogin());
@@ -50,9 +47,9 @@ public class AccountController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Récupérer le profil de l'utilisateur connecté")
+    @AuthPasswordOperation(summary = "Récupérer le profil de l'utilisateur connecté")
     @Etag(maxAge = 60)
-    public UserDto find() {
+    public UserDto whoIAm() {
         return (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 

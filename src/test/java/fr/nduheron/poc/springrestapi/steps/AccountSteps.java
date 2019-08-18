@@ -1,11 +1,11 @@
 package fr.nduheron.poc.springrestapi.steps;
 
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import fr.nduheron.poc.springrestapi.user.dto.ChangePasswordDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.model.Role;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.springframework.http.HttpMethod;
 

@@ -5,14 +5,6 @@ Cette whiteapp à pour but de montrer comment créer une API Rest avec springboo
 [![Build Status](https://travis-ci.org/nduheron/spring-rest-api.svg?branch=master)](https://travis-ci.org/nduheron/spring-rest-api) 
 [![codecov.io](https://codecov.io/gh/nduheron/spring-rest-api/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/nduheron/spring-rest-api?branch=master)
 
-## Documentation
-
-- [Authentification paths](./documentation/authentification/paths.adoc)
-- [Authentification definitions](./documentation/authentification/definitions.adoc)
-- [Users paths](./documentation/user/paths.adoc)
-- [Users definitions](./documentation/user/definitions.adoc)
-- [Features](./documentation/features.adoc)
-
 ## Fonctionnalités
 
 - Authentification [JWT](https://jwt.io/introduction/) avec [spring-security](https://docs.spring.io/spring-security/site/docs/5.0.0.RELEASE/reference/htmlsingle/)
@@ -51,9 +43,7 @@ Cette whiteapp à pour but de montrer comment créer une API Rest avec springboo
 ```bash
 mvn docker:build docker:start
 mvn package
-java -jar spring-rest-api-0.0.1-SNAPSHOT.jar
+java -jar spring-rest-api-1.0.0-SNAPSHOT.jar
 ```
-
-
 
 
