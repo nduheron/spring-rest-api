@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "user")
@@ -31,13 +32,13 @@ public class User {
 
     private boolean enabled;
 
-    private LocalDateTime derniereConnexion;
+    private OffsetDateTime derniereConnexion;
 
-    public LocalDateTime getDerniereConnexion() {
+    public OffsetDateTime getDerniereConnexion() {
         return derniereConnexion;
     }
 
-    public void setDerniereConnexion(LocalDateTime derniereConnexion) {
+    public void setDerniereConnexion(OffsetDateTime derniereConnexion) {
         this.derniereConnexion = derniereConnexion;
     }
 

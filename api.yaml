@@ -1,0 +1,478 @@
+openapi: 3.0.1
+info:
+  title: User API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8083/spring-rest'
+    description: local
+paths:
+  /v1/accounts/me/attributes/password:
+    put:
+      tags:
+        - Profil utilisateur
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+              examples:
+                InvalidFormat:
+                  $ref: '#/components/examples/InvalidFormat'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+  /v1/accounts/me:
+    get:
+      tags:
+        - Profil utilisateur
+      operationId: whoIAm
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+  /v1/oauth/token:
+    post:
+      tags:
+        - Authentification
+      operationId: login
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+  /v1/users:
+    get:
+      tags:
+        - Utilisateurs
+      operationId: findUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            text/csv;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              example: |-
+                LOGIN,NOM,PRENOM,EMAIL,ROLE
+                batman,Wayne,Bruce,batman@yopmail.fr,SYSTEM
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - Utilisateurs
+      operationId: saveUser
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+              examples:
+                AlreadyExist:
+                  description: AlreadyExist
+                  value:
+                    - code: ALREADY_EXIST
+                      message: User batman already exist
+                InvalidFormat:
+                  $ref: '#/components/examples/InvalidFormat'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+  '/v1/users/{login}':
+    get:
+      tags:
+        - Utilisateurs
+      operationId: findUser
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+          example: batman
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - Utilisateurs
+      operationId: updateUser
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+          example: batman
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+              examples:
+                InvalidFormat:
+                  $ref: '#/components/examples/InvalidFormat'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Utilisateurs
+      operationId: deleteUser
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+          example: batman
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+  '/v1/users/{login}/attributes/password':
+    post:
+      tags:
+        - Utilisateurs
+      operationId: resetPassword
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+          example: batman
+      responses:
+        '201':
+          description: Created
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: le code de l'erreur
+        message:
+          type: string
+          description: description de l'erreur
+        attribute:
+          type: string
+          description: nom de l'attribut source de l'erreur
+        additionalsInformations:
+          type: object
+          description: propriétés additionnelles spécifiques
+    ChangePassword:
+      required:
+        - newPassword
+        - oldPassword
+      type: object
+      properties:
+        newPassword:
+          maxLength: 20
+          minLength: 2
+          type: string
+          example: '12345'
+        oldPassword:
+          maxLength: 20
+          minLength: 2
+          type: string
+          example: '56789'
+    User:
+      required:
+        - email
+        - login
+        - nom
+        - prenom
+        - role
+      type: object
+      properties:
+        email:
+          maxLength: 128
+          minLength: 0
+          type: string
+          example: batman@yopmail.fr
+        nom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Wayne
+        prenom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Bruce
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+            - SYSTEM
+        enabled:
+          type: boolean
+        login:
+          maxLength: 20
+          minLength: 2
+          type: string
+          example: batman
+        derniereConnexion:
+          type: string
+          format: date-time
+    TokenRequest:
+      required:
+        - password
+        - username
+        - grant_type
+      type: object
+      properties:
+        username:
+          maxLength: 20
+          minLength: 2
+          type: string
+          example: batman
+        password:
+          maxLength: 20
+          minLength: 5
+          type: string
+          example: '12345'
+        grant_type:
+          type: string
+          default: password
+          enum:
+            - "password"
+    Token:
+      required:
+        - access_token
+        - expires_in
+        - token_type
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: RsT5OjbzRn430zqMLgV3Ia
+        token_type:
+          type: string
+          example: bearer
+        expires_in:
+          type: integer
+          format: int64
+          example: 3600
+    CreateUser:
+      required:
+        - email
+        - login
+        - nom
+        - prenom
+        - role
+      type: object
+      properties:
+        email:
+          maxLength: 128
+          minLength: 0
+          type: string
+          example: batman@yopmail.fr
+        nom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Wayne
+        prenom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Bruce
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+            - SYSTEM
+        enabled:
+          type: boolean
+        login:
+          maxLength: 20
+          minLength: 2
+          type: string
+          example: batman
+    UpdateUser:
+      required:
+        - email
+        - nom
+        - prenom
+        - role
+      type: object
+      properties:
+        email:
+          maxLength: 128
+          minLength: 0
+          type: string
+          example: batman@yopmail.fr
+        nom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Wayne
+        prenom:
+          maxLength: 50
+          minLength: 2
+          type: string
+          example: Bruce
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+            - SYSTEM
+        enabled:
+          type: boolean
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        '*/*':
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+    '401':
+      description: Unauthorized
+    '403':
+      description: Forbidden
+    '404':
+      description: Not Found
+    '500':
+      description: Internal Server Error
+  examples:
+    InvalidFormat:
+      description: Des paramêtres de la requête sont invalides.
+      value:
+        - code: INVALID_FORMAT
+          message: not a well-formed email address
+          attribute: email
+        - code: INVALID_FORMAT
+          message: may not be null
+          attribute: username
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

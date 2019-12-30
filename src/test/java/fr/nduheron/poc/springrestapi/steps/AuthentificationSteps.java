@@ -9,14 +9,15 @@ import org.springframework.util.MultiValueMap;
 
 public class AuthentificationSteps extends AbstractCucumberSteps {
 
-    @When("^I login with username (.+) and password (.+)$")
-    public void I_login_with_username_and_password(String username, String password) {
+  @When("^I login with username (.+) and password (.+)$")
+  public void I_login_with_username_and_password(String username, String password) {
 
-        holder.getHeaders().setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("username", username);
-        map.add("password", password);
+    holder.getHeaders().setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("username", username);
+    map.add("password", password);
+    map.add("grant_type", "password");
 
-        callApi("/oauth/token", HttpMethod.POST, map);
-    }
+    callApi("/oauth/token", HttpMethod.POST, map);
+  }
 }
