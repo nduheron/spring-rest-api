@@ -2,11 +2,12 @@ package fr.nduheron.poc.springrestapi.user.mapper;
 
 import java.util.List;
 
+import fr.nduheron.poc.springrestapi.dto.CreateUserDto;
+import fr.nduheron.poc.springrestapi.dto.UpdateUserDto;
+import fr.nduheron.poc.springrestapi.dto.UserDto;
 import org.mapstruct.Mapper;
 
-import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
-import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
-import fr.nduheron.poc.springrestapi.user.dto.UserDto;
+
 import fr.nduheron.poc.springrestapi.user.model.User;
 
 @Mapper(componentModel = "spring")

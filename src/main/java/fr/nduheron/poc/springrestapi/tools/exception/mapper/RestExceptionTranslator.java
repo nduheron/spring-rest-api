@@ -1,5 +1,6 @@
 package fr.nduheron.poc.springrestapi.tools.exception.mapper;
 
+import fr.nduheron.poc.springrestapi.tools.exception.BadRequestException;
 import fr.nduheron.poc.springrestapi.tools.exception.FunctionalException;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
@@ -93,6 +94,15 @@ public class RestExceptionTranslator {
     public List<Error> handleFunctionalException(final FunctionalException ex) {
         String message = messageSource.getMessage(ex.getI18nKey(), ex.getArgs(), LocaleContextHolder.getLocale());
         return Collections.singletonList(new Error(ex.getCode(), message, ex.getAdditionalsInformations()));
+    }
+
+    /**
+     * Gestion des erreurs fonctionnelles {@link BadRequestException}
+     */
+    @ExceptionHandler({BadRequestException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleBadRequestException(final BadRequestException ex) {
+        return ex.getErrors();
     }
 
     /**

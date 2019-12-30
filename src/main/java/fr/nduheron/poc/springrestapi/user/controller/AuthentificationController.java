@@ -1,69 +1,121 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import fr.nduheron.poc.springrestapi.tools.openapi.annotations.ApiDefaultResponse400;
-import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
-import fr.nduheron.poc.springrestapi.tools.security.domain.TokenRequest;
-import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.nduheron.poc.springrestapi.api.AuthentificationApi;
+import fr.nduheron.poc.springrestapi.dto.TokenDto;
+import fr.nduheron.poc.springrestapi.tools.exception.BadRequestException;
+import fr.nduheron.poc.springrestapi.tools.exception.TechnicalException;
+import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import java.time.OffsetDateTime;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.length;
 
 @RestController
-@RequestMapping("/v1/oauth")
 @Transactional
-@Validated
-@Tag(name = "Authentification")
-public class AuthentificationController {
+public class AuthentificationController implements AuthentificationApi {
+    private static final String USER_INFOS = "userInfos";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private UserRepository repo;
+    @Value("${security.token.secret}")
+    private String tokenSecret;
+    @Value("${security.token.ttl}")
+    private String tokenTTL;
 
     @Autowired
-    private TokenService tokenService;
-
+    private ObjectMapper objectMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private MessageSource messageSource;
 
-    @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ApiDefaultResponse400
-    @ApiResponse(responseCode = "401", ref = "401")
-    @ApiResponse(responseCode = "500", ref = "500")
-    public Token login(@RequestBody @Valid TokenRequest tokenRequest) {
+    @Override
+    public ResponseEntity<TokenDto> login(String username, String password, String grantType) {
+        validate(username, password, grantType);
 
-        Optional<User> user = repo.findById(tokenRequest.getUsername());
+        Optional<User> user = repo.findById(username);
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException(String.format("L'utilisateur %s n'existe pas.", tokenRequest.getUsername()));
+            throw new UsernameNotFoundException(String.format("L'utilisateur %s n'existe pas.", username));
         }
 
         if (!user.get().isEnabled()) {
-            throw new DisabledException(String.format("L'utilisateur %s n'est pas actif.", tokenRequest.getUsername()));
+            throw new DisabledException(String.format("L'utilisateur %s n'est pas actif.", username));
         }
 
-        if (passwordEncoder.matches(tokenRequest.getPassword(), user.get().getPassword())) {
-            user.get().setDerniereConnexion(LocalDateTime.now());
-            return tokenService.createToken(userMapper.toDto(user.get()));
+        if (passwordEncoder.matches(password, user.get().getPassword())) {
+            user.get().setDerniereConnexion(OffsetDateTime.now());
+            return ResponseEntity.ok(createToken(userMapper.toDto(user.get())));
         }
         throw new BadCredentialsException("Login/mot de passe incorrect.");
+    }
+
+    private void validate(String username, String password, String grantType) {
+        List<Error> errors = new ArrayList<>();
+        if (length(username) < 2 || length(username) > 20) {
+            errors.add(new Error(Error.INVALID_FORMAT, "size must be between 2 and 20",  "username"));
+        }
+        if (length(password) < 5 || length(password) > 20) {
+            errors.add(new Error(Error.INVALID_FORMAT, "size must be between 5 and 20",  "password"));
+        }
+
+        if (!errors.isEmpty()) {
+            throw  new BadRequestException(errors);
+        }
+    }
+
+    private TokenDto createToken(final Object userInfos) {
+        try {
+            // The JWT signature algorithm we will be using to sign the token
+            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+            long nowMillis = System.currentTimeMillis();
+            Date now = new Date(nowMillis);
+
+            // We will sign our JWT with our ApiKey secret
+            byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(tokenSecret);
+            Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+
+            // Let's set the JWT Claims
+            JwtBuilder builder = Jwts.builder().setIssuedAt(now).signWith(signatureAlgorithm, signingKey);
+
+            if (userInfos != null) {
+                Map<String, Object> claims = new HashMap<>();
+                claims.put(USER_INFOS, objectMapper.writeValueAsString(userInfos));
+                builder.setClaims(claims);
+            }
+            // if it has been specified, let's add the expiration
+            Long ttl = Long.parseLong(tokenTTL);
+            long expMillis = nowMillis + ttl;
+            Date exp = new Date(expMillis);
+            builder.setExpiration(exp);
+
+            return new TokenDto().accessToken(builder.compact()).expiresIn(ttl).tokenType("bearer");
+        } catch (JsonProcessingException e) {
+            throw new TechnicalException("Erreur lors de la creation du token JWT", e);
+        }
     }
 }

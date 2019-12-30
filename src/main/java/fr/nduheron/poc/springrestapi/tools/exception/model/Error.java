@@ -1,25 +1,19 @@
 package fr.nduheron.poc.springrestapi.tools.exception.model;
 
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import javax.validation.constraints.NotBlank;
 
 public class Error {
     public static final String INVALID_FORMAT = "INVALID_FORMAT";
 
     @NotBlank
-    @Schema(description = "le code de l'erreur")
     private String code;
 
     @NotBlank
-    @Schema(description = "description de l'erreur")
     private String message;
 
-    @Schema(description = "nom de l'attribut source de l'erreur")
     private String attribute;
 
-    @Schema(description = "propriétés additionnelles spécifiques")
     private Object additionalsInformations;
 
     public Error() {

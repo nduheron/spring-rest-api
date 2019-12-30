@@ -1,7 +1,6 @@
 package fr.nduheron.poc.springrestapi.security;
 
-import fr.nduheron.poc.springrestapi.user.dto.UserDto;
-import fr.nduheron.poc.springrestapi.user.model.Role;
+import fr.nduheron.poc.springrestapi.dto.UserDto;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class SecurityService {
     /**
      * Vérfie si l'utilisateur connecté à au moins 1 des rôles en paramètre
      */
-    public boolean hasRole(Role... roles) {
+    public boolean hasRole(UserDto.RoleEnum... roles) {
         UserDto user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Arrays.stream(roles).anyMatch(r1 -> r1 == user.getRole());
     }
@@ -34,6 +33,6 @@ public class SecurityService {
      * toutes les données si il est ADMIN.
      */
     public boolean isUserAuthorized(String login) {
-        return hasRole(Role.ADMIN) || getLogin().equals(login);
+        return hasRole(UserDto.RoleEnum.ADMIN) || getLogin().equals(login);
     }
 }
