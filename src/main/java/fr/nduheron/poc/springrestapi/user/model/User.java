@@ -3,7 +3,6 @@ package fr.nduheron.poc.springrestapi.user.model;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
