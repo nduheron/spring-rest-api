@@ -24,7 +24,7 @@
         <cucumber.version>4.7.1</cucumber.version>
         <jwt.version>0.9.1</jwt.version>
         <guava.version>28.0-jre</guava.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <springdoc-openapi-ui.version>1.1.24</springdoc-openapi-ui.version>
     </properties>
 
