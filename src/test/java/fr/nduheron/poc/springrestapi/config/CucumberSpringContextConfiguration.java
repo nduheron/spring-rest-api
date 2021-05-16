@@ -1,8 +1,7 @@
-package fr.nduheron.poc.springrestapi.tools;
+package fr.nduheron.poc.springrestapi.config;
 
-import fr.nduheron.poc.springrestapi.config.DBUnitConfiguration;
-import fr.nduheron.poc.springrestapi.config.MockConfiguration;
 import io.cucumber.java.Before;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+@CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 @ActiveProfiles("test")

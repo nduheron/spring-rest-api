@@ -1,17 +1,8 @@
-<hazelcast xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.11.xsd"
-           xmlns="http://www.hazelcast.com/schema/config">
+<hazelcast xmlns="http://www.hazelcast.com/schema/config">
 
     <map name="*">
-        <max-size>100</max-size>
-        <eviction-policy>LFU</eviction-policy>
         <time-to-live-seconds>60</time-to-live-seconds>
-    </map>
-
-    <map name="etag-users">
-        <max-size>500</max-size>
-        <eviction-policy>LFU</eviction-policy>
-        <time-to-live-seconds>120</time-to-live-seconds>
+        <eviction eviction-policy="LFU" size="100"/>
     </map>
 
 </hazelcast>

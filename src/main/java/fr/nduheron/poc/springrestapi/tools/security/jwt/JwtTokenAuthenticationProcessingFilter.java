@@ -1,6 +1,6 @@
 package fr.nduheron.poc.springrestapi.tools.security.jwt;
 
-import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -32,7 +32,7 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         String authorization = request.getHeader(HEADER_AUTHORIZATION);
-        if (Strings.isNullOrEmpty(authorization)) {
+        if (StringUtils.isEmpty(authorization)) {
             throw new BadCredentialsException("Vous devez être authentifié.");
         }
 

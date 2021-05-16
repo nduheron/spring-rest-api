@@ -1,10 +1,14 @@
 package fr.nduheron.poc.springrestapi.doc;
 
+import com.google.common.io.Resources;
 import fr.nduheron.poc.springrestapi.config.DBUnitConfiguration;
 import fr.nduheron.poc.springrestapi.config.MockConfiguration;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.Customization;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springdoc.core.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +20,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 @ActiveProfiles("test")
 @Import({DBUnitConfiguration.class, MockConfiguration.class})
-public class SwaggerAPIIntegrationTest {
+public class OpenApiIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -37,9 +39,15 @@ public class SwaggerAPIIntegrationTest {
     @Test
     public void swaggerUserApi() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + contextPath + Constants.DEFAULT_API_DOCS_URL, String.class);
-        String contentAsString = response.getBody();
-        try (Writer writer = new FileWriter(new File("target/swagger.json"))) {
-            IOUtils.write(contentAsString, writer);
-        }
+        JSONAssert.assertEquals(
+                response.getBody(),
+                Resources.toString(getClass().getResource("/swagger.json"), StandardCharsets.UTF_8),
+                new CustomComparator(
+                        JSONCompareMode.STRICT,
+                        new Customization("tokenUrl", (o1, o2) -> true),
+                        new Customization("servers", (o1, o2) -> true),
+                        new Customization("components.securitySchemes.oauthPasswordFlow.flows.password.tokenUrl", (o1, o2) -> true)
+                )
+        );
     }
 }

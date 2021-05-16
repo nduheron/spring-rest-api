@@ -1,15 +1,14 @@
 package fr.nduheron.poc.springrestapi.tools.cache;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.CacheManager;
+import org.springframework.core.env.Environment;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
 
@@ -26,67 +25,47 @@ import java.util.concurrent.TimeUnit;
  * header of the request. If these headers are equal, the response content is
  * not sent, but rather a {@code 304 "Not Modified"} status instead.
  */
-public class EtagInterceptor extends HandlerInterceptorAdapter {
+public class EtagInterceptor implements HandlerInterceptor {
+    private final Environment environment;
 
-    private CacheManager cacheManager;
-
-    public EtagInterceptor(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    public EtagInterceptor(Environment environment) {
+        this.environment = environment;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            // Test if the controller-method is annotated with @Etag
-            Etag filter = handlerMethod.getMethod().getAnnotation(Etag.class);
-            if (filter != null && StringUtils.isNotEmpty(filter.cache())) {
-                Optional<String> requestEtag = Optional.ofNullable(request.getHeader(HttpHeaders.IF_NONE_MATCH));
-                Optional<String> responseEtag = Optional.ofNullable(cacheManager.getCache(filter.cache()).get(getUrl(request), String.class));
-                if (requestEtag.isPresent() && responseEtag.isPresent() && requestEtag.equals(responseEtag)) {
-                    response.setStatus(HttpStatus.NOT_MODIFIED.value());
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
 
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             // Test if the controller-method is annotated with @Etag
             Etag filter = handlerMethod.getMethod().getAnnotation(Etag.class);
-            if (filter != null && HttpStatus.OK.value() == response.getStatus()) {
+            if (filter == null) {
+                response.setHeader(HttpHeaders.CACHE_CONTROL, getNoCacheHeader());
+            } else if (HttpStatus.OK.value() == response.getStatus()) {
                 ContentCachingResponseWrapper responseWrapper = WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
-                String responseEtag = generateETagHeaderValue(responseWrapper.getContentInputStream());
-                cacheManager.getCache(filter.cache()).put(getUrl(request), responseEtag);
-                Optional<String> requestEtag = Optional.ofNullable(request.getHeader(HttpHeaders.IF_NONE_MATCH));
-                if (requestEtag.isPresent() && requestEtag.get().equals(responseEtag)) {
-                    response.setStatus(HttpStatus.NOT_MODIFIED.value());
-                } else {
-                    String headerValue = CacheControl.maxAge(filter.maxAge(), TimeUnit.SECONDS)
-                            .getHeaderValue();
-                    response.addHeader(HttpHeaders.CACHE_CONTROL, headerValue);
-                    response.setHeader(HttpHeaders.ETAG, responseEtag);
-                    responseWrapper.copyBodyToResponse();
+                if (responseWrapper != null) {
+                    String responseEtag = generateETagHeaderValue(responseWrapper.getContentInputStream());
+                    Optional<String> requestEtag = Optional.ofNullable(request.getHeader(HttpHeaders.IF_NONE_MATCH));
+                    if (requestEtag.isPresent() && requestEtag.get().equals(responseEtag)) {
+                        response.setStatus(HttpStatus.NOT_MODIFIED.value());
+                        response.setHeader(HttpHeaders.CACHE_CONTROL, getMaxAgeCacheHeader(filter.maxAge()));
+                    } else {
+                        response.setHeader(HttpHeaders.CACHE_CONTROL, getMaxAgeCacheHeader(filter.maxAge()));
+                        response.setHeader(HttpHeaders.ETAG, responseEtag);
+                        responseWrapper.copyBodyToResponse();
+                    }
                 }
             }
         }
-
     }
 
-    private String getUrl(HttpServletRequest request) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(request.getRequestURI().replaceAll("/$", StringUtils.EMPTY));
-        if (StringUtils.isNotBlank(request.getQueryString())) {
-            sb.append("?").append(request.getQueryString());
+    private String getNoCacheHeader() {
+        return CacheControl.noStore().mustRevalidate().getHeaderValue();
+    }
 
-        }
-        return sb.toString();
+    private String getMaxAgeCacheHeader(String maxAgeProperty) {
+        long maxAge = Long.parseLong(environment.resolvePlaceholders(maxAgeProperty));
+        return CacheControl.maxAge(maxAge, TimeUnit.SECONDS).cachePrivate().getHeaderValue();
     }
 
     private String generateETagHeaderValue(InputStream inputStream) throws IOException {

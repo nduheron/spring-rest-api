@@ -40,7 +40,7 @@ public class TokenRequestConverter extends AbstractHttpMessageConverter<TokenReq
 
     @Override
     protected void writeInternal(TokenRequest tokenRequest, HttpOutputMessage outputMessage) throws HttpMessageNotWritableException {
-
+        throw new HttpMessageNotWritableException("tokenRequest is not serializable");
     }
 }
 

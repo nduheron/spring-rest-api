@@ -1,6 +1,5 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import fr.nduheron.poc.springrestapi.tools.openapi.annotations.ApiDefaultResponse400;
 import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
 import fr.nduheron.poc.springrestapi.tools.security.domain.TokenRequest;
 import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
@@ -26,6 +25,9 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.DEFAULT_BAD_REQUEST;
+import static java.lang.String.format;
+
 @RestController
 @RequestMapping("/v1/oauth")
 @Transactional
@@ -46,18 +48,16 @@ public class AuthentificationController {
     private UserMapper userMapper;
 
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ApiDefaultResponse400
-    @ApiResponse(responseCode = "401", ref = "401")
-    @ApiResponse(responseCode = "500", ref = "500")
+    @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
     public Token login(@RequestBody @Valid TokenRequest tokenRequest) {
 
         Optional<User> user = repo.findById(tokenRequest.getUsername());
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException(String.format("L'utilisateur %s n'existe pas.", tokenRequest.getUsername()));
+            throw new UsernameNotFoundException(format("L'utilisateur %s n'existe pas.", tokenRequest.getUsername()));
         }
 
         if (!user.get().isEnabled()) {
-            throw new DisabledException(String.format("L'utilisateur %s n'est pas actif.", tokenRequest.getUsername()));
+            throw new DisabledException(format("L'utilisateur %s n'est pas actif.", tokenRequest.getUsername()));
         }
 
         if (passwordEncoder.matches(tokenRequest.getPassword(), user.get().getPassword())) {

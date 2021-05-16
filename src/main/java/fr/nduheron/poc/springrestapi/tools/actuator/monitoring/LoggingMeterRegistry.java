@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.internal.DefaultGauge;
-import io.micrometer.core.instrument.internal.DefaultLongTaskTimer;
 import io.micrometer.core.instrument.internal.DefaultMeter;
 import io.micrometer.core.instrument.step.*;
 import io.micrometer.core.instrument.util.DoubleFormat;
@@ -42,11 +41,6 @@ public class LoggingMeterRegistry extends MeterRegistry {
     @Override
     protected Counter newCounter(Meter.Id id) {
         return new StepCounter(id, clock, delay.toMillis());
-    }
-
-    @Override
-    protected LongTaskTimer newLongTaskTimer(Meter.Id id) {
-        return new DefaultLongTaskTimer(id, clock);
     }
 
     @Override
@@ -95,53 +89,47 @@ public class LoggingMeterRegistry extends MeterRegistry {
 
     private void logMetrics() {
         getMeters().stream().sorted(Comparator.comparing((Meter m3) -> m3.getId().getType()).thenComparing(m3 -> m3.getId().getName()))
-                .forEach((m) -> m.use((gauge) -> {
-                    log(m.getId(), String.format("\"value\":%s", DoubleFormat.decimalOrWhole(gauge.value())), m.getId().getBaseUnit());
-                }, (counter) -> {
+                .forEach(m -> m.use(gauge -> log(m.getId(), String.format("\"value\":%s", DoubleFormat.wholeOrDecimal(gauge.value())), m.getId().getBaseUnit()), counter -> {
                     double count = counter.count();
                     if (count > 0) {
                         log(m.getId(), String.format("\"count\":%s", count), m.getId().getBaseUnit());
                     }
-                }, (timer) -> {
+                }, timer -> {
                     HistogramSnapshot snapshot = timer.takeSnapshot();
                     long count = snapshot.count();
                     if (count > 0) {
-                        log(m.getId(), String.format("\"count\":%s,\"max\":%s,\"avg\":%s", count, DoubleFormat.decimalOrWhole(snapshot.max(TimeUnit.MILLISECONDS)),
-                                DoubleFormat.decimalOrWhole(snapshot.mean(TimeUnit.MILLISECONDS))), "milliseconds");
+                        log(m.getId(), String.format("\"count\":%s,\"max\":%s,\"avg\":%s", count, DoubleFormat.wholeOrDecimal(snapshot.max(TimeUnit.MILLISECONDS)),
+                                DoubleFormat.wholeOrDecimal(snapshot.mean(TimeUnit.MILLISECONDS))), "milliseconds");
                     }
-                }, (summary) -> {
+                }, summary -> {
                     HistogramSnapshot snapshot = summary.takeSnapshot();
                     long count = snapshot.count();
                     if (count > 0) {
-                        log(m.getId(), String.format("\"count\":%s,\"max\":%s,\"avg\":%s", count, DoubleFormat.decimalOrWhole(snapshot.max(TimeUnit.MILLISECONDS)),
-                                DoubleFormat.decimalOrWhole(snapshot.mean(TimeUnit.MILLISECONDS))), "milliseconds");
+                        log(m.getId(), String.format("\"count\":%s,\"max\":%s,\"avg\":%s", count, DoubleFormat.wholeOrDecimal(snapshot.max(TimeUnit.MILLISECONDS)),
+                                DoubleFormat.wholeOrDecimal(snapshot.mean(TimeUnit.MILLISECONDS))), "milliseconds");
                     }
-                }, (longTaskTimer) -> {
-                    log(m.getId(), String.format("\"active\":%s,\"duration\":%s", longTaskTimer.activeTasks(), DoubleFormat.decimalOrWhole(longTaskTimer.duration(TimeUnit.SECONDS))), "seconds");
-                }, (timeGauge) -> {
-                    log(m.getId(), String.format("\"value\":%s", DoubleFormat.decimalOrWhole(timeGauge.value(TimeUnit.MILLISECONDS))), "milliseconds");
-                }, (counter) -> {
+                }, longTaskTimer -> log(m.getId(), String.format("\"active\":%s,\"duration\":%s", longTaskTimer.activeTasks(), DoubleFormat.wholeOrDecimal(longTaskTimer.duration(TimeUnit.SECONDS))), "seconds"), timeGauge -> log(m.getId(), String.format("\"value\":%s", DoubleFormat.wholeOrDecimal(timeGauge.value(TimeUnit.MILLISECONDS))), "milliseconds"), counter -> {
                     double count = counter.count();
                     if (count > 0) {
                         log(m.getId(), String.format("\"count\":%s", count), m.getId().getBaseUnit());
                     }
-                }, (timer) -> {
+                }, timer -> {
                     double count = timer.count();
                     if (count > 0) {
-                        log(m.getId(), String.format("\"count\":%s,\"total\":%s,\"avg\":%s", count, DoubleFormat.decimalOrWhole(timer.totalTime(TimeUnit.MILLISECONDS)),
-                                DoubleFormat.decimalOrWhole(timer.mean(TimeUnit.MILLISECONDS))), "milliseconds");
+                        log(m.getId(), String.format("\"count\":%s,\"total\":%s,\"avg\":%s", count, DoubleFormat.wholeOrDecimal(timer.totalTime(TimeUnit.MILLISECONDS)),
+                                DoubleFormat.wholeOrDecimal(timer.mean(TimeUnit.MILLISECONDS))), "milliseconds");
                     }
-                }, (meter) -> {
-                    log(m.getId(), StreamSupport.stream(meter.measure().spliterator(), false).map(ms ->
-                            "\"" + ms.getStatistic().getTagValueRepresentation() + "\":" + DoubleFormat.decimalOrWhole(ms.getValue())).collect(Collectors.joining(",")), m.getId().getBaseUnit());
-                }));
+                }, meter -> log(m.getId(), StreamSupport.stream(meter.measure().spliterator(), false).map(ms ->
+                        "\"" + ms.getStatistic().getTagValueRepresentation() + "\":" + DoubleFormat.wholeOrDecimal(ms.getValue())).collect(Collectors.joining(",")), m.getId().getBaseUnit())));
     }
 
     private void log(Meter.Id id, String values, String unit) {
-        String tags = id.getTags().stream().map(t -> "\"" + t.getKey() + "\":\"" + t.getValue() + "\"").collect(Collectors.joining(","));
-        String name = id.getName();
+        if (log.isInfoEnabled()) {
+            String tags = id.getTags().stream().map(t -> "\"" + t.getKey() + "\":\"" + t.getValue() + "\"").collect(Collectors.joining(","));
+            String name = id.getName();
 
-        log.info(String.format("%s={\"tags\":{%s}, \"values\":{%s}, \"unit\":\"%s\"}", name, tags, values, unit));
+            log.info(String.format("%s={\"tags\":{%s}, \"values\":{%s}, \"unit\":\"%s\"}", name, tags, values, unit));
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package fr.nduheron.poc.springrestapi.tools.log;
 
-import com.google.common.base.Predicate;
 import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
 
-import static com.google.common.base.Predicates.*;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Filtre permettant de logger les requêtes et réponses de tous les appels REST.
@@ -30,42 +32,41 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
     private static final String PATTERN_REPLACER = "\"$1\":\"xxxxx\"";
     private static final String OBFUSCATE_VALUE = "xxxxx";
 
-    private List<String> obfuscateParams;
-    private List<String> obfuscateHeader;
+    private final LogProperties properties;
     private Predicate<String> noFilterPathMatcher;
 
-    public ApiLoggingFilter(String logFilterPath, List<String> logExcludePaths,
-                            List<String> obfuscateParams, List<String> obfuscateHeader) {
-        this.obfuscateParams = obfuscateParams;
-        this.obfuscateHeader = obfuscateHeader;
+    public ApiLoggingFilter(LogProperties properties) {
+        this.properties = properties;
 
-        Predicate<String> includePathMatcher = not(new AntPathPredicate(logFilterPath));
-        List<Predicate<String>> excludesAntMatchers = new ArrayList<>();
-        for (String exclude : logExcludePaths) {
-            excludesAntMatchers.add(new AntPathPredicate(exclude));
-        }
-        noFilterPathMatcher = or(includePathMatcher, and(excludesAntMatchers));
+        noFilterPathMatcher = isNotBlank(properties.getPath()) ? new AntPathPredicate(properties.getPath()).negate() : s -> true;
+
+        properties.getExcludePaths().stream()
+                .map(antPattern -> (Predicate<String>) new AntPathPredicate(antPattern))
+                .reduce(Predicate::or)
+                .ifPresent(excludePath -> noFilterPathMatcher = noFilterPathMatcher.or(excludePath));
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        ContentCachingRequestWrapper requestToUse = new ContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper responseToUse = new ContentCachingResponseWrapper(response);
+        HttpServletRequest requestToUse = properties.isBodyEnabled() ? new ContentCachingRequestWrapper(request) : request;
+        HttpServletResponse responseToUse = properties.isBodyEnabled() ? new ContentCachingResponseWrapper(response) : response;
         long debut = System.currentTimeMillis();
         try {
             filterChain.doFilter(requestToUse, responseToUse);
         } finally {
             long fin = System.currentTimeMillis();
-            if (response.getStatus() >= 500) {
+            if (response.getStatus() >= 500 && LOG.isErrorEnabled()) {
                 LOG.error(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
-            } else if (response.getStatus() >= 400) {
+            } else if (response.getStatus() >= 400 && LOG.isWarnEnabled()) {
                 LOG.warn(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
             } else if (LOG.isInfoEnabled()) {
                 LOG.info(buildHttpModel(requestToUse, responseToUse, fin - debut).toString());
             }
-            responseToUse.copyBodyToResponse();
+            if (properties.isBodyEnabled()) {
+                ((ContentCachingResponseWrapper) responseToUse).copyBodyToResponse();
+            }
         }
     }
 
@@ -88,12 +89,14 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
             httpModel.setResponseHeaders(getResponseHeaders(response));
         }
 
-        if (LOG.isDebugEnabled() || response.getStatus() >= 400) {
-            httpModel.setRequestContent(getRequestContent(request));
-        }
+        if (properties.isBodyEnabled()) {
+            if (LOG.isDebugEnabled() || response.getStatus() >= 400) {
+                httpModel.setRequestContent(getRequestContent(request));
+            }
 
-        if (LOG.isDebugEnabled()) {
-            httpModel.setResponseContent(getResponseContent(response));
+            if (LOG.isDebugEnabled()) {
+                httpModel.setResponseContent(getResponseContent(response));
+            }
         }
 
         return httpModel;
@@ -118,8 +121,8 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
 
     private String obfuscate(String str) {
         String res = str;
-        for (String param : obfuscateParams) {
-            res = res.replaceAll("(?i)\"(\\w*(?:" + param + "))\"\\s*:\\s*\".+?\"", PATTERN_REPLACER);
+        for (String param : properties.getObfuscateParams()) {
+            res = res.replaceAll("(?i)\"(\\w*(" + param + "))\"\\s*:\\s*\".+?\"", PATTERN_REPLACER);
         }
         return res;
     }
@@ -147,7 +150,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         Map<String, String> requestHeaders = new HashMap<>();
         while (headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
-            requestHeaders.put(key, obfuscateHeader.contains(key) ? OBFUSCATE_VALUE : request.getHeader(key));
+            requestHeaders.put(key, properties.getObfuscateHeader().contains(key) ? OBFUSCATE_VALUE : request.getHeader(key));
         }
         return requestHeaders;
     }
@@ -155,14 +158,14 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
     private Map<String, String> getResponseHeaders(final HttpServletResponse response) {
         Map<String, String> responseHeaders = new HashMap<>();
         for (String key : response.getHeaderNames()) {
-            responseHeaders.put(key, obfuscateHeader.contains(key) ? OBFUSCATE_VALUE : response.getHeader(key));
+            responseHeaders.put(key, properties.getObfuscateHeader().contains(key) ? OBFUSCATE_VALUE : response.getHeader(key));
         }
         return responseHeaders;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return noFilterPathMatcher.apply(request.getRequestURI());
+        return noFilterPathMatcher.test(request.getRequestURI());
     }
 
 }

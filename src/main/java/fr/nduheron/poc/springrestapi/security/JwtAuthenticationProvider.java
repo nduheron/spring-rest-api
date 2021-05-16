@@ -1,6 +1,5 @@
 package fr.nduheron.poc.springrestapi.security;
 
-import com.google.common.collect.Lists;
 import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationToken;
 import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
@@ -10,6 +9,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Construit l'{@link Authentication} à partir du token JWT
@@ -30,7 +31,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         MDC.put("user", user.getLogin());
 
         return new JwtAuthenticationToken(user,
-                Lists.newArrayList(new SimpleGrantedAuthority(PREFIX_ROLE + user.getRole().name())));
+                Arrays.asList(new SimpleGrantedAuthority(PREFIX_ROLE + user.getRole().name())));
     }
 
     @Override

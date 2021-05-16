@@ -12,31 +12,26 @@ import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
 
+@Transactional
 public class UserSteps extends AbstractCucumberSteps {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private MessageSource messageSource;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -122,14 +117,6 @@ public class UserSteps extends AbstractCucumberSteps {
         assertNull(user.getDerniereConnexion());
     }
 
-    @Then("^email password is sent$")
-    public void email_password_is_send() throws Throwable {
-        ArgumentCaptor<SimpleMailMessage> capture = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        verify(javaMailSender).send(capture.capture());
-        assertEquals(messageSource.getMessage("user.mdp.create.objet", null, Locale.FRANCE),
-                capture.getValue().getSubject());
-        assertNotNull(capture.getValue().getText());
-    }
 
     @When("^I update (.+) with superman data$")
     public void i_update_user_with_superman_data(String login) {
@@ -164,15 +151,6 @@ public class UserSteps extends AbstractCucumberSteps {
     public void the_password_to_has_changed(String login) {
         User user = userRepository.getOne(login);
         assertFalse(passwordEncoder.matches("12345", user.getPassword()));
-    }
-
-    @Then("^email reinit password is sent$")
-    public void email_reinit_password_is_send() throws Throwable {
-        ArgumentCaptor<SimpleMailMessage> capture = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        verify(javaMailSender).send(capture.capture());
-        assertEquals(messageSource.getMessage("user.mdp.reinit.objet", null, Locale.ENGLISH),
-                capture.getValue().getSubject());
-        assertNotNull(capture.getValue().getText());
     }
 
 }

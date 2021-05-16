@@ -1,7 +1,5 @@
 package fr.nduheron.poc.springrestapi.tools.security;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,8 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Matcher permettant de valider si une url est soumise à l'authentification ou
@@ -34,32 +31,33 @@ public class SecurityMatcher implements RequestMatcher, Predicate<String> {
             // si aucune configuration de spécifiée, on protège toutes les urls
             includePathMatcher = new AntPathPredicate("/**");
         } else {
-            List<Predicate<String>> includesMatcher = new ArrayList<>(securityProperties.getIncludes().size());
-            for (SecurityConfigProperties.Matcher match : securityProperties.getIncludes()) {
-                includesMatcher.add(new AntPathPredicate(match.getAntPattern()));
-            }
-            includePathMatcher = Predicates.or(includesMatcher);
+            includePathMatcher = securityProperties.getIncludes().stream()
+                    .map(matcher -> (Predicate<String>) new AntPathPredicate(matcher.getAntPattern()))
+                    .reduce(Predicate::or)
+                    .orElse(t -> false);
         }
 
         if (CollectionUtils.isEmpty(securityProperties.getExcludes())) {
             pathMatcher = includePathMatcher;
         } else {
-            List<Predicate<String>> excludesAntMatchers = new ArrayList<>();
-            for (SecurityConfigProperties.Matcher match : securityProperties.getExcludes()) {
-                excludesAntMatchers.add(new AntPathPredicate(match.getAntPattern()));
-            }
-            pathMatcher = Predicates.and(includePathMatcher, Predicates.not(Predicates.or(excludesAntMatchers)));
+            pathMatcher = includePathMatcher.and(
+                    securityProperties.getExcludes().stream()
+                            .map(matcher -> (Predicate<String>) new AntPathPredicate(matcher.getAntPattern()))
+                            .reduce(Predicate::or)
+                            .orElse(t -> false)
+                            .negate()
+            );
         }
     }
 
     @Override
     public boolean matches(HttpServletRequest request) {
-        return apply(getRequestPath(request));
+        return test(getRequestPath(request));
     }
 
     @Override
-    public boolean apply(String input) {
-        return pathMatcher.apply(input);
+    public boolean test(String input) {
+        return pathMatcher.test(input);
     }
 
     private String getRequestPath(HttpServletRequest request) {

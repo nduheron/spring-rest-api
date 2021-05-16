@@ -4,16 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
-import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.dbunit.IDatabaseTester;
-import org.dbunit.dataset.CompositeDataSet;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,10 +19,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class CommonSteps extends AbstractCucumberSteps {
-
-    @Autowired
-    private IDatabaseTester dbTester;
+public class ApiSteps extends AbstractCucumberSteps {
 
     @Then("^I get a (.+) response$")
     public void I_get_a_response(final String statusCode) {
@@ -67,19 +57,6 @@ public class CommonSteps extends AbstractCucumberSteps {
         }
     }
 
-    @Given("^(.+) datasets$")
-    public void loadDatasets(String datasetsfilename) throws Exception {
-        String[] dataSets = datasetsfilename.split(",");
-        IDataSet[] idataSets = new IDataSet[dataSets.length];
-        for (int i = 0; i < dataSets.length; i++) {
-            idataSets[i] = new FlatXmlDataSetBuilder()
-                    .build(getClass().getResourceAsStream("/datasets/" + dataSets[i] + ".xml"));
-        }
-
-        dbTester.setDataSet(new CompositeDataSet(idataSets));
-        dbTester.onSetup();
-    }
-
     @Given("^version (\\d)")
     public void version(Integer version) {
         holder.setVersion(version);
@@ -88,16 +65,6 @@ public class CommonSteps extends AbstractCucumberSteps {
     @Before
     public void version() {
         holder.setVersion(1);
-    }
-
-    @After("@dbunit")
-    public void closeDbTester() throws Exception {
-        dbTester.onTearDown();
-    }
-
-    @Before
-    public void initAllScenarii() throws Exception {
-        Mockito.reset(javaMailSender);
     }
 
 }

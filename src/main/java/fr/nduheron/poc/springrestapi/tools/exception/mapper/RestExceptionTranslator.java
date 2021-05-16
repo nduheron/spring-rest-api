@@ -27,10 +27,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -119,10 +116,11 @@ public class RestExceptionTranslator {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<Error> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException ex) {
         List<Error> errors;
-        if (ex.getRequiredType().isEnum()) {
-            errors = Collections.singletonList(new Error(Error.INVALID_FORMAT, "Allowable values: " + Arrays.stream(ex.getRequiredType().getEnumConstants()).map(Object::toString).collect(joining(", ")), ex.getName()));
+        Class<?> requiredType = Objects.requireNonNull(ex.getRequiredType());
+        if (requiredType.isEnum()) {
+            errors = Collections.singletonList(new Error(Error.INVALID_FORMAT, "Allowable values: " + Arrays.stream(requiredType.getEnumConstants()).map(Object::toString).collect(joining(", ")), ex.getName()));
         } else {
-            errors = Collections.singletonList(new Error(Error.INVALID_FORMAT, ex.getRootCause().getMessage(), ex.getName()));
+            errors = Collections.singletonList(new Error(Error.INVALID_FORMAT, Objects.requireNonNull(ex.getRootCause()).getMessage(), ex.getName()));
         }
 
         return errors;
@@ -136,7 +134,7 @@ public class RestExceptionTranslator {
     public List<Error> handleConstraintViolationException(final ConstraintViolationException ex) {
         List<Error> errors = new ArrayList<>(ex.getConstraintViolations().size());
 
-        for (ConstraintViolation objectError : ex.getConstraintViolations()) {
+        for (ConstraintViolation<?> objectError : ex.getConstraintViolations()) {
             String[] path = StringUtils.splitPreserveAllTokens(objectError.getPropertyPath().toString(), ".");
             String attribute = path[path.length - 1];
             errors.add(new Error(Error.INVALID_FORMAT, objectError.getMessage(), attribute));
