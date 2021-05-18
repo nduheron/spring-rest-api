@@ -1,75 +1,72 @@
-/**
- *
- */
 package fr.nduheron.poc.springrestapi.tools.security.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import fr.nduheron.poc.springrestapi.tools.exception.TechnicalException;
 import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
-import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.security.Key;
+import java.text.ParseException;
+import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Service métier pour la gestion du jeton.
- *
  */
 @Service
 public class TokenService {
 
     private static final String USER_INFOS = "userInfos";
 
-    @Value("${security.token.ttl}")
-    private String tokenTTL;
+    private final Long tokenTTL;
+    private final RSAKey key;
+    private final ObjectMapper objectMapper;
 
-    @Value("${security.token.secret}")
-    private String tokenSecret;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public TokenService(@Value("${security.token.ttl}") Long tokenTTL, @Value("${security.token.secret}") String tokenSecret, ObjectMapper objectMapper) throws JOSEException {
+        this.tokenTTL = tokenTTL;
+        this.key = new RSAKeyGenerator(2048)
+                .keyID(tokenSecret)
+                .generate();
+        this.objectMapper = objectMapper;
+    }
 
     /**
      * Création du jeton avec les données utilisateurs en paramètre
      */
     public Token createToken(final Object userInfos) {
         try {
-            // The JWT signature algorithm we will be using to sign the token
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+            JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                    .type(JOSEObjectType.JWT)
+                    .keyID(key.getKeyID())
+                    .build();
 
-            long nowMillis = System.currentTimeMillis();
-            Date now = new Date(nowMillis);
+            Instant now = Instant.now();
 
-            // We will sign our JWT with our ApiKey secret
-            byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(tokenSecret);
-            Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+            JWTClaimsSet payload = new JWTClaimsSet.Builder()
+                    .issueTime(Date.from(now))
+                    .expirationTime(Date.from(now.plusSeconds(tokenTTL)))
+                    .claim(USER_INFOS, objectMapper.writeValueAsString(userInfos))
+                    .build();
 
-            // Let's set the JWT Claims
-            JwtBuilder builder = Jwts.builder().setIssuedAt(now).signWith(signatureAlgorithm, signingKey);
 
-            if (userInfos != null) {
-                Map<String, Object> claims = new HashMap<>();
-                claims.put(USER_INFOS, objectMapper.writeValueAsString(userInfos));
-                builder.setClaims(claims);
-            }
-            // if it has been specified, let's add the expiration
-            Long ttl = Long.parseLong(tokenTTL);
-            long expMillis = nowMillis + ttl;
-            Date exp = new Date(expMillis);
-            builder.setExpiration(exp);
+            SignedJWT signedJWT = new SignedJWT(header, payload);
+            signedJWT.sign(new RSASSASigner(key.toRSAPrivateKey()));
+            String jwt = signedJWT.serialize();
 
-            return new Token(builder.compact(), ttl);
-        } catch (JsonProcessingException e) {
+            return new Token(jwt, tokenTTL);
+        } catch (Exception e) {
             throw new TechnicalException("Erreur lors de la creation du token JWT", e);
         }
     }
@@ -79,12 +76,14 @@ public class TokenService {
      */
     public <T> T extractToken(String tokenString, Class<T> type) {
         try {
-            Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(tokenSecret))
-                    .parseClaimsJws(tokenString).getBody();
-            return objectMapper.readValue((String) claims.get(USER_INFOS), type);
-        } catch (ExpiredJwtException e) {
-            throw new CredentialsExpiredException("La session utilisateur a expirée.", e);
-        } catch (IOException e) {
+
+            SignedJWT jwt = SignedJWT.parse(tokenString);
+            boolean isValid = jwt.verify(new RSASSAVerifier(key.toRSAPublicKey()));
+            if (!isValid) {
+                throw new BadCredentialsException("Invalid JWT!!!");
+            }
+            return objectMapper.readValue((String) jwt.getJWTClaimsSet().getClaim(USER_INFOS), type);
+        } catch (ParseException | JOSEException | JsonProcessingException e) {
             throw new TechnicalException("Erreur lors de la lecture du token JWT", e);
         }
     }

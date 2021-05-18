@@ -1,5 +1,6 @@
 package fr.nduheron.poc.springrestapi.config;
 
+import fr.nduheron.poc.springrestapi.tools.security.RestAuthenticationEntryPoint;
 import fr.nduheron.poc.springrestapi.tools.security.SecurityMatcher;
 import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtTokenAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +51,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        HttpSecurity security = http.csrf().disable().cors().disable().exceptionHandling().and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
-        security.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), FilterSecurityInterceptor.class);
-        security.headers().cacheControl().disable().frameOptions().disable();
+        http.csrf().disable()
+                .cors().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint()).and()
+                .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), FilterSecurityInterceptor.class)
+                .headers()
+                .cacheControl().disable()
+                .frameOptions().disable();
     }
 }

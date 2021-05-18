@@ -17,7 +17,6 @@ Cette whiteapp à pour but de montrer comment créer une API Rest avec springboo
 - La gestion des erreurs
 - Mapping entité->DTO avec [Mapstruct](http://mapstruct.org/)
 - Versionning Base de données avec [Flyway](https://flywaydb.org/)
-- Versionning des APIs
 
 ## Structure du projet
 
