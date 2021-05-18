@@ -1,10 +1,7 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
 import fr.nduheron.poc.springrestapi.tools.cache.Etag;
-import fr.nduheron.poc.springrestapi.tools.cache.EtagEvict;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.tools.openapi.annotations.ApiDefaultResponse400;
-import fr.nduheron.poc.springrestapi.tools.openapi.annotations.AuthPasswordOperation;
 import fr.nduheron.poc.springrestapi.user.ExistException;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
@@ -12,12 +9,14 @@ import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,8 @@ import javax.validation.Valid;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
+
+import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.*;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -61,14 +62,14 @@ public class UserController {
     @Autowired
     private UserMapper mapper;
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "text/csv;charset=UTF-8"})
-    @AuthPasswordOperation(summary = "Rechercher tous les utilisateurs")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv;charset=UTF-8"})
+    @Operation(summary = "Rechercher tous les utilisateurs", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @ApiResponse(responseCode = "200", content = {
-            @Content(mediaType = MediaType.APPLICATION_JSON_UTF8_VALUE, array = @ArraySchema(schema = @Schema(implementation = UserDto.class))),
+            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = UserDto.class))),
             @Content(mediaType = "text/csv;charset=UTF-8", array = @ArraySchema(schema = @Schema(implementation = UserDto.class)), examples = @ExampleObject(value = "LOGIN,NOM,PRENOM,EMAIL,ROLE\nbatman,Wayne,Bruce,batman@yopmail.fr,SYSTEM")),
     })
     @RolesAllowed({"ADMIN", "SYSTEM"})
-    @Etag(cache = "etag-users")
+    @Etag
     public List<UserDto> findUsers() {
 
         List<User> findAll = repo.findAll();
@@ -76,9 +77,9 @@ public class UserController {
     }
 
     @GetMapping("{login}")
-    @AuthPasswordOperation(summary = "Rechercher un utilisateur")
+    @Operation(summary = "Rechercher un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN", "SYSTEM"})
-    @Etag(cache = "etag-users")
+    @Etag
     public UserDto findUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);
         return mapper.toDto(user);
@@ -86,22 +87,20 @@ public class UserController {
 
     @DeleteMapping("{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @AuthPasswordOperation(summary = "Supprimer un utilisateur")
+    @Operation(summary = "Supprimer un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN"})
-    @EtagEvict(cache = "etag-users", evictParentResource = true)
     public void deleteUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         repo.findById(login).ifPresent(user -> repo.delete(user));
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @AuthPasswordOperation(summary = "Créer un utilisateur")
+    @Operation(summary = "Créer un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN"})
     @ApiResponse(responseCode = "400", content = @Content(array = @ArraySchema(schema = @Schema(ref = "Error")), examples = {
-            @ExampleObject(ref = "InvalidFormat"),
+            @ExampleObject(ref = INVALID_FORMAT),
             @ExampleObject(name = "AlreadyExist", value = "[{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}]")
     }))
-    @EtagEvict(cache = "etag-users")
     public UserDto saveUser(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
         Optional<User> optionalUser = repo.findById(createUser.getLogin());
@@ -130,10 +129,9 @@ public class UserController {
 
     @PutMapping("{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @AuthPasswordOperation(summary = "Modifier un utilisateur")
+    @Operation(summary = "Modifier un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
+    @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
     @RolesAllowed({"ADMIN"})
-    @EtagEvict(cache = "etag-users", evictParentResource = true)
-    @ApiDefaultResponse400
     public void updateUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
 
@@ -150,7 +148,7 @@ public class UserController {
 
     @PostMapping("/{login}/attributes/password")
     @ResponseStatus(HttpStatus.CREATED)
-    @AuthPasswordOperation(summary = "Réinitialiser le mot de passe")
+    @Operation(summary = "Réinitialiser le mot de passe", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @PreAuthorize("@securityService.isUserAuthorized(#login)")
     public void resetPassword(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
         User user = repo.getOne(login);

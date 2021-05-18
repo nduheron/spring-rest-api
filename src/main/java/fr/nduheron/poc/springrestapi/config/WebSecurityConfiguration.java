@@ -1,21 +1,18 @@
 package fr.nduheron.poc.springrestapi.config;
 
-import fr.nduheron.poc.springrestapi.tools.security.SecurityMatcher;
-import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtTokenAuthenticationProcessingFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationToken;
+import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationTokenConverter;
+import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+
+import java.util.Collections;
 
 /**
  * Configuration de la sécurité
@@ -23,36 +20,20 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-@ConditionalOnProperty(value = "security.config.enable", havingValue = "true")
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private AuthenticationProvider jwtAuthenticationProvider;
-
-    @Autowired
-    private SecurityMatcher matcher;
-
-    protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
-        JwtTokenAuthenticationProcessingFilter filter = new JwtTokenAuthenticationProcessingFilter(matcher, jwtAuthenticationProvider);
-        filter.setAuthenticationManager(authenticationManager());
-        return filter;
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(jwtAuthenticationProvider);
-    }
+public class WebSecurityConfiguration {
+    private static final String PREFIX_ROLE = "ROLE_";
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        HttpSecurity security = http.csrf().disable().cors().disable().exceptionHandling().and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
-        security.addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), FilterSecurityInterceptor.class);
-        security.headers().cacheControl().disable().frameOptions().disable();
+    @Bean
+    protected JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter(ObjectMapper mapper) {
+        return jwt -> {
+            UserDto user = mapper.convertValue(jwt.getClaims(), UserDto.class);
+            return new JwtAuthenticationToken(user,
+                    Collections.singletonList(new SimpleGrantedAuthority(PREFIX_ROLE + user.getRole().name())));
+        };
     }
 }

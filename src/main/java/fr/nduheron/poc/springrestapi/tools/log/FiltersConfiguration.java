@@ -1,10 +1,6 @@
-package fr.nduheron.poc.springrestapi.config;
+package fr.nduheron.poc.springrestapi.tools.log;
 
-import com.google.common.collect.Lists;
-import fr.nduheron.poc.springrestapi.tools.log.ApiLoggingFilter;
-import fr.nduheron.poc.springrestapi.tools.log.CorrelationIdFilter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -14,27 +10,16 @@ import org.springframework.context.annotation.Configuration;
  * Configuration des filtres HTTP
  */
 @Configuration
-@ConditionalOnProperty(name = "log.filter.path")
+@ConditionalOnBean(LogProperties.class)
 public class FiltersConfiguration {
-
 
     private static final int LOG_ORDER = SecurityProperties.DEFAULT_FILTER_ORDER - 1;
     private static final int CORRELATION_ORDER = SecurityProperties.DEFAULT_FILTER_ORDER - 2;
 
-    @Value("${log.filter.path}")
-    private String logFilterPath;
-    @Value("${log.filter.excludePaths:}")
-    private String[] logExcludePaths;
-    @Value("${log.filter.obfuscateParams:}")
-    private String[] obfuscateParams;
-    @Value("${log.filter.obfuscateHeader:}")
-    private String[] obfuscateHeader;
-
     @Bean
-    FilterRegistrationBean<ApiLoggingFilter> loggingFilterRegistration() {
+    FilterRegistrationBean<ApiLoggingFilter> loggingFilterRegistration(LogProperties logProperties) {
         FilterRegistrationBean<ApiLoggingFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new ApiLoggingFilter(logFilterPath, Lists.newArrayList(logExcludePaths),
-                Lists.newArrayList(obfuscateParams), Lists.newArrayList(obfuscateHeader)));
+        registration.setFilter(new ApiLoggingFilter(logProperties));
         registration.setName(ApiLoggingFilter.class.getSimpleName());
         // Le filtre doit se lancer avant celui de la sécurité pour pouvoir logguer le
         // bon code retour HTTP

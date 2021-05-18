@@ -1,5 +1,7 @@
 package fr.nduheron.poc.springrestapi.tools.exception;
 
+import java.io.Serializable;
+
 /**
  * Exception métier. On utilise cette exception pour retournée une erreur 409.
  */
@@ -11,16 +13,16 @@ public abstract class FunctionalException extends Exception {
      * La clé i18n permettant au client de recevoir un message dans la langue
      * souhaitée
      */
-    private String i18nKey;
+    private final String i18nKey;
 
     /**
      * Les arguments du message d'erreur
      */
-    private String[] args;
+    private final String[] args;
 
-    private Object additionalsInformations;
+    private Serializable additionalsInformations;
 
-    public FunctionalException(String i18nKey, String... args) {
+    protected FunctionalException(String i18nKey, String... args) {
         this.i18nKey = i18nKey;
         this.args = args;
     }
@@ -39,11 +41,11 @@ public abstract class FunctionalException extends Exception {
      */
     public abstract String getCode();
 
-    public Object getAdditionalsInformations() {
+    public Serializable getAdditionalsInformations() {
         return additionalsInformations;
     }
 
-    public void setAdditionalsInformations(Object additionalsInformations) {
+    public void setAdditionalsInformations(Serializable additionalsInformations) {
         this.additionalsInformations = additionalsInformations;
     }
 }

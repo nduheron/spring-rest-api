@@ -8,19 +8,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-
-import javax.transaction.Transactional;
 
 
-@Transactional
 public abstract class AbstractCucumberSteps {
-
-
     @Autowired
     protected Holder holder;
-    @Autowired
-    protected JavaMailSender javaMailSender;
     @Autowired
     protected ObjectMapper objectMapper;
     @LocalServerPort

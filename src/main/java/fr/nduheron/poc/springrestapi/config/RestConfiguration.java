@@ -1,9 +1,10 @@
 package fr.nduheron.poc.springrestapi.config;
 
-import fr.nduheron.poc.springrestapi.tools.cache.EtagEvictInterceptor;
 import fr.nduheron.poc.springrestapi.tools.cache.EtagInterceptor;
+import fr.nduheron.poc.springrestapi.tools.log.LogProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +32,7 @@ public class RestConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        if (env.containsProperty("spring.hazelcast.config")) {
-            registry.addInterceptor(new EtagInterceptor(cacheManager));
-            registry.addInterceptor(new EtagEvictInterceptor(cacheManager));
-        }
+        registry.addInterceptor(new EtagInterceptor(env));
     }
 
     /**
@@ -71,6 +69,12 @@ public class RestConfiguration implements WebMvcConfigurer {
                 return DateTimeFormatter.ISO_DATE.format(object);
             }
         };
+    }
+
+    @Bean
+    @ConfigurationProperties("log.filter")
+    LogProperties logProperties() {
+        return new LogProperties();
     }
 
 }

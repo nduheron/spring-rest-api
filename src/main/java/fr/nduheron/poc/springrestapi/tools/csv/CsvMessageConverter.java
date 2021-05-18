@@ -1,6 +1,6 @@
 package fr.nduheron.poc.springrestapi.tools.csv;
 
-import com.opencsv.CSVWriter;
+import com.opencsv.ICSVWriter;
 import com.opencsv.bean.MappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
 public class CsvMessageConverter<T> extends AbstractHttpMessageConverter<List<T>> {
-    public static final MediaType MEDIA_TYPE = new MediaType("text", "csv", Charset.forName("utf-8"));
+    public static final MediaType MEDIA_TYPE = new MediaType("text", "csv", StandardCharsets.UTF_8);
 
     public CsvMessageConverter() {
         super(MEDIA_TYPE);
@@ -44,7 +44,7 @@ public class CsvMessageConverter<T> extends AbstractHttpMessageConverter<List<T>
             }
 
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(outputStream)
-                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER).withOrderedResults(true).withMappingStrategy(strategy)
+                    .withQuotechar(ICSVWriter.NO_QUOTE_CHARACTER).withOrderedResults(true).withMappingStrategy(strategy)
                     .build();
             beanToCsv.write(reponse);
         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {

@@ -1,7 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools;
 
-import com.google.common.base.Predicate;
 import org.springframework.util.AntPathMatcher;
+
+import java.util.function.Predicate;
 
 public class AntPathPredicate implements Predicate<String> {
 
@@ -13,7 +14,7 @@ public class AntPathPredicate implements Predicate<String> {
     }
 
     @Override
-    public boolean apply(String input) {
+    public boolean test(String input) {
         return matcher.match(antPattern, input);
     }
 }
