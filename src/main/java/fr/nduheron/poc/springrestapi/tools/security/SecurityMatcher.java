@@ -1,13 +1,9 @@
 package fr.nduheron.poc.springrestapi.tools.security;
 
 import fr.nduheron.poc.springrestapi.tools.AntPathPredicate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.function.Predicate;
 
@@ -15,17 +11,11 @@ import java.util.function.Predicate;
  * Matcher permettant de valider si une url est soumise à l'authentification ou
  * non. Si aucune configuration de spécifiée, on protège toutes les urls.
  */
-@ConditionalOnProperty(value = "security.config.enable", havingValue = "true")
-@Component
 public class SecurityMatcher implements RequestMatcher, Predicate<String> {
 
-    @Autowired
-    private SecurityConfigProperties securityProperties;
+    private final Predicate<String> pathMatcher;
 
-    private Predicate<String> pathMatcher;
-
-    @PostConstruct
-    void init() {
+    public SecurityMatcher(SecurityConfigProperties securityProperties) {
         Predicate<String> includePathMatcher;
         if (CollectionUtils.isEmpty(securityProperties.getIncludes())) {
             // si aucune configuration de spécifiée, on protège toutes les urls

@@ -29,6 +29,7 @@
         <dependency-check-maven.version>6.1.6</dependency-check-maven.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <docker-maven-plugin.version>0.35.0</docker-maven-plugin.version>
+        <bouncycastle.version>1.68</bouncycastle.version>
     </properties>
 
 
@@ -66,6 +67,11 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
         </dependency>
 
         <!-- MAIL -->

@@ -1,4 +1,4 @@
-package fr.nduheron.poc.springrestapi.tools.csv;
+package fr.nduheron.poc.springrestapi.user.dto;
 
 import com.opencsv.bean.AbstractBeanField;
 import fr.nduheron.poc.springrestapi.user.model.Role;

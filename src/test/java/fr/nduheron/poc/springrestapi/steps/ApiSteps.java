@@ -3,7 +3,7 @@ package fr.nduheron.poc.springrestapi.steps;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
-import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
+import fr.nduheron.poc.springrestapi.user.dto.login.Token;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

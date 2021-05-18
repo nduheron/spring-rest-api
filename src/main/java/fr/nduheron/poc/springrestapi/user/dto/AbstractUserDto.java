@@ -2,7 +2,6 @@ package fr.nduheron.poc.springrestapi.user.dto;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
-import fr.nduheron.poc.springrestapi.tools.csv.RoleBeanField;
 import fr.nduheron.poc.springrestapi.user.model.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 

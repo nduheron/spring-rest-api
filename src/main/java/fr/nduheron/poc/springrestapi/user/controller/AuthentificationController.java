@@ -1,14 +1,13 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import fr.nduheron.poc.springrestapi.tools.security.domain.Token;
-import fr.nduheron.poc.springrestapi.tools.security.domain.TokenRequest;
-import fr.nduheron.poc.springrestapi.tools.security.service.TokenService;
+import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtGenerator;
+import fr.nduheron.poc.springrestapi.user.dto.login.Token;
+import fr.nduheron.poc.springrestapi.user.dto.login.TokenRequest;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -35,17 +34,17 @@ import static java.lang.String.format;
 @Tag(name = "Authentification")
 public class AuthentificationController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository repo;
+    private final JwtGenerator jwtGenerator;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private UserRepository repo;
-
-    @Autowired
-    private TokenService tokenService;
-
-    @Autowired
-    private UserMapper userMapper;
+    public AuthentificationController(PasswordEncoder passwordEncoder, UserRepository repo, JwtGenerator jwtGenerator, UserMapper userMapper) {
+        this.passwordEncoder = passwordEncoder;
+        this.repo = repo;
+        this.jwtGenerator = jwtGenerator;
+        this.userMapper = userMapper;
+    }
 
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
@@ -62,7 +61,8 @@ public class AuthentificationController {
 
         if (passwordEncoder.matches(tokenRequest.getPassword(), user.get().getPassword())) {
             user.get().setDerniereConnexion(LocalDateTime.now());
-            return tokenService.createToken(userMapper.toDto(user.get()));
+            String jwt = jwtGenerator.generateToken(userMapper.toDto(user.get()), tokenRequest.getUsername());
+            return new Token(jwt, jwtGenerator.getDuration());
         }
         throw new BadCredentialsException("Login/mot de passe incorrect.");
     }

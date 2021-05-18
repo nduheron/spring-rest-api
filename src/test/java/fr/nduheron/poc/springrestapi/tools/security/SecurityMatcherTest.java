@@ -3,7 +3,6 @@ package fr.nduheron.poc.springrestapi.tools.security;
 import fr.nduheron.poc.springrestapi.tools.security.SecurityConfigProperties.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -17,16 +16,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SecurityMatcherTest {
 
-    @InjectMocks
-    private SecurityMatcher securityMatcher;
-
     @Mock
     private SecurityConfigProperties securityProperties;
 
     @Test
     public void testNoConfiguration() {
-
-        securityMatcher.init();
+        SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
 
         assertTrue(securityMatcher.test("/test1/path1"));
         assertTrue(securityMatcher.test("/test1/path2"));
@@ -40,7 +35,7 @@ public class SecurityMatcherTest {
         all.setAntPattern("/**");
         when(securityProperties.getExcludes()).thenReturn(Collections.singletonList(all));
 
-        securityMatcher.init();
+        SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
 
         assertFalse(securityMatcher.test("/test1/path1"));
         assertFalse(securityMatcher.test("/test1/path2"));
@@ -60,7 +55,7 @@ public class SecurityMatcherTest {
         excludePath2.setAntPattern("/**/path2");
         when(securityProperties.getExcludes()).thenReturn(Collections.singletonList(excludePath2));
 
-        securityMatcher.init();
+        SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
 
         assertTrue(securityMatcher.test("/test1/path1"));
         assertFalse(securityMatcher.test("/test1/path2"));

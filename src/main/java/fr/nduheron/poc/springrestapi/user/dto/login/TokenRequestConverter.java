@@ -1,7 +1,6 @@
-package fr.nduheron.poc.springrestapi.tools.security;
+package fr.nduheron.poc.springrestapi.user.dto.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.nduheron.poc.springrestapi.tools.security.domain.TokenRequest;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;

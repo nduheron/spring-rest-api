@@ -1,4 +1,4 @@
-package fr.nduheron.poc.springrestapi.tools.security.domain;
+package fr.nduheron.poc.springrestapi.user.dto.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +19,6 @@ public class Token implements Serializable {
     @JsonProperty("expires_in")
     @Schema(example = "3600", required = true)
     private long expiresIn;
-
 
     public Token(String access, long expiresIn) {
         this.access = access;
