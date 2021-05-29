@@ -1,7 +1,8 @@
-package fr.nduheron.poc.springrestapi.tools.security.autoconfigure;
+package fr.nduheron.poc.springrestapi.tools.autoconfigure.security;
 
 import fr.nduheron.poc.springrestapi.tools.security.SecurityMatcher;
 import fr.nduheron.poc.springrestapi.tools.security.WebSecurityConfigurer;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 
 
 @Configuration
+@AutoConfigureAfter({AuthenticationProviderAutoConfiguration.class, SecurityMatcherAutoConfiguration.class})
 public class WebSecurityAutoConfiguration {
 
     @Bean

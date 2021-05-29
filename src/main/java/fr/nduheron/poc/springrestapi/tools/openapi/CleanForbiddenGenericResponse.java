@@ -1,6 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools.openapi;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.findMerg
 
 
 @Component
+@ConditionalOnBean(OpenAPI.class)
 public class CleanForbiddenGenericResponse extends AbstractCleanGenericResponse {
 
     public CleanForbiddenGenericResponse() {

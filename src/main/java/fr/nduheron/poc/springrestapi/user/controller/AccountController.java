@@ -40,7 +40,7 @@ public class AccountController {
     @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
     public void changePassword(@RequestBody @Valid final ChangePasswordDto changePassword) {
         UserDto userConnecte = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = repo.getOne(userConnecte.getLogin());
+        User user = repo.getById(userConnecte.getLogin());
         if (passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
             repo.save(user);

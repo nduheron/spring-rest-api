@@ -151,7 +151,6 @@ public class RestExceptionTranslator {
         return Collections.singletonList(new Error(Error.INVALID_FORMAT, ex.getMessage(), ex.getParameterName()));
     }
 
-
     /**
      * Gestion de l'exception {@link Exception}
      */

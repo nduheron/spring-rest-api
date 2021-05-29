@@ -1,4 +1,4 @@
-package fr.nduheron.poc.springrestapi.tools.security.autoconfigure;
+package fr.nduheron.poc.springrestapi.tools.autoconfigure.security;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;

@@ -5,12 +5,14 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 /**
  * Remplace tout les media type par défaut (all value) par un media type json
  */
 @Component
+@ConditionalOnBean(OpenAPI.class)
 public class JsonDefaultMediaType implements OpenApiCustomiser {
 
     @Override

@@ -26,7 +26,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  */
 public class ApiLoggingFilter extends OncePerRequestFilter {
 
-
     private static final Logger LOG = LoggerFactory.getLogger(ApiLoggingFilter.class);
     private static final String UNKNOWN = "<unknown>";
     private static final String PATTERN_REPLACER = "\"$1\":\"xxxxx\"";

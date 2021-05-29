@@ -2,10 +2,12 @@ package fr.nduheron.poc.springrestapi.tools.openapi;
 
 import io.swagger.v3.core.util.ReflectionUtils;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.examples.Example;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -22,6 +24,7 @@ import static java.util.Optional.ofNullable;
  * Springdoc openapi ne prend pas les références des exemples <pre>@ExampleObject(ref = "InvalidFormat")</pre> ce composant permet de régler ce problème
  */
 @Component
+@ConditionalOnBean(OpenAPI.class)
 public class FixReferenceExampleResponse implements OperationCustomizer {
 
     @Override

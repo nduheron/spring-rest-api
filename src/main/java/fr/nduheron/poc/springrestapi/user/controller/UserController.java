@@ -71,7 +71,6 @@ public class UserController {
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag
     public List<UserDto> findUsers() {
-
         List<User> findAll = repo.findAll();
         return mapper.toDto(findAll);
     }
@@ -81,7 +80,7 @@ public class UserController {
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag
     public UserDto findUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
-        User user = repo.getOne(login);
+        User user = repo.getById(login);
         return mapper.toDto(user);
     }
 
@@ -151,7 +150,7 @@ public class UserController {
     @Operation(summary = "Réinitialiser le mot de passe", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @PreAuthorize("@securityService.isUserAuthorized(#login)")
     public void resetPassword(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
-        User user = repo.getOne(login);
+        User user = repo.getById(login);
         String newPassword = randomPassword();
         user.setPassword(passwordEncoder.encode(newPassword));
 

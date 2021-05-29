@@ -1,4 +1,4 @@
-package fr.nduheron.poc.springrestapi.tools.security.autoconfigure;
+package fr.nduheron.poc.springrestapi.tools.autoconfigure.security;
 
 import fr.nduheron.poc.springrestapi.tools.security.SecurityConfigProperties;
 import fr.nduheron.poc.springrestapi.tools.security.SecurityMatcher;

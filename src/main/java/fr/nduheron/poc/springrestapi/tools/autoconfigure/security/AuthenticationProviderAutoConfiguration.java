@@ -1,9 +1,11 @@
-package fr.nduheron.poc.springrestapi.tools.security.autoconfigure;
+package fr.nduheron.poc.springrestapi.tools.autoconfigure.security;
 
 import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationProvider;
 import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationTokenConverter;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -12,6 +14,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 @Configuration
+@ConditionalOnClass(AuthenticationProvider.class)
+@AutoConfigureAfter(JwtDecoderAutoConfiguration.class)
 public class AuthenticationProviderAutoConfiguration {
 
     @Bean
@@ -24,7 +28,7 @@ public class AuthenticationProviderAutoConfiguration {
     static class ConditionOnJwtAuthenticationProvider extends AllNestedConditions {
 
         ConditionOnJwtAuthenticationProvider() {
-            super(ConfigurationPhase.PARSE_CONFIGURATION);
+            super(ConfigurationPhase.REGISTER_BEAN);
         }
 
         @ConditionalOnBean(JwtDecoder.class)

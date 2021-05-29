@@ -1,14 +1,17 @@
 package fr.nduheron.poc.springrestapi.tools.actuator;
 
+import com.hazelcast.spring.cache.HazelcastCache;
 import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,6 +24,7 @@ import java.util.Collection;
 @RequestMapping("${management.endpoints.web.base-path:/actuator}/caches")
 // La ressource est active seulement si un manager de cache est configuré
 @ConditionalOnProperty("spring.hazelcast.config")
+@ConditionalOnClass(HazelcastCache.class)
 @Tag(name = "Cache")
 public class HazelcastResource {
 
@@ -43,6 +47,7 @@ public class HazelcastResource {
 
     @Operation(summary = "Flush l'ensemble des caches", hidden = true)
     @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void flush() throws NotFoundException {
         CacheManager lCacheManager = getCacheManager();
         lCacheManager.getCacheNames().forEach(id -> lCacheManager.getCache(id).clear());
@@ -56,6 +61,7 @@ public class HazelcastResource {
 
     @Operation(summary = "Flush un cache donné", hidden = true)
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void flush(@PathVariable("id") final String id) throws NotFoundException {
         final Cache cache = getCacheManager().getCache(id);
         if (cache != null) {

@@ -16,6 +16,7 @@ public class Holder {
     private HttpStatus statusCode;
     private String body;
     private int version;
+    private String etag;
 
     public Holder() {
         headers = new HttpHeaders();
@@ -23,6 +24,9 @@ public class Holder {
     }
 
     public HttpHeaders getHeaders() {
+        if (etag != null) {
+            headers.add(HttpHeaders.IF_NONE_MATCH, etag);
+        }
         return headers;
     }
 
@@ -50,4 +54,11 @@ public class Holder {
         this.version = version;
     }
 
+    public String getEtag() {
+        return etag;
+    }
+
+    public void setEtag(String etag) {
+        this.etag = etag;
+    }
 }

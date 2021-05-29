@@ -6,6 +6,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
+@ConditionalOnClass(ICSVWriter.class)
 public class CsvMessageConverter<T> extends AbstractHttpMessageConverter<List<T>> {
     public static final MediaType MEDIA_TYPE = new MediaType("text", "csv", StandardCharsets.UTF_8);
 

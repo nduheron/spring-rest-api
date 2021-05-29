@@ -1,5 +1,9 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  fr.nduheron.poc.springrestapi.tools.security.autoconfigure.JwtGeneratorAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.security.autoconfigure.JwtDecoderAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.security.autoconfigure.AuthenticationProviderAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.security.autoconfigure.WebSecurityAutoConfiguration
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.JwtGeneratorAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.JwtDecoderAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.AuthenticationProviderAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.WebSecurityAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.log.FiltersAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.monitoring.MonitoringAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.cache.CacheAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.autoconfigure.rest.RestAutoConfiguration

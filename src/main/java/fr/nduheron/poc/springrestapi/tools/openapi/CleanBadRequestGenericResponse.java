@@ -1,6 +1,8 @@
 package fr.nduheron.poc.springrestapi.tools.openapi;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import static java.util.Arrays.stream;
 
 
 @Component
+@ConditionalOnBean(OpenAPI.class)
 public class CleanBadRequestGenericResponse extends AbstractCleanGenericResponse {
 
     public CleanBadRequestGenericResponse() {

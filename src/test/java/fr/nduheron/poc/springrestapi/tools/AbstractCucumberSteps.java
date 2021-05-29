@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
@@ -16,10 +17,10 @@ public abstract class AbstractCucumberSteps {
     @Autowired
     protected ObjectMapper objectMapper;
     @LocalServerPort
-    private int port;
+    protected int port;
     @Value("${server.servlet.context-path:}")
-    private String contextPath;
-    private TestRestTemplate restTemplate = new TestRestTemplate();
+    protected String contextPath;
+    protected TestRestTemplate restTemplate = new TestRestTemplate();
 
     protected <T> void callApi(String path, HttpMethod method, T body) {
         callApi(holder.getVersion(), path, method, body);
@@ -32,6 +33,9 @@ public abstract class AbstractCucumberSteps {
         holder.setStatusCode(response.getStatusCode());
         if (response.hasBody()) {
             holder.setBody((String) response.getBody());
+        }
+        if (response.getHeaders().containsKey(HttpHeaders.ETAG)) {
+            holder.setEtag(response.getHeaders().getETag());
         }
     }
 

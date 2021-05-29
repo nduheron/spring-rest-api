@@ -16,7 +16,7 @@ public class AuthentificationSteps extends AbstractCucumberSteps {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("username", username);
         map.add("password", password);
-
+        map.add("grant_type", "password");
         callApi("/oauth/token", HttpMethod.POST, map);
     }
 }

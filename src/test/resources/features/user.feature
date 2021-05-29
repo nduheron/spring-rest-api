@@ -2,11 +2,13 @@ Feature: users operations
 
 @dbunit
 Scenario: l'administrateur peut rechercher des utilisateurs
-	Given users datasets
-	And I login with spiderman
-	When I get all users
-	Then I get a OK response
-	And 4 users found
+  Given users datasets
+  And I login with spiderman
+  When I get all users
+  Then I get a OK response
+  And 4 users found
+  When I get all users
+  Then I get a NOT_MODIFIED response
 
 @dbunit
 Scenario: l'administrateur système peut rechercher des utilisateurs
