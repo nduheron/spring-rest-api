@@ -9,27 +9,27 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.0</version>
+        <version>2.7.11</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
 
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <dbunit.version>2.6.0</dbunit.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <dbunit.version>2.7.3</dbunit.version>
         <dbunit-spring.version>1.3.0</dbunit-spring.version>
-        <cucumber.version>6.10.4</cucumber.version>
-        <guava.version>30.1.1-jre</guava.version>
-        <commons-io.version>2.9.0</commons-io.version>
-        <springdoc-openapi-ui.version>1.5.9</springdoc-openapi-ui.version>
-        <opencsv.version>5.4</opencsv.version>
-        <dependency-check-maven.version>6.1.6</dependency-check-maven.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
-        <docker-maven-plugin.version>0.36.0</docker-maven-plugin.version>
-        <bouncycastle.version>1.68</bouncycastle.version>
+        <cucumber.version>7.11.2</cucumber.version>
+        <guava.version>31.1-jre</guava.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <springdoc-openapi-ui.version>1.7.0</springdoc-openapi-ui.version>
+        <opencsv.version>5.7.1</opencsv.version>
+        <dependency-check-maven.version>8.2.1</dependency-check-maven.version>
+        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+        <docker-maven-plugin.version>0.42.1</docker-maven-plugin.version>
+        <bouncycastle.version>1.70</bouncycastle.version>
     </properties>
 
 
@@ -41,12 +41,12 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <artifactId>flyway-mysql</artifactId>
         </dependency>
 
         <!-- WEB -->
@@ -161,16 +161,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.springtestdbunit</groupId>
@@ -185,6 +175,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
             <version>${cucumber.version}</version>
@@ -192,7 +187,7 @@
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
@@ -286,6 +281,27 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.8</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>post-all-test</id>
                         <phase>verify</phase>
                         <goals>
@@ -304,25 +320,17 @@
                         <exclude>**/*IT.java</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>none</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/*IT.java</include>
-                            </includes>
-                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>

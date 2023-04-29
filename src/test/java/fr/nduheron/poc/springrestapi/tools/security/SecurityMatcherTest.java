@@ -1,50 +1,62 @@
 package fr.nduheron.poc.springrestapi.tools.security;
 
 import fr.nduheron.poc.springrestapi.tools.security.SecurityConfigProperties.Matcher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SecurityMatcherTest {
+@ExtendWith(MockitoExtension.class)
+class SecurityMatcherTest {
 
     @Mock
     private SecurityConfigProperties securityProperties;
 
-    @Test
-    public void testNoConfiguration() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/test1/path1",
+            "/test1/path2",
+            "/test2/path1",
+            "/test2/path2",
+    })
+    void testNoConfiguration(String input) {
         SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
-
-        assertTrue(securityMatcher.test("/test1/path1"));
-        assertTrue(securityMatcher.test("/test1/path2"));
-        assertTrue(securityMatcher.test("/test2/path1"));
-        assertTrue(securityMatcher.test("/test2/path2"));
+        assertThat(securityMatcher.test(input)).isTrue();
     }
 
-    @Test
-    public void testExcludeAll() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/test1/path1",
+            "/test1/path2",
+            "/test2/path1",
+            "/test2/path2",
+    })
+    void testExcludeAll(String input) {
         Matcher all = new Matcher();
         all.setAntPattern("/**");
-        when(securityProperties.getExcludes()).thenReturn(Collections.singletonList(all));
+        when(securityProperties.getExcludes()).thenReturn(singletonList(all));
 
         SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
-
-        assertFalse(securityMatcher.test("/test1/path1"));
-        assertFalse(securityMatcher.test("/test1/path2"));
-        assertFalse(securityMatcher.test("/test2/path1"));
-        assertFalse(securityMatcher.test("/test2/path2"));
+        assertThat(securityMatcher.test(input)).isFalse();
     }
 
-    @Test
-    public void testCombineExcludeAndIncludes() {
+    @ParameterizedTest
+    @CsvSource({
+            "/test1/path1,true",
+            "/test1/path2,false",
+            "/test2/path1,true",
+            "/test2/path2,false",
+    })
+    void testCombineExcludeAndIncludes(String input, boolean result) {
         Matcher includeTest1 = new Matcher();
         includeTest1.setAntPattern("/test1/**");
         Matcher includeTest2 = new Matcher();
@@ -56,11 +68,7 @@ public class SecurityMatcherTest {
         when(securityProperties.getExcludes()).thenReturn(Collections.singletonList(excludePath2));
 
         SecurityMatcher securityMatcher = new SecurityMatcher(securityProperties);
-
-        assertTrue(securityMatcher.test("/test1/path1"));
-        assertFalse(securityMatcher.test("/test1/path2"));
-        assertTrue(securityMatcher.test("/test2/path1"));
-        assertFalse(securityMatcher.test("/test2/path2"));
+        assertThat(securityMatcher.test(input)).isEqualTo(result);
     }
 
 }

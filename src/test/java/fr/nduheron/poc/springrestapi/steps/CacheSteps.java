@@ -2,13 +2,11 @@ package fr.nduheron.poc.springrestapi.steps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.hazelcast.map.impl.proxy.MapProxyImpl;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpEntity;
@@ -22,10 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CacheSteps extends AbstractCucumberSteps {
 
-    @Autowired
-    private CacheManager cacheManager;
-    @Value("${management.endpoints.web.base-path:/actuator}/caches")
-    private String cacheUrl;
+    private final CacheManager cacheManager;
+    private final String cacheUrl;
+
+    public CacheSteps(CacheManager cacheManager, @Value("${management.endpoints.web.base-path:/actuator}/caches") String cacheUrl) {
+        this.cacheManager = cacheManager;
+        this.cacheUrl = cacheUrl;
+    }
 
     @Given("cache {string} with values:")
     public void item_in_cache(String cacheName, Map<String, Object> rows) {
@@ -78,12 +79,12 @@ public class CacheSteps extends AbstractCucumberSteps {
 
     @Then("all caches are empty")
     public void all_caches_are_empty() {
-        cacheManager.getCacheNames().forEach(id -> assertThat((MapProxyImpl) cacheManager.getCache(id).getNativeCache()).isEmpty());
+        cacheManager.getCacheNames().forEach(id -> assertThat((Map<?, ?>) cacheManager.getCache(id).getNativeCache()).isEmpty());
     }
 
     @Then("cache {string} is empty")
     public void cache_is_empty(String cacheName) {
-        assertThat((MapProxyImpl) cacheManager.getCache(cacheName).getNativeCache()).isEmpty();
+        assertThat((Map<?, ?>) cacheManager.getCache(cacheName).getNativeCache()).isEmpty();
     }
 
     private <T> void callCacheApi(String path, HttpMethod method, T body) {

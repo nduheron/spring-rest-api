@@ -9,7 +9,7 @@ import org.springframework.util.MultiValueMap;
 
 public class AuthentificationSteps extends AbstractCucumberSteps {
 
-    @When("^I login with username (.+) and password (.+)$")
+    @When("I login with username {word} and password {word}")
     public void I_login_with_username_and_password(String username, String password) {
 
         holder.getHeaders().setContentType(MediaType.APPLICATION_FORM_URLENCODED);

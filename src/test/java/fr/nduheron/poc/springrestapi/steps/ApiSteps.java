@@ -5,6 +5,7 @@ import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
 import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
 import fr.nduheron.poc.springrestapi.user.dto.login.Token;
 import io.cucumber.java.Before;
+import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.springframework.http.HttpHeaders;
@@ -17,32 +18,30 @@ import org.springframework.util.MultiValueMap;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiSteps extends AbstractCucumberSteps {
 
-    @Then("^I get a (.+) response$")
-    public void I_get_a_response(final String statusCode) {
-        assertEquals(HttpStatus.valueOf(statusCode), holder.getStatusCode());
+    @Then("I get a {httpStatus} response")
+    public void I_get_a_response(final HttpStatus statusCode) {
+        assertThat(holder.getStatusCode()).isEqualTo(statusCode);
     }
 
-    @Then("^I get (\\d+) parameters in error$")
+    @Then("I get {int} parameters in error")
     public void I_get_parameters_in_error(final int nbError) throws IOException {
-        List<Error> errors = objectMapper.readValue(holder.getBody(),
-                new TypeReference<List<Error>>() {
-                });
-        assertEquals(nbError, errors.size());
+        List<Error> errors = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
+        });
+        assertThat(errors).hasSize(nbError);
     }
 
-    @Then("^I get a (\\w+) error$")
+    @Then("I get a {word} error")
     public void I_get_a_error(final String errorCode) throws IOException {
-        List<Error> errors = objectMapper.readValue(holder.getBody(),
-                new TypeReference<List<Error>>() {
-                });
-        assertEquals(errorCode, errors.get(0).getCode());
+        List<Error> errors = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
+        });
+        assertThat(errors.get(0).getCode()).isEqualTo(errorCode);
     }
 
-    @Given("^I login with (\\w+)$")
+    @Given("I login with {word}")
     public void I_login_with(String username) throws IOException {
         holder.getHeaders().setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -57,7 +56,7 @@ public class ApiSteps extends AbstractCucumberSteps {
         }
     }
 
-    @Given("^version (\\d)")
+    @Given("version {int}")
     public void version(Integer version) {
         holder.setVersion(version);
     }
@@ -65,6 +64,11 @@ public class ApiSteps extends AbstractCucumberSteps {
     @Before
     public void version() {
         holder.setVersion(1);
+    }
+
+    @ParameterType(value = "\\w+", name = "httpStatus")
+    public HttpStatus httpStatus(String value) {
+        return HttpStatus.valueOf(value);
     }
 
 }

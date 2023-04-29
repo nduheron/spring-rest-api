@@ -6,17 +6,19 @@ import org.dbunit.IDatabaseTester;
 import org.dbunit.dataset.CompositeDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
 
-@Transactional
 public class DbUnitSteps {
 
-    @Autowired
-    private IDatabaseTester dbTester;
+    private final IDatabaseTester dbTester;
+
+    public DbUnitSteps(IDatabaseTester dbTester) {
+        this.dbTester = dbTester;
+    }
 
     @Given("^(.+) datasets$")
+    @Transactional
     public void loadDatasets(String datasetsfilename) throws Exception {
         String[] dataSets = datasetsfilename.split(",");
         IDataSet[] idataSets = new IDataSet[dataSets.length];
@@ -30,6 +32,7 @@ public class DbUnitSteps {
     }
 
     @After("@dbunit")
+    @Transactional
     public void closeDbTester() throws Exception {
         dbTester.onTearDown();
     }

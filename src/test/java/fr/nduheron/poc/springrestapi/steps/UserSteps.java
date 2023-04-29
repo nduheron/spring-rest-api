@@ -12,7 +12,6 @@ import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,42 +24,44 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 public class UserSteps extends AbstractCucumberSteps {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @When("^I get all users$")
+    public UserSteps(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @When("I get all users")
     public void get_all_users() {
         callApi("/users", HttpMethod.GET, null);
     }
 
-    @When("^I get all users in csv$")
+    @When("I get all users in csv")
     public void get_all_users_in_csv() {
         holder.getHeaders().add(HttpHeaders.ACCEPT, "text/csv;charset=UTF-8");
         callApi("/users", HttpMethod.GET, null);
     }
 
-    @When("^I search user (\\w+)$")
+    @When("I search user {word}")
     public void i_search_user(String login) {
         callApi("/users/" + login, HttpMethod.GET, null);
     }
 
-    @Then("^(\\d+) users found$")
-    public void users_found(long nb) throws IOException {
-        List<UserDto> users = objectMapper.readValue(holder.getBody(),
-                new TypeReference<List<UserDto>>() {
-                });
-        assertEquals(nb, users.size());
+    @Then("{int} users found")
+    public void users_found(int nb) throws IOException {
+        List<UserDto> users = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
+        });
+        assertThat(users).hasSize(nb);
     }
 
-    @Then("^(\\d+) users found in csv$")
-    public void users_found_in_csv(long nb) throws IOException {
+    @Then("{int} users found in csv")
+    public void users_found_in_csv(int nb) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(
                 new ByteArrayInputStream(holder.getBody().getBytes(StandardCharsets.UTF_8)))) {
 
@@ -70,28 +71,28 @@ public class UserSteps extends AbstractCucumberSteps {
             CsvToBean<UserDto> csvToBean = new CsvToBeanBuilder<UserDto>(reader).withMappingStrategy(strategy)
                     .withSkipLines(1).withIgnoreLeadingWhiteSpace(true).build();
 
-            assertEquals(nb, csvToBean.parse().size());
+            assertThat(csvToBean.parse()).hasSize(nb);
         }
     }
 
-    @Then("^the user has name (.+) (.+)$")
+    @Then("the user has name {word} {word}")
     public void the_user_has_name(String lastname, String firstname) throws IOException {
         UserDto user = objectMapper.readValue(holder.getBody(), UserDto.class);
-        assertEquals(firstname, user.getNom());
-        assertEquals(lastname, user.getPrenom());
+        assertThat(user.getNom()).isEqualTo(firstname);
+        assertThat(user.getPrenom()).isEqualTo(lastname);
     }
 
-    @When("^I delete user (\\w+)$")
+    @When("I delete user {word}")
     public void i_delete_user(String login) {
         callApi("/users/" + login, HttpMethod.DELETE, null);
     }
 
-    @Then("^the user (\\w+) is deleted$")
-    public void the_user_is_deleted(String login) throws IOException {
-        assertFalse(userRepository.existsById(login));
+    @Then("the user {word} is deleted")
+    public void the_user_is_deleted(String login) {
+        assertThat(userRepository.existsById(login)).isFalse();
     }
 
-    @When("^I create (\\w+) user$")
+    @When("I create {word} user")
     public void i_create_ironman_user(String login) {
         UserDto userDto = new UserDto();
         if (!"empty".equals(login)) {
@@ -105,20 +106,21 @@ public class UserSteps extends AbstractCucumberSteps {
         callApi("/users", HttpMethod.POST, userDto);
     }
 
-    @Then("^the user (\\w+) is created$")
+    @Then("the user {word} is created")
     public void the_user_is_created(String login) throws IOException {
         Optional<User> userDB = userRepository.findById(login);
-        assertTrue(userDB.isPresent());
         UserDto user = objectMapper.readValue(holder.getBody(), UserDto.class);
-        assertEquals(user.getEmail(), userDB.get().getEmail());
-        assertEquals(user.getNom(), userDB.get().getNom());
-        assertEquals(user.getPrenom(), userDB.get().getPrenom());
-        assertEquals(user.getRole(), userDB.get().getRole());
-        assertNull(user.getDerniereConnexion());
+        assertThat(userDB)
+                .isPresent()
+                .get()
+                .hasFieldOrPropertyWithValue("email", user.getEmail())
+                .hasFieldOrPropertyWithValue("nom", user.getNom())
+                .hasFieldOrPropertyWithValue("prenom", user.getPrenom())
+                .hasFieldOrPropertyWithValue("role", user.getRole())
+                .hasFieldOrPropertyWithValue("derniereConnexion", null);
     }
 
-
-    @When("^I update (.+) with superman data$")
+    @When("I update {word} with superman data")
     public void i_update_user_with_superman_data(String login) {
         UpdateUserDto userDto = new UpdateUserDto();
         userDto.setEmail("superman@yopmail.fr");
@@ -129,28 +131,29 @@ public class UserSteps extends AbstractCucumberSteps {
         callApi("/users/" + login, HttpMethod.PUT, userDto);
     }
 
-    @When("^I update (.+) with empty data$")
+    @When("I update {word} with empty data")
     public void i_update_user_with_empty_data(String login) {
         UpdateUserDto userDto = new UpdateUserDto();
         callApi("/users/" + login, HttpMethod.PUT, userDto);
     }
 
-    @Then("^the user (.+) has name (.+) (.+)$")
-    public void the_user_has_name(String login, String lastname, String firstname) throws IOException {
-        User user = userRepository.getOne(login);
-        assertEquals(firstname, user.getNom());
-        assertEquals(lastname, user.getPrenom());
+    @Then("the user {word} has name {word} {word}")
+    public void the_user_has_name(String login, String lastname, String firstname) {
+        User user = userRepository.getReferenceById(login);
+        assertThat(user.getNom()).isEqualTo(firstname);
+        assertThat(user.getPrenom()).isEqualTo(lastname);
+
     }
 
-    @When("^I reinit password to (\\w+)$")
+    @When("I reinit password to {word}")
     public void i_reinit_password_to(String login) {
         callApi("/users/" + login + "/attributes/password", HttpMethod.POST, null);
     }
 
-    @Then("^the password to (\\w+) has changed$")
+    @Then("the password to {word} has changed")
     public void the_password_to_has_changed(String login) {
-        User user = userRepository.getOne(login);
-        assertFalse(passwordEncoder.matches("12345", user.getPassword()));
+        User user = userRepository.getReferenceById(login);
+        assertThat(passwordEncoder.matches("12345", user.getPassword())).isFalse();
     }
 
 }
