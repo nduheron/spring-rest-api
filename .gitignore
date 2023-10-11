@@ -24,4 +24,4 @@
 /nbdist/
 /.nb-gradle/
 
-.env.prod
+docker/config/
