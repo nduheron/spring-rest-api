@@ -2,7 +2,8 @@ package fr.nduheron.poc.springrestapi.steps;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.nduheron.poc.springrestapi.tools.AbstractCucumberSteps;
-import fr.nduheron.poc.springrestapi.tools.exception.model.Error;
+import fr.nduheron.poc.springrestapi.tools.rest.errors.dto.AttributeErrorDto;
+import fr.nduheron.poc.springrestapi.tools.rest.errors.dto.FunctionalErrorDto;
 import fr.nduheron.poc.springrestapi.user.dto.login.Token;
 import io.cucumber.java.Before;
 import io.cucumber.java.ParameterType;
@@ -29,16 +30,15 @@ public class ApiSteps extends AbstractCucumberSteps {
 
     @Then("I get {int} parameters in error")
     public void I_get_parameters_in_error(final int nbError) throws IOException {
-        List<Error> errors = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
+        List<AttributeErrorDto> errors = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
         });
         assertThat(errors).hasSize(nbError);
     }
 
     @Then("I get a {word} error")
     public void I_get_a_error(final String errorCode) throws IOException {
-        List<Error> errors = objectMapper.readValue(holder.getBody(), new TypeReference<>() {
-        });
-        assertThat(errors.get(0).getCode()).isEqualTo(errorCode);
+        FunctionalErrorDto error = objectMapper.readValue(holder.getBody(), FunctionalErrorDto.class);
+        assertThat(error.getCode()).isEqualTo(errorCode);
     }
 
     @Given("I login with {word}")

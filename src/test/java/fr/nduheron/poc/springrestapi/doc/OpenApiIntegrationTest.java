@@ -20,6 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.nio.charset.StandardCharsets;
 
+import static java.util.Objects.requireNonNull;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -37,13 +39,11 @@ class OpenApiIntegrationTest {
     void swaggerUserApi() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + contextPath + Constants.DEFAULT_API_DOCS_URL, String.class);
         JSONAssert.assertEquals(
-                response.getBody(),
-                Resources.toString(getClass().getResource("/swagger.json"), StandardCharsets.UTF_8),
+                requireNonNull(response.getBody()),
+                Resources.toString(requireNonNull(getClass().getResource("/swagger.json")), StandardCharsets.UTF_8),
                 new CustomComparator(
                         JSONCompareMode.STRICT,
-                        new Customization("tokenUrl", (o1, o2) -> true),
-                        new Customization("servers", (o1, o2) -> true),
-                        new Customization("components.securitySchemes.oauthPasswordFlow.flows.password.tokenUrl", (o1, o2) -> true)
+                        new Customization("servers", (o1, o2) -> true)
                 )
         );
     }

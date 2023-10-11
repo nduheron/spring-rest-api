@@ -1,14 +1,15 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import fr.nduheron.poc.springrestapi.tools.cache.Etag;
-import fr.nduheron.poc.springrestapi.tools.exception.NotFoundException;
-import fr.nduheron.poc.springrestapi.user.ExistException;
+import fr.nduheron.poc.springrestapi.tools.exceptions.NotFoundException;
+import fr.nduheron.poc.springrestapi.tools.rest.cache.Etag;
 import fr.nduheron.poc.springrestapi.user.dto.CreateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UpdateUserDto;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
+import fr.nduheron.poc.springrestapi.user.model.ExistException;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,7 +20,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
-import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.*;
+import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.OAUTH_PASSWORD_FLOW;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -47,20 +47,19 @@ import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.*;
 @Validated
 public class UserController {
 
-    @Autowired
-    private UserRepository repo;
+    private final UserRepository repo;
+    private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender emailSender;
+    private final MessageSource messageSource;
+    private final UserMapper mapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JavaMailSender emailSender;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private UserMapper mapper;
+    public UserController(UserRepository repo, PasswordEncoder passwordEncoder, JavaMailSender emailSender, MessageSource messageSource, UserMapper mapper) {
+        this.repo = repo;
+        this.passwordEncoder = passwordEncoder;
+        this.emailSender = emailSender;
+        this.messageSource = messageSource;
+        this.mapper = mapper;
+    }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv;charset=UTF-8"})
     @Operation(summary = "Rechercher tous les utilisateurs", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
@@ -70,6 +69,7 @@ public class UserController {
     })
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag
+    @Timed
     public List<UserDto> findUsers() {
         List<User> findAll = repo.findAll();
         return mapper.toDto(findAll);
@@ -79,9 +79,10 @@ public class UserController {
     @Operation(summary = "Rechercher un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN", "SYSTEM"})
     @Etag
-    public UserDto findUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
-        User user = repo.getById(login);
-        return mapper.toDto(user);
+    public UserDto findUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) throws NotFoundException {
+        return repo.findById(login)
+                .map(mapper::toDto)
+                .orElseThrow(() -> new NotFoundException(String.format("User %s not found", login)));
     }
 
     @DeleteMapping("{login}")
@@ -89,23 +90,22 @@ public class UserController {
     @Operation(summary = "Supprimer un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN"})
     public void deleteUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
-        repo.findById(login).ifPresent(user -> repo.delete(user));
+        repo.findById(login).ifPresent(repo::delete);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Créer un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @RolesAllowed({"ADMIN"})
-    @ApiResponse(responseCode = "400", content = @Content(array = @ArraySchema(schema = @Schema(ref = "Error")), examples = {
-            @ExampleObject(ref = INVALID_FORMAT),
-            @ExampleObject(name = "AlreadyExist", value = "[{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}]")
+    @ApiResponse(responseCode = "409", content = @Content(array = @ArraySchema(schema = @Schema(ref = "FunctionalError")), examples = {
+            @ExampleObject(name = "AlreadyExist", value = "{\"code\": \"ALREADY_EXIST\", \"message\": \"User batman already exist\"}")
     }))
     public UserDto saveUser(@RequestBody @Valid final CreateUserDto createUser) throws ExistException {
 
         Optional<User> optionalUser = repo.findById(createUser.getLogin());
         if (optionalUser.isPresent()) {
-            ExistException existException = new ExistException("error.user.alreadyexist", createUser.getLogin());
-            existException.setAdditionalsInformations(mapper.toDto(optionalUser.get()));
+            ExistException existException = new ExistException(String.format("User %s already exist", createUser.getLogin()), "error.user.alreadyexist", createUser.getLogin());
+            existException.setAdditionalData(mapper.toDto(optionalUser.get()));
             throw existException;
         }
 
@@ -129,7 +129,6 @@ public class UserController {
     @PutMapping("{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Modifier un utilisateur", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
-    @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
     @RolesAllowed({"ADMIN"})
     public void updateUser(@PathVariable("login") @Parameter(example = "batman", required = true) final String login, @RequestBody @Valid final UpdateUserDto updateUser)
             throws NotFoundException {
@@ -149,8 +148,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Réinitialiser le mot de passe", security = @SecurityRequirement(name = OAUTH_PASSWORD_FLOW))
     @PreAuthorize("@securityService.isUserAuthorized(#login)")
-    public void resetPassword(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) {
-        User user = repo.getById(login);
+    public void resetPassword(@PathVariable("login") @Parameter(example = "batman", required = true) final String login) throws NotFoundException {
+        User user = repo.findById(login).orElseThrow(() -> new NotFoundException(String.format("L'utilisateur %s n'existe pas.", login)));
         String newPassword = randomPassword();
         user.setPassword(passwordEncoder.encode(newPassword));
 

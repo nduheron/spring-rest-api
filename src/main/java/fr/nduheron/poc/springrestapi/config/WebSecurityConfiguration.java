@@ -1,8 +1,8 @@
 package fr.nduheron.poc.springrestapi.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationToken;
-import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtAuthenticationTokenConverter;
+import fr.nduheron.poc.springrestapi.tools.rest.security.jwt.JwtAuthenticationToken;
+import fr.nduheron.poc.springrestapi.tools.rest.security.jwt.JwtAuthenticationTokenConverter;
 import fr.nduheron.poc.springrestapi.user.dto.UserDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,0 +1,66 @@
+filebeat:
+  autodiscover:
+    providers:
+      - type: docker
+        templates:
+          - condition:
+              contains:
+                docker.container.image: nginx
+            config:
+              - module: nginx
+                access:
+                  input:
+                    type: container
+                    paths:
+                      - /var/lib/docker/containers/${data.docker.container.id}/*.log
+                    stream: "stdout"
+                error:
+                  input:
+                    type: container
+                    paths:
+                      - /var/lib/docker/containers/${data.docker.container.id}/*.log
+                    stream: "stderr"
+
+          - condition:
+              contains:
+                docker.container.labels.filebeat_log_type: "api"
+            config:
+              - type: container
+                paths:
+                  - /var/lib/docker/containers/${data.docker.container.id}/*.log
+                stream: all
+                processors:
+                  - add_fields:
+                      target: event
+                      fields:
+                        module: 'api'
+                  - drop_fields:
+                      fields: [ "docker" ]
+                      ignore_missing: false
+                  - decode_json_fields:
+                      fields: [ "message" ]
+                      target: ""
+                      overwrite_keys: true
+
+
+setup:
+  kibana:
+    host: "http://kibana:5601"
+    username: "${KIBANA_USERNAME}"
+    password: "${KIBANA_PASSWORD}"
+
+
+logging.metrics.enabled: false
+
+output:
+  logstash:
+    hosts: [ "logstash:5044" ]
+#  elasticsearch:
+#    hosts: ["elasticsearch:9200"]
+#    username: "elastic"
+#    password: "${ELASTIC_PASSWORD}"
+#  console:
+#    enabled: true
+#    codec.json:
+#      pretty: true
+#      escape_html: false

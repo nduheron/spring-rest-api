@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    platform: h2
+    continue-on-error: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+security:
+  jwt:
+    private-key: classpath:/certificates/key.pem
+    public-key: classpath:/certificates/cert.pem

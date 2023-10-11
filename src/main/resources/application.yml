@@ -1,0 +1,71 @@
+accounts:
+  me:
+    maxAge: 60
+log:
+  filter:
+    exclude-paths:
+      - "${server.servlet.context-path}/**/v3/api-docs/**"
+    #            - "${server.servlet.context-path}/**/actuator/**"
+    obfuscate-header: Authorization,authorization
+    obfuscate-params: password
+    path: /**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    distribution:
+      percentiles:
+        http:
+          server:
+            requests: 0.95,0.99
+security:
+  config:
+    includes:
+      - antPattern: /v1/accounts/**
+      - antPattern: /v1/users/**
+  jwt:
+    duration: 43200000
+    issuer: spring-rest-api
+
+server:
+  servlet:
+    context-path: /spring-rest
+
+spring:
+  aop:
+    auto: true
+  flyway:
+    enabled: true
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ssz
+    default-property-inclusion: non-null
+    deserialization:
+      fail-on-null-for-primitives: false
+      fail-on-unknown-properties: false
+      read-enums-using-to-string: true
+      read-unknown-enum-values-as-null: true
+    property-naming-strategy: LOWER_CAMEL_CASE
+    serialization:
+      indent-output: false
+  jpa:
+    open-in-view: false
+  mail:
+    default-encoding: UTF-8
+    test-connection: true
+  main:
+    banner-mode: 'off'
+  mvc:
+    locale: fr
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  override-with-generic-response: false
+  remove-broken-reference-definitions: false
+  paths-to-match: /v1/**
+  api-docs:
+    title: User API
+  swagger-ui:
+    path: /docs

@@ -1,0 +1,911 @@
+{
+  "attributes": {
+    "fieldAttrs": "{\"message\":{\"count\":1},\"url.original\":{\"customLabel\":\"URL\"},\"http.request.method\":{\"customLabel\":\"method\"},\"http.response.status_code\":{\"customLabel\":\"status_code\"},\"http.response.body.bytes\":{\"customLabel\":\"response_body_bytes\"},\"http.response.duration\":{\"customLabel\":\"duration\"},\"user.id.keyword\":{\"count\":1}}",
+    "fieldFormatMap": "{\"client.bytes\":{\"id\":\"bytes\"},\"client.nat.port\":{\"id\":\"string\"},\"client.port\":{\"id\":\"string\"},\"coredns.query.size\":{\"id\":\"bytes\"},\"coredns.response.size\":{\"id\":\"bytes\"},\"destination.bytes\":{\"id\":\"bytes\"},\"destination.nat.port\":{\"id\":\"string\"},\"destination.port\":{\"id\":\"string\"},\"elf.header.entrypoint\":{\"id\":\"string\"},\"elf.sections.chi2\":{\"id\":\"number\"},\"elf.sections.entropy\":{\"id\":\"number\"},\"elf.sections.physical_size\":{\"id\":\"bytes\"},\"elf.sections.virtual_address\":{\"id\":\"string\"},\"elf.sections.virtual_size\":{\"id\":\"string\"},\"envoyproxy.upstream_service_time\":{\"id\":\"duration\",\"params\":{\"inputFormat\":\"nanoseconds\"}},\"event.duration\":{\"id\":\"duration\",\"params\":{\"inputFormat\":\"nanoseconds\",\"outputFormat\":\"asMilliseconds\",\"outputPrecision\":1}},\"event.sequence\":{\"id\":\"string\"},\"event.severity\":{\"id\":\"string\"},\"file.elf.header.entrypoint\":{\"id\":\"string\"},\"file.elf.sections.chi2\":{\"id\":\"number\"},\"file.elf.sections.entropy\":{\"id\":\"number\"},\"file.elf.sections.physical_size\":{\"id\":\"bytes\"},\"file.elf.sections.virtual_address\":{\"id\":\"string\"},\"file.elf.sections.virtual_size\":{\"id\":\"string\"},\"http.request.body.bytes\":{\"id\":\"bytes\"},\"http.request.bytes\":{\"id\":\"bytes\"},\"http.response.body.bytes\":{\"id\":\"bytes\"},\"http.response.bytes\":{\"id\":\"bytes\"},\"http.response.status_code\":{\"id\":\"string\"},\"log.syslog.facility.code\":{\"id\":\"string\"},\"log.syslog.priority\":{\"id\":\"string\"},\"misp.malware.kill_chain_phases\":{\"id\":\"string\"},\"misp.threat_indicator.kill_chain_phases\":{\"id\":\"string\"},\"misp.threat_indicator.mitre_tactic\":{\"id\":\"string\"},\"misp.threat_indicator.mitre_technique\":{\"id\":\"string\"},\"misp.threat_indicator.severity\":{\"id\":\"string\"},\"mysql.slowlog.bytes_received\":{\"id\":\"bytes\"},\"mysql.slowlog.bytes_sent\":{\"id\":\"bytes\"},\"mysql.slowlog.innodb.io_r_bytes\":{\"id\":\"bytes\"},\"mysql.slowlog.tmp_table_sizes\":{\"id\":\"bytes\"},\"nats.log.msg.bytes\":{\"id\":\"bytes\"},\"network.bytes\":{\"id\":\"bytes\"},\"nginx.ingress_controller.http.request.length\":{\"id\":\"bytes\"},\"nginx.ingress_controller.http.request.time\":{\"id\":\"duration\"},\"nginx.ingress_controller.upstream.response.length\":{\"id\":\"bytes\"},\"nginx.ingress_controller.upstream.response.time\":{\"id\":\"duration\"},\"package.size\":{\"id\":\"string\"},\"process.elf.header.entrypoint\":{\"id\":\"string\"},\"process.elf.sections.chi2\":{\"id\":\"number\"},\"process.elf.sections.entropy\":{\"id\":\"number\"},\"process.elf.sections.physical_size\":{\"id\":\"bytes\"},\"process.elf.sections.virtual_address\":{\"id\":\"string\"},\"process.elf.sections.virtual_size\":{\"id\":\"string\"},\"process.parent.elf.header.entrypoint\":{\"id\":\"string\"},\"process.parent.elf.sections.chi2\":{\"id\":\"number\"},\"process.parent.elf.sections.entropy\":{\"id\":\"number\"},\"process.parent.elf.sections.physical_size\":{\"id\":\"bytes\"},\"process.parent.elf.sections.virtual_address\":{\"id\":\"string\"},\"process.parent.elf.sections.virtual_size\":{\"id\":\"string\"},\"process.parent.pgid\":{\"id\":\"string\"},\"process.parent.pid\":{\"id\":\"string\"},\"process.parent.thread.id\":{\"id\":\"string\"},\"process.pgid\":{\"id\":\"string\"},\"process.pid\":{\"id\":\"string\"},\"process.thread.id\":{\"id\":\"string\"},\"server.bytes\":{\"id\":\"bytes\"},\"server.nat.port\":{\"id\":\"string\"},\"server.port\":{\"id\":\"string\"},\"source.bytes\":{\"id\":\"bytes\"},\"source.nat.port\":{\"id\":\"string\"},\"source.port\":{\"id\":\"string\"},\"threat.enrichments.indicator.file.elf.header.entrypoint\":{\"id\":\"string\"},\"threat.enrichments.indicator.file.elf.sections.chi2\":{\"id\":\"number\"},\"threat.enrichments.indicator.file.elf.sections.entropy\":{\"id\":\"number\"},\"threat.enrichments.indicator.file.elf.sections.physical_size\":{\"id\":\"bytes\"},\"threat.enrichments.indicator.file.elf.sections.virtual_address\":{\"id\":\"string\"},\"threat.enrichments.indicator.file.elf.sections.virtual_size\":{\"id\":\"string\"},\"threat.enrichments.indicator.url.port\":{\"id\":\"string\"},\"threat.indicator.file.elf.header.entrypoint\":{\"id\":\"string\"},\"threat.indicator.file.elf.sections.chi2\":{\"id\":\"number\"},\"threat.indicator.file.elf.sections.entropy\":{\"id\":\"number\"},\"threat.indicator.file.elf.sections.physical_size\":{\"id\":\"bytes\"},\"threat.indicator.file.elf.sections.virtual_address\":{\"id\":\"string\"},\"threat.indicator.file.elf.sections.virtual_size\":{\"id\":\"string\"},\"threat.indicator.url.port\":{\"id\":\"string\"},\"url.port\":{\"id\":\"string\"},\"http.response.duration\":{\"id\":\"duration\",\"params\":{\"parsedUrl\":{\"origin\":\"http://localhost\",\"pathname\":\"/logs/app/dashboards\",\"basePath\":\"/logs\"},\"inputFormat\":\"milliseconds\",\"outputFormat\":\"humanizePrecise\",\"outputPrecision\":0,\"includeSpaceWithSuffix\":true,\"useShortSuffix\":true}}}",
+    "fields": "[]",
+    "name": "filebeat-*",
+    "runtimeFieldMap": "{\"user.id\":{\"type\":\"keyword\"}}",
+    "sourceFilters": "[]",
+    "timeFieldName": "@timestamp",
+    "title": "filebeat-*",
+    "typeMeta": "{}"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "filebeat-*",
+  "managed": false,
+  "references": [],
+  "type": "index-pattern",
+  "typeMigrationVersion": "7.11.0",
+  "updated_at": "2023-06-10T19:30:23.236Z",
+  "version": "WzQ2LDFd"
+}
+{
+  "attributes": {
+    "color": "#414273",
+    "description": "Salesforce",
+    "name": "beats"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+  "managed": false,
+  "references": [],
+  "type": "tag",
+  "typeMigrationVersion": "8.0.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIwLDFd"
+}
+{
+  "attributes": {
+    "color": "#255d20",
+    "description": "",
+    "name": "api"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+  "managed": false,
+  "references": [],
+  "type": "tag",
+  "typeMigrationVersion": "8.0.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIxLDFd"
+}
+{
+  "attributes": {
+    "description": "",
+    "state": {
+      "adHocDataViews": {},
+      "datasourceStates": {
+        "formBased": {
+          "layers": {
+            "697d778f-2098-45c8-8648-d931c9f194e9": {
+              "columnOrder": [
+                "9c9d92dd-62a2-468b-a405-8587ed95ac3c",
+                "b6561647-4588-4916-96ae-e9f350861581"
+              ],
+              "columns": {
+                "9c9d92dd-62a2-468b-a405-8587ed95ac3c": {
+                  "dataType": "string",
+                  "isBucketed": true,
+                  "label": "Top 10 values of url.original.keyword",
+                  "operationType": "terms",
+                  "params": {
+                    "exclude": [],
+                    "excludeIsRegex": false,
+                    "include": [],
+                    "includeIsRegex": false,
+                    "missingBucket": false,
+                    "orderBy": {
+                      "columnId": "b6561647-4588-4916-96ae-e9f350861581",
+                      "type": "column"
+                    },
+                    "orderDirection": "desc",
+                    "otherBucket": true,
+                    "parentFormat": {
+                      "id": "terms"
+                    },
+                    "size": 10
+                  },
+                  "scale": "ordinal",
+                  "sourceField": "url.original.keyword"
+                },
+                "b6561647-4588-4916-96ae-e9f350861581": {
+                  "dataType": "number",
+                  "isBucketed": false,
+                  "label": "Count of records",
+                  "operationType": "count",
+                  "params": {
+                    "emptyAsNull": true
+                  },
+                  "scale": "ratio",
+                  "sourceField": "___records___"
+                }
+              },
+              "incompleteColumns": {},
+              "sampling": 1
+            }
+          }
+        },
+        "textBased": {
+          "layers": {}
+        }
+      },
+      "filters": [
+        {
+          "$state": {
+            "store": "appState"
+          },
+          "meta": {
+            "alias": null,
+            "disabled": false,
+            "field": "event.module",
+            "index": "691510bb-81ad-4db5-adf4-d202d4705c97",
+            "key": "event.module",
+            "negate": false,
+            "params": {
+              "query": "api"
+            },
+            "type": "phrase"
+          },
+          "query": {
+            "match_phrase": {
+              "event.module": "api"
+            }
+          }
+        }
+      ],
+      "internalReferences": [],
+      "query": {
+        "language": "kuery",
+        "query": ""
+      },
+      "visualization": {
+        "columns": [
+          {
+            "columnId": "b6561647-4588-4916-96ae-e9f350861581"
+          },
+          {
+            "columnId": "9c9d92dd-62a2-468b-a405-8587ed95ac3c",
+            "isTransposed": false
+          }
+        ],
+        "layerId": "697d778f-2098-45c8-8648-d931c9f194e9",
+        "layerType": "data"
+      }
+    },
+    "title": "Top pages [API]",
+    "visualizationType": "lnsDatatable"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "1700ac70-07b1-11ee-accc-7fd0963752f5",
+  "managed": false,
+  "references": [
+    {
+      "id": "filebeat-*",
+      "name": "indexpattern-datasource-layer-697d778f-2098-45c8-8648-d931c9f194e9",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "691510bb-81ad-4db5-adf4-d202d4705c97",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "lens",
+  "typeMigrationVersion": "8.6.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIyLDFd"
+}
+{
+  "attributes": {
+    "description": "",
+    "state": {
+      "adHocDataViews": {
+        "tsvb_ad_hoc_filebeat-*/@timestamp": {
+          "allowNoIndex": false,
+          "fieldAttrs": {},
+          "fieldFormats": {},
+          "id": "tsvb_ad_hoc_filebeat-*/@timestamp",
+          "name": "filebeat-*",
+          "runtimeFieldMap": {},
+          "sourceFilters": [],
+          "timeFieldName": "@timestamp",
+          "title": "filebeat-*"
+        }
+      },
+      "datasourceStates": {
+        "formBased": {
+          "layers": {
+            "50545384-5625-4204-a0b1-28dd0a038385": {
+              "columnOrder": [
+                "f307fab7-1f01-4a2c-89ba-c3a8242416c1",
+                "410ac68b-8741-4cec-aeb2-d83820ec08df",
+                "9083f0ed-af16-4b62-ac0e-24ea8c163496"
+              ],
+              "columns": {
+                "410ac68b-8741-4cec-aeb2-d83820ec08df": {
+                  "dataType": "string",
+                  "isBucketed": true,
+                  "label": "Filters",
+                  "operationType": "filters",
+                  "params": {
+                    "filters": [
+                      {
+                        "input": {
+                          "language": "lucene",
+                          "query": "http.response.status_code:[200 TO 299]"
+                        },
+                        "label": "success"
+                      },
+                      {
+                        "input": {
+                          "language": "lucene",
+                          "query": "http.response.status_code:[300 TO 399]"
+                        },
+                        "label": "redirect"
+                      },
+                      {
+                        "input": {
+                          "language": "lucene",
+                          "query": "http.response.status_code:[400 TO 499]"
+                        },
+                        "label": "client error"
+                      },
+                      {
+                        "input": {
+                          "language": "lucene",
+                          "query": "http.response.status_code:[500 TO 599]"
+                        },
+                        "label": "server error"
+                      }
+                    ]
+                  },
+                  "scale": "ordinal"
+                },
+                "9083f0ed-af16-4b62-ac0e-24ea8c163496": {
+                  "dataType": "number",
+                  "isBucketed": false,
+                  "label": "Count of url.original.keyword",
+                  "operationType": "count",
+                  "params": {
+                    "emptyAsNull": true
+                  },
+                  "scale": "ratio",
+                  "sourceField": "url.original.keyword"
+                },
+                "f307fab7-1f01-4a2c-89ba-c3a8242416c1": {
+                  "dataType": "date",
+                  "isBucketed": true,
+                  "label": "@timestamp",
+                  "operationType": "date_histogram",
+                  "params": {
+                    "dropPartials": true,
+                    "includeEmptyRows": true,
+                    "interval": "auto"
+                  },
+                  "scale": "interval",
+                  "sourceField": "@timestamp"
+                }
+              },
+              "incompleteColumns": {}
+            }
+          }
+        },
+        "textBased": {
+          "layers": {}
+        }
+      },
+      "filters": [
+        {
+          "$state": {
+            "store": "appState"
+          },
+          "meta": {
+            "alias": null,
+            "disabled": false,
+            "field": "event.module",
+            "index": "tsvb_ad_hoc_filebeat-*/@timestamp",
+            "key": "event.module",
+            "negate": false,
+            "params": {
+              "query": "api"
+            },
+            "type": "phrase"
+          },
+          "query": {
+            "match_phrase": {
+              "event.module": "api"
+            }
+          }
+        }
+      ],
+      "internalReferences": [
+        {
+          "id": "tsvb_ad_hoc_filebeat-*/@timestamp",
+          "name": "indexpattern-datasource-layer-50545384-5625-4204-a0b1-28dd0a038385",
+          "type": "index-pattern"
+        }
+      ],
+      "query": {
+        "language": "kuery",
+        "query": ""
+      },
+      "visualization": {
+        "axisTitlesVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "fillOpacity": 0.5,
+        "fittingFunction": "None",
+        "gridlinesVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "labelsOrientation": {
+          "x": 0,
+          "yLeft": 0,
+          "yRight": 0
+        },
+        "layers": [
+          {
+            "accessors": [
+              "9083f0ed-af16-4b62-ac0e-24ea8c163496"
+            ],
+            "layerId": "50545384-5625-4204-a0b1-28dd0a038385",
+            "layerType": "data",
+            "palette": {
+              "name": "default",
+              "type": "palette"
+            },
+            "seriesType": "bar_stacked",
+            "splitAccessor": "410ac68b-8741-4cec-aeb2-d83820ec08df",
+            "xAccessor": "f307fab7-1f01-4a2c-89ba-c3a8242416c1",
+            "yConfig": [
+              {
+                "axisMode": "left",
+                "color": "#68BC00",
+                "forAccessor": "9083f0ed-af16-4b62-ac0e-24ea8c163496"
+              }
+            ]
+          }
+        ],
+        "legend": {
+          "isVisible": true,
+          "maxLines": 1,
+          "position": "bottom",
+          "shouldTruncate": true,
+          "showSingleSeries": true
+        },
+        "preferredSeriesType": "bar_stacked",
+        "tickLabelsVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "valueLabels": "hide",
+        "yLeftExtent": {
+          "mode": "full"
+        },
+        "yLeftScale": "linear",
+        "yRightExtent": {
+          "mode": "full"
+        },
+        "yRightScale": "linear"
+      }
+    },
+    "title": "Response codes over time [Filebeat API]",
+    "visualizationType": "lnsXY"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "becda210-07b0-11ee-accc-7fd0963752f5",
+  "managed": false,
+  "references": [
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "8424bdb0-07a6-11ee-86da-973ca7dbd4a8",
+      "name": "tag-ref-8424bdb0-07a6-11ee-86da-973ca7dbd4a8",
+      "type": "tag"
+    }
+  ],
+  "type": "lens",
+  "typeMigrationVersion": "8.6.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIzLDFd"
+}
+{
+  "attributes": {
+    "description": "",
+    "state": {
+      "adHocDataViews": {},
+      "datasourceStates": {
+        "formBased": {
+          "layers": {
+            "584aab8e-f3a9-493d-bb15-7dd64b29921c": {
+              "columnOrder": [
+                "30df5e40-6408-41aa-9c70-b2ab9028cfdf",
+                "e85abdbf-f32d-4b80-9139-05b4bea33c0b"
+              ],
+              "columns": {
+                "30df5e40-6408-41aa-9c70-b2ab9028cfdf": {
+                  "dataType": "date",
+                  "isBucketed": true,
+                  "label": "@timestamp",
+                  "operationType": "date_histogram",
+                  "params": {
+                    "dropPartials": false,
+                    "includeEmptyRows": true,
+                    "interval": "auto"
+                  },
+                  "scale": "interval",
+                  "sourceField": "@timestamp"
+                },
+                "e85abdbf-f32d-4b80-9139-05b4bea33c0b": {
+                  "dataType": "number",
+                  "isBucketed": false,
+                  "label": "95th percentile of http.response.duration",
+                  "operationType": "percentile",
+                  "params": {
+                    "percentile": 95
+                  },
+                  "scale": "ratio",
+                  "sourceField": "http.response.duration"
+                }
+              },
+              "incompleteColumns": {},
+              "sampling": 1
+            }
+          }
+        },
+        "textBased": {
+          "layers": {}
+        }
+      },
+      "filters": [
+        {
+          "$state": {
+            "store": "appState"
+          },
+          "meta": {
+            "alias": null,
+            "disabled": false,
+            "field": "event.module",
+            "index": "760fd5e2-a59b-4c4e-b32f-aba07273d690",
+            "key": "event.module",
+            "negate": false,
+            "params": {
+              "query": "api"
+            },
+            "type": "phrase"
+          },
+          "query": {
+            "match_phrase": {
+              "event.module": "api"
+            }
+          }
+        }
+      ],
+      "internalReferences": [],
+      "query": {
+        "language": "kuery",
+        "query": ""
+      },
+      "visualization": {
+        "axisTitlesVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "fittingFunction": "None",
+        "gridlinesVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "labelsOrientation": {
+          "x": 0,
+          "yLeft": 0,
+          "yRight": 0
+        },
+        "layers": [
+          {
+            "accessors": [
+              "e85abdbf-f32d-4b80-9139-05b4bea33c0b"
+            ],
+            "layerId": "584aab8e-f3a9-493d-bb15-7dd64b29921c",
+            "layerType": "data",
+            "position": "top",
+            "seriesType": "area_stacked",
+            "showGridlines": false,
+            "xAccessor": "30df5e40-6408-41aa-9c70-b2ab9028cfdf"
+          }
+        ],
+        "legend": {
+          "isVisible": true,
+          "position": "right"
+        },
+        "preferredSeriesType": "area_stacked",
+        "tickLabelsVisibilitySettings": {
+          "x": true,
+          "yLeft": true,
+          "yRight": true
+        },
+        "valueLabels": "hide"
+      }
+    },
+    "title": "95 percentilles over times [Filebeat API]",
+    "visualizationType": "lnsXY"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "31a20960-07b2-11ee-accc-7fd0963752f5",
+  "managed": false,
+  "references": [
+    {
+      "id": "filebeat-*",
+      "name": "indexpattern-datasource-layer-584aab8e-f3a9-493d-bb15-7dd64b29921c",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "760fd5e2-a59b-4c4e-b32f-aba07273d690",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "lens",
+  "typeMigrationVersion": "8.6.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzI0LDFd"
+}
+{
+  "attributes": {
+    "columns": [
+      "http.request.method",
+      "url.original",
+      "http.response.status_code",
+      "http.response.duration",
+      "transaction.id"
+    ],
+    "description": "",
+    "grid": {
+      "columns": {
+        "http.request.method": {
+          "width": 100
+        },
+        "http.response.duration": {
+          "width": 91
+        },
+        "http.response.status_code": {
+          "width": 117
+        },
+        "url.original": {
+          "width": 697
+        }
+      }
+    },
+    "hideChart": false,
+    "hits": 0,
+    "isTextBasedQuery": false,
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"highlight\":{\"fields\":{\"*\":{}},\"fragment_size\":2147483647,\"post_tags\":[\"@/kibana-highlighted-field@\"],\"pre_tags\":[\"@kibana-highlighted-field@\"],\"require_field_match\":false},\"highlightAll\":true,\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"version\":true,\"filter\":[{\"meta\":{\"disabled\":false,\"negate\":false,\"alias\":null,\"key\":\"event.module\",\"field\":\"event.module\",\"params\":{\"query\":\"api\"},\"type\":\"phrase\",\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index\"},\"query\":{\"match_phrase\":{\"event.module\":\"api\"}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"disabled\":false,\"negate\":false,\"alias\":null,\"key\":\"url.original.keyword\",\"field\":\"url.original.keyword\",\"value\":\"exists\",\"type\":\"exists\",\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.filter[1].meta.index\"},\"query\":{\"exists\":{\"field\":\"url.original.keyword\"}},\"$state\":{\"store\":\"appState\"}}],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+    },
+    "sort": [
+      [
+        "@timestamp",
+        "desc"
+      ]
+    ],
+    "timeRestore": false,
+    "title": "Api access logs [Filebeat Api]",
+    "usesAdHocDataView": false,
+    "version": 1
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "6d9e66d0-a1f0-11e7-928f-5dbe6f6f5519-ecs",
+  "managed": false,
+  "references": [
+    {
+      "id": "filebeat-*",
+      "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[1].meta.index",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "search",
+  "typeMigrationVersion": "7.9.3",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzI1LDFd"
+}
+{
+  "attributes": {
+    "description": "",
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+    },
+    "title": "Dashboards [Filebeat Api]",
+    "uiStateJSON": "{}",
+    "version": 1,
+    "visState": "{\"title\":\"Dashboards [Filebeat Api]\",\"type\":\"markdown\",\"aggs\":[],\"params\":{\"fontSize\":12,\"markdown\":\"[Api overview](#/dashboard/358a2390-07b3-11ee-accc-7fd0963752f5) | [Api logs](#/dashboard/6027a530-07b5-11ee-ab8e-1dbebdc743d5)\",\"openLinksInNewTab\":false}}"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "d3c317f0-07b4-11ee-ab8e-1dbebdc743d5",
+  "managed": false,
+  "references": [
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "visualization",
+  "typeMigrationVersion": "8.5.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzE4LDFd"
+}
+{
+  "attributes": {
+    "controlGroupInput": {
+      "chainingSystem": "HIERARCHICAL",
+      "controlStyle": "oneLine",
+      "ignoreParentSettingsJSON": "{\"ignoreFilters\":false,\"ignoreQuery\":false,\"ignoreTimerange\":false,\"ignoreValidations\":false}",
+      "panelsJSON": "{\"5bc38a83-27c4-4670-9fb5-3de3acb73eb6\":{\"type\":\"optionsListControl\",\"order\":0,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"5bc38a83-27c4-4670-9fb5-3de3acb73eb6\",\"fieldName\":\"application.name.keyword\",\"title\":\"application\",\"enhancements\":{}}},\"ba2d70e3-10d8-4acb-9bd5-e33038e74855\":{\"type\":\"optionsListControl\",\"order\":2,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"ba2d70e3-10d8-4acb-9bd5-e33038e74855\",\"fieldName\":\"user.id.keyword\",\"title\":\"user.id\",\"enhancements\":{}}},\"ff5e641d-ae15-4810-b7ac-d649f27ac05e\":{\"type\":\"optionsListControl\",\"order\":1,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"ff5e641d-ae15-4810-b7ac-d649f27ac05e\",\"fieldName\":\"http.response.status_family.keyword\",\"title\":\"response\",\"enhancements\":{}}}}"
+    },
+    "description": "",
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+    },
+    "optionsJSON": "{\"useMargins\":true,\"syncColors\":false,\"syncCursor\":true,\"syncTooltips\":false,\"hidePanelTitles\":false}",
+    "panelsJSON": "[{\"version\":\"8.8.0\",\"type\":\"lens\",\"gridData\":{\"x\":31,\"y\":0,\"w\":17,\"h\":16,\"i\":\"8d71caad-102b-41e6-a930-0c1cbfe65bd6\"},\"panelIndex\":\"8d71caad-102b-41e6-a930-0c1cbfe65bd6\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_8d71caad-102b-41e6-a930-0c1cbfe65bd6\"},{\"version\":\"8.8.0\",\"type\":\"lens\",\"gridData\":{\"x\":0,\"y\":3,\"w\":31,\"h\":13,\"i\":\"41c33e68-67c3-4cf9-92d3-bcf69e0c822a\"},\"panelIndex\":\"41c33e68-67c3-4cf9-92d3-bcf69e0c822a\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_41c33e68-67c3-4cf9-92d3-bcf69e0c822a\"},{\"version\":\"8.8.0\",\"type\":\"lens\",\"gridData\":{\"x\":0,\"y\":16,\"w\":48,\"h\":14,\"i\":\"7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436\"},\"panelIndex\":\"7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436\",\"embeddableConfig\":{\"attributes\":{\"title\":\"\",\"description\":\"\",\"visualizationType\":\"lnsXY\",\"type\":\"lens\",\"references\":[{\"id\":\"filebeat-*\",\"name\":\"indexpattern-datasource-layer-584aab8e-f3a9-493d-bb15-7dd64b29921c\",\"type\":\"index-pattern\"},{\"id\":\"filebeat-*\",\"name\":\"413af870-36ad-4e91-9a00-fc8440fbc1cb\",\"type\":\"index-pattern\"}],\"state\":{\"visualization\":{\"legend\":{\"isVisible\":true,\"position\":\"right\"},\"valueLabels\":\"hide\",\"fittingFunction\":\"None\",\"axisTitlesVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"tickLabelsVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"labelsOrientation\":{\"x\":0,\"yLeft\":0,\"yRight\":0},\"gridlinesVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"preferredSeriesType\":\"area\",\"layers\":[{\"layerId\":\"584aab8e-f3a9-493d-bb15-7dd64b29921c\",\"accessors\":[\"e85abdbf-f32d-4b80-9139-05b4bea33c0b\"],\"position\":\"top\",\"seriesType\":\"area\",\"showGridlines\":false,\"layerType\":\"data\",\"xAccessor\":\"30df5e40-6408-41aa-9c70-b2ab9028cfdf\"}]},\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filters\":[{\"meta\":{\"disabled\":false,\"negate\":false,\"alias\":null,\"index\":\"413af870-36ad-4e91-9a00-fc8440fbc1cb\",\"key\":\"event.module\",\"field\":\"event.module\",\"params\":{\"query\":\"api\"},\"type\":\"phrase\"},\"query\":{\"match_phrase\":{\"event.module\":\"api\"}},\"$state\":{\"store\":\"appState\"}}],\"datasourceStates\":{\"formBased\":{\"layers\":{\"584aab8e-f3a9-493d-bb15-7dd64b29921c\":{\"columns\":{\"30df5e40-6408-41aa-9c70-b2ab9028cfdf\":{\"label\":\"@timestamp\",\"dataType\":\"date\",\"operationType\":\"date_histogram\",\"sourceField\":\"@timestamp\",\"isBucketed\":true,\"scale\":\"interval\",\"params\":{\"interval\":\"auto\",\"includeEmptyRows\":true,\"dropPartials\":false}},\"e85abdbf-f32d-4b80-9139-05b4bea33c0b\":{\"label\":\"95th percentile of http.response.duration\",\"dataType\":\"number\",\"operationType\":\"percentile\",\"sourceField\":\"http.response.duration\",\"isBucketed\":false,\"scale\":\"ratio\",\"params\":{\"percentile\":95}}},\"columnOrder\":[\"30df5e40-6408-41aa-9c70-b2ab9028cfdf\",\"e85abdbf-f32d-4b80-9139-05b4bea33c0b\"],\"incompleteColumns\":{},\"sampling\":1}}},\"textBased\":{\"layers\":{}}},\"internalReferences\":[],\"adHocDataViews\":{}}},\"enhancements\":{}},\"panelRefName\":\"panel_7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436\"},{\"version\":\"8.8.0\",\"type\":\"search\",\"gridData\":{\"x\":0,\"y\":30,\"w\":48,\"h\":36,\"i\":\"3b4b7a81-295e-4930-a06e-4fba19d27ab4\"},\"panelIndex\":\"3b4b7a81-295e-4930-a06e-4fba19d27ab4\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_3b4b7a81-295e-4930-a06e-4fba19d27ab4\"},{\"version\":\"8.8.0\",\"type\":\"visualization\",\"gridData\":{\"x\":0,\"y\":0,\"w\":31,\"h\":3,\"i\":\"fb29b13e-4519-47dc-8f52-ca923982ecc2\"},\"panelIndex\":\"fb29b13e-4519-47dc-8f52-ca923982ecc2\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_fb29b13e-4519-47dc-8f52-ca923982ecc2\"}]",
+    "timeRestore": false,
+    "title": "[Filebeat Api] Overview",
+    "version": 1
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:34:05.174Z",
+  "id": "358a2390-07b3-11ee-accc-7fd0963752f5",
+  "managed": false,
+  "references": [
+    {
+      "id": "1700ac70-07b1-11ee-accc-7fd0963752f5",
+      "name": "8d71caad-102b-41e6-a930-0c1cbfe65bd6:panel_8d71caad-102b-41e6-a930-0c1cbfe65bd6",
+      "type": "lens"
+    },
+    {
+      "id": "becda210-07b0-11ee-accc-7fd0963752f5",
+      "name": "41c33e68-67c3-4cf9-92d3-bcf69e0c822a:panel_41c33e68-67c3-4cf9-92d3-bcf69e0c822a",
+      "type": "lens"
+    },
+    {
+      "id": "31a20960-07b2-11ee-accc-7fd0963752f5",
+      "name": "7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436:panel_7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436",
+      "type": "lens"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436:indexpattern-datasource-layer-584aab8e-f3a9-493d-bb15-7dd64b29921c",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "7e2852ef-4ad3-40a4-a4f1-ac6d5a7d4436:413af870-36ad-4e91-9a00-fc8440fbc1cb",
+      "type": "index-pattern"
+    },
+    {
+      "id": "6d9e66d0-a1f0-11e7-928f-5dbe6f6f5519-ecs",
+      "name": "3b4b7a81-295e-4930-a06e-4fba19d27ab4:panel_3b4b7a81-295e-4930-a06e-4fba19d27ab4",
+      "type": "search"
+    },
+    {
+      "id": "d3c317f0-07b4-11ee-ab8e-1dbebdc743d5",
+      "name": "fb29b13e-4519-47dc-8f52-ca923982ecc2:panel_fb29b13e-4519-47dc-8f52-ca923982ecc2",
+      "type": "visualization"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_5bc38a83-27c4-4670-9fb5-3de3acb73eb6:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_ba2d70e3-10d8-4acb-9bd5-e33038e74855:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_ff5e641d-ae15-4810-b7ac-d649f27ac05e:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "dashboard",
+  "typeMigrationVersion": "8.7.0",
+  "updated_at": "2023-06-10T19:34:05.174Z",
+  "version": "WzUzLDFd"
+}
+{
+  "attributes": {
+    "columns": [
+      "log.level",
+      "user.id",
+      "message"
+    ],
+    "description": "",
+    "grid": {
+      "columns": {
+        "log.level": {
+          "width": 106
+        },
+        "user.id": {
+          "width": 109
+        }
+      }
+    },
+    "hideChart": false,
+    "hits": 0,
+    "isTextBasedQuery": false,
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"highlight\":{\"fields\":{\"*\":{}},\"fragment_size\":2147483647,\"post_tags\":[\"@/kibana-highlighted-field@\"],\"pre_tags\":[\"@kibana-highlighted-field@\"],\"require_field_match\":false},\"highlightAll\":true,\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"version\":true,\"filter\":[{\"meta\":{\"alias\":null,\"disabled\":false,\"field\":\"event.module\",\"key\":\"event.module\",\"negate\":false,\"params\":{\"query\":\"api\"},\"type\":\"phrase\",\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index\"},\"query\":{\"match_phrase\":{\"event.module\":\"api\"}},\"$state\":{\"store\":\"appState\"}}],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+    },
+    "sort": [
+      [
+        "@timestamp",
+        "desc"
+      ]
+    ],
+    "timeRestore": false,
+    "title": "Api logs [Filebeat Api]",
+    "usesAdHocDataView": false,
+    "version": 1,
+    "viewMode": "documents"
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "9eb25600-a1f0-11e7-928f-5dbe6f6f5519-ecs",
+  "managed": false,
+  "references": [
+    {
+      "id": "filebeat-*",
+      "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "search",
+  "typeMigrationVersion": "7.9.3",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIwLDFd"
+}
+{
+  "attributes": {
+    "controlGroupInput": {
+      "chainingSystem": "HIERARCHICAL",
+      "controlStyle": "oneLine",
+      "ignoreParentSettingsJSON": "{\"ignoreFilters\":false,\"ignoreQuery\":false,\"ignoreTimerange\":false,\"ignoreValidations\":false}",
+      "panelsJSON": "{\"86bc4140-7259-4371-ba38-c752fd8d122b\":{\"type\":\"optionsListControl\",\"order\":1,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"86bc4140-7259-4371-ba38-c752fd8d122b\",\"fieldName\":\"application.name.keyword\",\"title\":\"application\",\"enhancements\":{}}},\"d965a7c2-962e-4133-9bea-47b35fd884db\":{\"type\":\"optionsListControl\",\"order\":0,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"d965a7c2-962e-4133-9bea-47b35fd884db\",\"fieldName\":\"log.level.keyword\",\"title\":\"log.level\",\"enhancements\":{}}},\"8a497774-fe71-4099-b612-12408c1757e7\":{\"type\":\"optionsListControl\",\"order\":2,\"grow\":true,\"width\":\"medium\",\"explicitInput\":{\"id\":\"8a497774-fe71-4099-b612-12408c1757e7\",\"fieldName\":\"user.id.keyword\",\"title\":\"user.id\",\"enhancements\":{}}}}"
+    },
+    "description": "",
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+    },
+    "optionsJSON": "{\"useMargins\":true,\"syncColors\":false,\"syncCursor\":true,\"syncTooltips\":false,\"hidePanelTitles\":false}",
+    "panelsJSON": "[{\"version\":\"8.8.0\",\"type\":\"visualization\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":3,\"i\":\"9e6f2d50-8cca-45e2-8144-a2b6bde8be43\"},\"panelIndex\":\"9e6f2d50-8cca-45e2-8144-a2b6bde8be43\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_9e6f2d50-8cca-45e2-8144-a2b6bde8be43\"},{\"version\":\"8.8.0\",\"type\":\"search\",\"gridData\":{\"x\":0,\"y\":15,\"w\":48,\"h\":20,\"i\":\"67952a2f-8d6d-4925-bd39-6be0e4498860\"},\"panelIndex\":\"67952a2f-8d6d-4925-bd39-6be0e4498860\",\"embeddableConfig\":{\"enhancements\":{},\"columns\":[\"@timestamp\",\"log.level\",\"message\"]},\"panelRefName\":\"panel_67952a2f-8d6d-4925-bd39-6be0e4498860\"}]",
+    "timeRestore": false,
+    "title": "[Filebeat Api] logs",
+    "version": 1
+  },
+  "coreMigrationVersion": "8.8.0",
+  "created_at": "2023-06-10T19:22:09.896Z",
+  "id": "6027a530-07b5-11ee-ab8e-1dbebdc743d5",
+  "managed": false,
+  "references": [
+    {
+      "id": "d3c317f0-07b4-11ee-ab8e-1dbebdc743d5",
+      "name": "9e6f2d50-8cca-45e2-8144-a2b6bde8be43:panel_9e6f2d50-8cca-45e2-8144-a2b6bde8be43",
+      "type": "visualization"
+    },
+    {
+      "id": "9eb25600-a1f0-11e7-928f-5dbe6f6f5519-ecs",
+      "name": "67952a2f-8d6d-4925-bd39-6be0e4498860:panel_67952a2f-8d6d-4925-bd39-6be0e4498860",
+      "type": "search"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_86bc4140-7259-4371-ba38-c752fd8d122b:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_d965a7c2-962e-4133-9bea-47b35fd884db:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "filebeat-*",
+      "name": "controlGroup_8a497774-fe71-4099-b612-12408c1757e7:optionsListDataView",
+      "type": "index-pattern"
+    },
+    {
+      "id": "50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "name": "tag-ref-50e50c20-5749-11ec-8f0b-05e8b06e1b10",
+      "type": "tag"
+    },
+    {
+      "id": "152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "name": "tag-ref-152a17b0-07b1-11ee-accc-7fd0963752f5",
+      "type": "tag"
+    }
+  ],
+  "type": "dashboard",
+  "typeMigrationVersion": "8.7.0",
+  "updated_at": "2023-06-10T19:22:09.896Z",
+  "version": "WzIxLDFd"
+}
+{
+  "excludedObjects": [],
+  "excludedObjectsCount": 0,
+  "exportedCount": 11,
+  "missingRefCount": 1,
+  "missingReferences": [
+    {
+      "id": "8424bdb0-07a6-11ee-86da-973ca7dbd4a8",
+      "type": "tag"
+    }
+  ]
+}

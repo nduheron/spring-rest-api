@@ -1,9 +1,10 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.JwtGeneratorAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.JwtDecoderAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.AuthenticationProviderAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.security.WebSecurityAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.log.FiltersAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.monitoring.MonitoringAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.cache.CacheAutoConfiguration,\
-  fr.nduheron.poc.springrestapi.tools.autoconfigure.rest.RestAutoConfiguration
+  fr.nduheron.poc.springrestapi.tools.rest.security.configuration.JwtGeneratorAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.rest.security.configuration.JwtDecoderAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.rest.security.configuration.AuthenticationProviderAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.rest.security.configuration.WebSecurityAutoConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.rest.log.LogFilterConfiguration,\
+  fr.nduheron.poc.springrestapi.tools.rest.cache.EtagConfiguration
+
+spring.autoconfigure.exclude= \
+  org.springframework.boot.actuate.autoconfigure.metrics.LogbackMetricsAutoConfiguration

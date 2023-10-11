@@ -23,13 +23,14 @@
         <dbunit-spring.version>1.3.0</dbunit-spring.version>
         <cucumber.version>7.11.2</cucumber.version>
         <guava.version>31.1-jre</guava.version>
-        <commons-io.version>2.11.0</commons-io.version>
         <springdoc-openapi-ui.version>1.7.0</springdoc-openapi-ui.version>
         <opencsv.version>5.7.1</opencsv.version>
         <dependency-check-maven.version>8.2.1</dependency-check-maven.version>
         <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
-        <docker-maven-plugin.version>0.42.1</docker-maven-plugin.version>
         <bouncycastle.version>1.70</bouncycastle.version>
+        <encoder.version>1.2.3</encoder.version>
+        <archunit-junit5.version>1.0.1</archunit-junit5.version>
+        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
     </properties>
 
 
@@ -41,12 +42,13 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-mysql</artifactId>
+            <artifactId>flyway-core</artifactId>
         </dependency>
 
         <!-- WEB -->
@@ -57,6 +59,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- security -->
@@ -74,6 +81,12 @@
             <version>${bouncycastle.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.owasp.encoder</groupId>
+            <artifactId>encoder</artifactId>
+            <version>${encoder.version}</version>
+        </dependency>
+
         <!-- MAIL -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,24 +97,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-        </dependency>
-
-        <!-- CACHE -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-spring</artifactId>
         </dependency>
 
         <dependency>
@@ -149,6 +144,13 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+
+        <!-- Log -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
         </dependency>
 
         <!-- TEST -->
@@ -203,20 +205,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <version>${archunit-junit5.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -328,46 +330,6 @@
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>${docker-maven-plugin.version}</version>
-                <configuration>
-                    <useColor>true</useColor>
-                    <verbose>true</verbose>
-                    <images>
-                        <image>
-                            <name>mysql:5.7.9</name>
-                            <alias>spring.rest.db</alias>
-                            <run>
-                                <env>
-                                    <MYSQL_ROOT_PASSWORD>admin</MYSQL_ROOT_PASSWORD>
-                                    <MYSQL_DATABASE>spring-rest-db</MYSQL_DATABASE>
-                                    <MYSQL_USER>spring-rest-db</MYSQL_USER>
-                                    <MYSQL_PASSWORD>spring-rest-db</MYSQL_PASSWORD>
-                                </env>
-                                <ports>
-                                    <port>3306:3306</port>
-                                </ports>
-                                <wait>
-                                    <log>(.+)mysqld: ready for connections.</log>
-                                    <time>20000</time>
-                                </wait>
-                            </run>
-                        </image>
-                        <image>
-                            <name>amontaigu/fakesmtp:2.0</name>
-                            <alias>fake-smtp</alias>
-                            <run>
-                                <ports>
-                                    <port>26:25</port>
-                                </ports>
-                            </run>
-                        </image>
-                    </images>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,8 +1,0 @@
-<hazelcast xmlns="http://www.hazelcast.com/schema/config">
-
-    <map name="*">
-        <time-to-live-seconds>60</time-to-live-seconds>
-        <eviction eviction-policy="LFU" size="100"/>
-    </map>
-
-</hazelcast>

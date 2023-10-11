@@ -1,0 +1,229 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: $SPRING_REST_DB_PASSWORD
+      POSTGRES_USER: spring-rest-db
+      POSTGRES_DB: spring-rest-db
+    networks:
+      - backend
+
+  smtp:
+    image: munkyboy/fakesmtp
+    networks:
+      - backend
+
+  api:
+    build: .
+    environment:
+      SPRING_DATASOURCE_USERNAME: spring-rest-db
+      SPRING_DATASOURCE_PASSWORD: $SPRING_REST_DB_PASSWORD
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/spring-rest-db
+      SPRING_MAIL_HOST: smtp
+      SPRING_MAIL_PORT: 25
+      SPRINGDOC_API-DOCS_URL: http://$DOMAIN
+      SPRINGDOC_SWAGGER-UI_CONFIGURL: http://$DOMAIN/v3/api-docs/swagger-config
+      SPRINGDOC_SWAGGER-UI_URL: http://$DOMAIN/v3/api-docs/
+      SERVER_FORWARD-HEADERS-STRATEGY: framework
+      SECURITY_JWT_PRIVATE-KEY: file:/usr/share/spring-rest-api/key.pem
+      SECURITY_JWT_PUBLIC-KEY: file:/usr/share/spring-rest-api/cert.pem
+      CERT_COUNTRY_CODE: $CERT_COUNTRY_CODE
+      CERT_STATE: $CERT_STATE
+      CERT_LOCALITY: $CERT_LOCALITY
+      CERT_ORGANIZATION: $CERT_ORGANIZATION
+      CERT_ORGANIZATIONAL_UNIT: $CERT_ORGANIZATIONAL_UNIT
+    depends_on:
+      - db
+      - smtp
+    networks:
+      - backend
+    labels:
+      filebeat_log_type: "api"
+
+  nginx:
+    image: nginx:stable
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - DOMAIN
+    depends_on:
+      - api
+      - grafana
+      - kibana
+    networks:
+      - frontend
+      - backend
+
+  ### Monitoring
+
+  prometheus:
+    image: "prom/prometheus"
+    ports:
+      - 9090:9090
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - backend
+
+  node-exporter:
+    image: prom/node-exporter
+    command:
+      - '--collector.interrupts'
+      - '--collector.tcpstat'
+      - '--collector.vmstat'
+    depends_on:
+      - prometheus
+    networks:
+      - backend
+
+  db-exporter:
+    image: prometheuscommunity/postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://spring-rest-db:$SPRING_REST_DB_PASSWORD@db:5432/spring-rest-db?sslmode=disable"
+    depends_on:
+      - prometheus
+      - db
+    networks:
+      - backend
+
+  grafana:
+    image: "grafana/grafana"
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: $SPRING_REST_GRAFANA_ROOT_PASSWORD
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SERVER_DOMAIN: $DOMAIN
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/monitoring/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: true
+    depends_on:
+      - prometheus
+    networks:
+      - backend
+
+  ### logging
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    volumes:
+      - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+    networks:
+      - backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I -u elastic:${ELASTIC_PASSWORD} http://elasticsearch:9200 | grep -q 'HTTP/1.1 200 OK'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  elasticsearch-setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    user: "0"
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD}
+      KIBANA_ADMIN_PASSWORD: ${KIBANA_ADMIN_PASSWORD}
+      KIBANA_GUEST_PASSWORD: ${KIBANA_GUEST_PASSWORD}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - backend
+    command: >
+      bash -c '
+        echo "Setting kibana_system password";
+        curl -S -s -X POST -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}";
+
+        echo "Creating kibana_admin user";
+        curl -S -s -X POST -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elasticsearch:9200/_security/user/kibana_admin -d "{\"password\":\"${KIBANA_ADMIN_PASSWORD}\", \"roles\": [\"kibana_admin\"] }";
+
+        echo "Creating kibana_guest user";
+        curl -S -s -X POST -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" http://elasticsearch:9200/_security/user/kibana_guest -d "{\"password\":\"${KIBANA_GUEST_PASSWORD}\", \"roles\": [\"viewer\"] }";
+      '
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    depends_on:
+      - elasticsearch-setup
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    volumes:
+      - ./docker/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./docker/logstash/pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    networks:
+      - backend
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    depends_on:
+      - elasticsearch-setup
+    volumes:
+      - ./docker/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    environment:
+      SERVER_BASEPATH: /logs
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD}
+      KIBANA_GUEST_PASSWORD: ${KIBANA_GUEST_PASSWORD}
+    networks:
+      - backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -S -s -I http://kibana:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana-setup:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    depends_on:
+      kibana:
+        condition: service_healthy
+    volumes:
+      - ./docker/kibana:/usr/share/kibana/data/dashboard:ro
+    environment:
+      KIBANA_ADMIN_PASSWORD: ${KIBANA_ADMIN_PASSWORD}
+    networks:
+      - backend
+    command: >
+      bash -c '
+        echo "Upload nginx kibana dashboard...";
+        curl -S -s -u kibana_admin:${KIBANA_ADMIN_PASSWORD} -X POST http://kibana:5601/api/saved_objects/_import?overwrite=true -H "kbn-xsrf: true" --form file=@/usr/share/kibana/data/dashboard/nginx.ndjson;
+
+        echo "Upload api kibana dashboard...";
+        curl -S -s -u kibana_admin:${KIBANA_ADMIN_PASSWORD} -X POST http://kibana:5601/api/saved_objects/_import?overwrite=true -H "kbn-xsrf: true" --form file=@/usr/share/kibana/data/dashboard/api.ndjson;
+      '
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.8.0
+    entrypoint: "filebeat -e -strict.perms=false"
+    user: root
+    volumes:
+      - ./docker/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      KIBANA_USERNAME: kibana_system
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD}
+    networks:
+      - backend
+    depends_on:
+      kibana:
+        condition: service_healthy
+
+networks:
+  frontend:
+  backend:

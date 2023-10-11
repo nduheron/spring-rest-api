@@ -1,12 +1,11 @@
 package fr.nduheron.poc.springrestapi.user.controller;
 
-import fr.nduheron.poc.springrestapi.tools.security.jwt.JwtGenerator;
+import fr.nduheron.poc.springrestapi.tools.rest.security.jwt.JwtGenerator;
 import fr.nduheron.poc.springrestapi.user.dto.login.Token;
 import fr.nduheron.poc.springrestapi.user.dto.login.TokenRequest;
 import fr.nduheron.poc.springrestapi.user.mapper.UserMapper;
 import fr.nduheron.poc.springrestapi.user.model.User;
 import fr.nduheron.poc.springrestapi.user.repository.UserRepository;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,7 +23,6 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static fr.nduheron.poc.springrestapi.config.OpenApiConfiguration.DEFAULT_BAD_REQUEST;
 import static java.lang.String.format;
 
 @RestController
@@ -47,7 +45,6 @@ public class AuthentificationController {
     }
 
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ApiResponse(responseCode = "400", ref = DEFAULT_BAD_REQUEST)
     public Token login(@RequestBody @Valid TokenRequest tokenRequest) {
 
         Optional<User> user = repo.findById(tokenRequest.getUsername());
@@ -62,7 +59,7 @@ public class AuthentificationController {
         if (passwordEncoder.matches(tokenRequest.getPassword(), user.get().getPassword())) {
             user.get().setDerniereConnexion(LocalDateTime.now());
             String jwt = jwtGenerator.generateToken(userMapper.toDto(user.get()), tokenRequest.getUsername());
-            return new Token(jwt, jwtGenerator.getDuration());
+            return new Token(jwt, jwtGenerator.getDuration().getSeconds());
         }
         throw new BadCredentialsException("Login/mot de passe incorrect.");
     }

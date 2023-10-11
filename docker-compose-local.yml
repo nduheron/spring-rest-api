@@ -1,0 +1,19 @@
+services:
+  db-local:
+    extends:
+      file: docker-compose.yml
+      service: db
+    ports:
+      - 5432:5432
+    env_file:
+      - ./docker/config/.env.local
+
+  smtp-local:
+    extends:
+      file: docker-compose.yml
+      service: smtp
+    ports:
+      - 25:25
+
+networks:
+  backend:

@@ -4,8 +4,7 @@ import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import org.dbunit.DefaultDatabaseTester;
 import org.dbunit.IDatabaseTester;
-import org.dbunit.ext.mysql.MySqlDataTypeFactory;
-import org.dbunit.ext.mysql.MySqlMetadataHandler;
+import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,7 @@ public class DBUnitConfiguration {
     @Bean
     public DatabaseConfigBean dbUnitDatabaseConfig() {
         DatabaseConfigBean dbConfig = new com.github.springtestdbunit.bean.DatabaseConfigBean();
-        dbConfig.setDatatypeFactory(new MySqlDataTypeFactory());
-        dbConfig.setMetadataHandler(new MySqlMetadataHandler());
+        dbConfig.setDatatypeFactory(new PostgresqlDataTypeFactory());
         return dbConfig;
     }
 

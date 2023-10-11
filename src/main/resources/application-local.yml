@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    password: changeme
+    url: jdbc:postgresql://localhost:5432/spring-rest-db
+    username: spring-rest-db
+  mail:
+    host: localhost
+    port: 25
+security:
+  jwt:
+    private-key: file:src/test/resources/certificates/key.pem
+    public-key: file:src/test/resources/certificates/cert.pem
+
